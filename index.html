@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微纳科技 - 专业的微纳加工与超材料解决方案</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        /* 添加 Bootstrap Icons 字体 */
+        @font-face {
+            font-family: "bootstrap-icons";
+            src: url("https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/fonts/bootstrap-icons.woff2") format("woff2"),
+                 url("https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/fonts/bootstrap-icons.woff") format("woff");
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#home">
+                <img src="images/logo.png" alt="微纳科技" height="40" onerror="this.src='https://via.placeholder.com/120x40?text=微纳科技'">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">首页</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            服务
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="pages/nanoimprint.html">纳米压印</a></li>
+                            <li><a class="dropdown-item" href="pages/etching.html">微纳刻蚀</a></li>
+                            <li><a class="dropdown-item" href="pages/metamaterial.html">超材料产品</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            技术知识
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="pages/knowledge/nanoimprint-knowledge.html">纳米压印技术</a></li>
+                            <li><a class="dropdown-item" href="pages/knowledge/etching-knowledge.html">微纳刻蚀技术</a></li>
+                            <li><a class="dropdown-item" href="pages/knowledge/metamaterial-knowledge.html">超材料技术</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/cases.html">案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/about.html">关于我们</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/contact.html">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold text-white mb-4 animate__animated animate__fadeInUp">微纳加工和超材料专家</h1>
+                    <p class="lead text-white mb-4 animate__animated animate__fadeInUp animate__delay-1s">专注于微纳加工技术研发和超材料应用，为高端制造业提供创新解决方案</p>
+                    <div class="animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="#services" class="btn btn-primary btn-lg me-3">了解更多</a>
+                        <a href="#contact" class="btn btn-outline-light btn-lg">联系我们</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="image-gallery animate__animated animate__fadeInRight">
+                        <div class="gallery-item active">
+                            <img src="images/nano-1.jpg" alt="微纳加工技术" class="img-fluid rounded shadow">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="images/nano-2.jpg" alt="超材料应用" class="img-fluid rounded shadow">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="images/nano-3.jpg" alt="精密制造" class="img-fluid rounded shadow">
+                        </div>
+                        <div class="gallery-nav">
+                            <div class="gallery-dot active"></div>
+                            <div class="gallery-dot"></div>
+                            <div class="gallery-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心业务 -->
+    <section class="py-5 bg-light" id="services">
+        <div class="container py-5">
+            <h2 class="text-center mb-5">我们的核心业务</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="bi bi-layers-half fs-1 text-primary"></i>
+                            </div>
+                            <h3 class="h4 mb-3">纳米压印</h3>
+                            <p class="text-muted mb-0">提供高精度纳米压印服务，可实现亚100nm级别的图形化加工</p>
+                            <a href="pages/nanoimprint.html" class="btn btn-outline-primary mt-3">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="bi bi-cpu fs-1 text-primary"></i>
+                            </div>
+                            <h3 class="h4 mb-3">微纳加工</h3>
+                            <p class="text-muted mb-0">专业的微纳刻蚀工艺，满足各类精密加工需求</p>
+                            <a href="pages/etching.html" class="btn btn-outline-primary mt-3">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="bi bi-grid-3x3-gap fs-1 text-primary"></i>
+                            </div>
+                            <h3 class="h4 mb-3">超材料产品</h3>
+                            <p class="text-muted mb-0">高性能超材料面板和透镜，为光学应用提供创新解决方案</p>
+                            <a href="pages/metamaterial.html" class="btn btn-outline-primary mt-3">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品展示 -->
+    <section class="py-5" id="products">
+        <div class="container py-5">
+            <h2 class="text-center mb-5">产品展示</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100 product-card">
+                        <img src="images/metamaterial-panel.jpg" class="card-img-top" alt="超材料面板" onerror="this.src='https://via.placeholder.com/600x400?text=超材料面板'">
+                        <div class="card-body">
+                            <h3 class="h5">超材料面板</h3>
+                            <p class="text-muted">高性能电磁波调控面板，适用于5G通信、雷达等领域</p>
+                            <a href="pages/contact.html" class="btn btn-outline-primary">询价</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100 product-card">
+                        <img src="images/meta-lens.jpg" class="card-img-top" alt="超材料透镜" onerror="this.src='https://via.placeholder.com/600x400?text=超材料透镜'">
+                        <div class="card-body">
+                            <h3 class="h5">超材料透镜</h3>
+                            <p class="text-muted">新一代超薄平面透镜，提供优异的成像性能</p>
+                            <a href="pages/contact.html" class="btn btn-outline-primary">询价</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4">
+        <style>
+            .qr-code-wrapper img {
+                width: 150px;
+                height: 150px;
+                object-fit: contain;
+                transition: transform 0.3s ease;
+            }
+            .qr-code-wrapper img:hover {
+                transform: scale(1.2);
+            }
+            .footer-divider {
+                margin: 1rem 0;
+                opacity: 0.2;
+            }
+        </style>
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">关于我们</h5>
+                    <p class="small text-start">微纳科技专注于微纳加工技术的研发与应用，为客户提供高品质的微纳加工解决方案。</p>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">联系方式</h5>
+                    <ul class="list-unstyled small text-start">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>上海市松江区泗泾镇泗通路 246 号 </li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>+86 18701960619</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>service@oplasmon.com</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">快速链接</h5>
+                    <ul class="list-unstyled small text-start">
+                        <li class="mb-2"><a href="pages/nanoimprint.html" class="text-light text-decoration-none">纳米压印服务</a></li>
+                        <li class="mb-2"><a href="pages/etching.html" class="text-light text-decoration-none">微纳刻蚀服务</a></li>
+                        <li class="mb-2"><a href="pages/metamaterial.html" class="text-light text-decoration-none">超材料产品</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">关注我们</h5>
+                    <div class="d-flex justify-content-center gap-4">
+                        <div class="qr-code-wrapper">
+                            <img src="images/qrcode-weixin.jpg" alt="微信公众号">
+                        </div>
+                        <div class="qr-code-wrapper">
+                            <img src="images/qrcode-douyin.jpg" alt="抖音号">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="text-center">
+                <p class="copyright small mb-0">&copy; 2024 微纳科技. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/scripts.js"></script>
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html> 

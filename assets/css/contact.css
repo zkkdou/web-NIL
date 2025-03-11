@@ -1,0 +1,89 @@
+.contact-page {
+    padding-top: 76px; /* 导航栏高度 + 一些间距 */
+}
+
+.contact-info {
+    background-color: #f8f9fa;
+}
+
+.section-title {
+    color: #333;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 3px;
+    background-color: #007bff;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    color: #007bff;
+    margin-right: 1rem;
+    margin-top: 0.25rem;
+}
+
+.contact-item h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.contact-item p {
+    margin-bottom: 0;
+    color: #666;
+}
+
+.contact-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.map-section {
+    height: 400px;
+    width: 100%;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.map-info-window {
+    padding: 10px;
+}
+
+.map-info-window h5 {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.map-info-window p {
+    margin-bottom: 5px;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .contact-form {
+        margin-top: 2rem;
+        padding: 1.5rem;
+    }
+    
+    .map-section {
+        height: 300px;
+    }
+} 

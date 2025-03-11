@@ -1,0 +1,90 @@
+{
+    "cases": [
+        {
+            "id": "case-20240310",
+            "folder": "case-20240310",
+            "title": "5G通信天线超材料解决方案",
+            "date": "2024-03-10",
+            "category": "通信技术",
+            "technology": "超材料技术",
+            "industry": "通信行业",
+            "technologyDetail": "超材料结构设计、电磁仿真优化、精密制造工艺",
+            "tags": ["5G", "天线设计", "超材料", "高增益"],
+            "summary": "通过超材料技术，开发高性能的5G通信天线解决方案，实现多频段覆盖和高增益特性。",
+            "cover": "1.jpg",
+            "media": [
+                {
+                    "type": "image",
+                    "url": "case-20240310/1.jpg",
+                    "caption": "超材料天线结构示意图"
+                },
+                {
+                    "type": "image",
+                    "url": "case-20240310/2.jpg",
+                    "caption": "天线性能测试结果"
+                }
+            ]
+        },
+        {
+            "id": "case-20240308",
+            "folder": "case-20240308",
+            "title": "高精度光学元件纳米压印工艺",
+            "date": "2024-03-08",
+            "category": "光学制造",
+            "technology": "纳米压印技术",
+            "industry": "光学制造业",
+            "technologyDetail": "纳米压印工艺开发、模具制备、批量化生产",
+            "tags": ["纳米压印", "光学制造", "高精度", "大面积"],
+            "summary": "采用创新纳米压印工艺，实现大面积、高均匀性的光学元件制造。",
+            "cover": "1.jpg",
+            "media": [
+                {
+                    "type": "image",
+                    "url": "case-20240308/1.jpg",
+                    "caption": "纳米压印工艺流程"
+                },
+                {
+                    "type": "image",
+                    "url": "case-20240308/2.jpg",
+                    "caption": "光学元件成品展示"
+                }
+            ]
+        },
+        {
+            "id": "case-20240311",
+            "folder": "case-20240311",
+            "title": "生物传感器微纳加工",
+            "date": "2024-03-11",
+            "category": "生物医疗",
+            "technology": "微纳加工技术",
+            "industry": "医疗器械",
+            "technologyDetail": "微纳结构设计、表面处理、生物兼容性优化",
+            "tags": ["生物传感", "微纳加工", "医疗器械", "高灵敏度"],
+            "summary": "开发高灵敏度生物传感器微纳加工工艺，实现快速、准确的生物分子检测。",
+            "cover": "1.jpg",
+            "media": [
+                {
+                    "type": "image",
+                    "url": "case-20240311/1.jpg",
+                    "caption": "生物传感器结构图"
+                },
+                {
+                    "type": "image",
+                    "url": "case-20240311/2.jpg",
+                    "caption": "检测性能数据"
+                },
+                {
+                    "type": "image",
+                    "url": "case-20240311/3.jpg",
+                    "caption": "应用场景展示"
+                }
+            ]
+        }
+    ],
+    "categories": [
+        "通信技术",
+        "光学制造",
+        "生物医疗",
+        "新能源"
+    ]
+} 

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成功案例 - 微纳科技</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css">
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/cases.css">
+    <style>
+        .markdown-body {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .markdown-body p {
+            margin-bottom: 0;
+        }
+        .qr-code-wrapper img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .qr-code-wrapper img:hover {
+            transform: scale(1.2);
+        }
+        .footer-divider {
+            margin: 1rem 0;
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <img src="../images/logo.png" alt="微纳科技" height="40" onerror="this.src='https://via.placeholder.com/120x40?text=微纳科技'">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">首页</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            服务
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="nanoimprint.html">纳米压印</a></li>
+                            <li><a class="dropdown-item" href="etching.html">微纳刻蚀</a></li>
+                            <li><a class="dropdown-item" href="metamaterial.html">超材料产品</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            技术知识
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="knowledge/nanoimprint-knowledge.html">纳米压印技术</a></li>
+                            <li><a class="dropdown-item" href="knowledge/etching-knowledge.html">微纳刻蚀技术</a></li>
+                            <li><a class="dropdown-item" href="knowledge/metamaterial-knowledge.html">超材料技术</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="cases.html">案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">关于我们</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面内容 -->
+    <main class="pt-5 mt-5">
+        <div class="container py-5">
+            <h1 class="text-center cases-title">成功案例</h1>
+            <p class="text-center text-muted mb-5">探索我们的创新解决方案和客户成功故事</p>
+            
+            <!-- 特色案例轮播 -->
+            <div id="featuredCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="2"></button>
+                </div>
+
+                <!-- 轮播内容 -->
+                <div class="carousel-inner">
+                    <!-- 由 JavaScript 动态填充 -->
+                </div>
+
+                <!-- 控制按钮 -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">上一个</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">下一个</span>
+                </button>
+            </div>
+
+            <!-- 筛选工具栏 -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary active" data-filter="all">全部</button>
+                        <!-- 分类按钮由 JavaScript 动态填充 -->
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" id="sortSelect">
+                        <option value="date-desc">最新发布</option>
+                        <option value="date-asc">最早发布</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 案例列表 -->
+            <div class="row g-4" id="casesList">
+                <!-- 由 JavaScript 动态填充 -->
+            </div>
+
+            <!-- 加载更多按钮 -->
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary" id="loadMoreBtn">
+                    加载更多 <i class="bi bi-arrow-down-circle"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">关于我们</h5>
+                    <p class="small text-start">微纳科技专注于微纳加工技术的研发与应用，为客户提供高品质的微纳加工解决方案。</p>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">联系方式</h5>
+                    <ul class="list-unstyled small text-start">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>上海市松江区泗泾镇泗通路 246 号 </li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>+86 18701960619</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>service@oplasmon.com</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">快速链接</h5>
+                    <ul class="list-unstyled small text-start">
+                        <li class="mb-2"><a href="../pages/nanoimprint.html" class="text-light text-decoration-none">纳米压印服务</a></li>
+                        <li class="mb-2"><a href="../pages/etching.html" class="text-light text-decoration-none">微纳刻蚀服务</a></li>
+                        <li class="mb-2"><a href="../pages/metamaterial.html" class="text-light text-decoration-none">超材料产品</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">关注我们</h5>
+                    <div class="d-flex justify-content-center gap-4">
+                        <div class="qr-code-wrapper">
+                            <img src="../images/qrcode-weixin.jpg" alt="微信公众号">
+                        </div>
+                        <div class="qr-code-wrapper">
+                            <img src="../images/qrcode-douyin.jpg" alt="抖音号">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="text-center">
+                <p class="copyright small mb-0">&copy; 2024 微纳科技. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../assets/js/scripts.js"></script>
+    <script src="../assets/js/cases.js"></script>
+</body>
+</html> 

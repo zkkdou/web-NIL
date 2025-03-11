@@ -1,0 +1,924 @@
+.hero {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #0a0f1a, #1a1f2a);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 纳米材料晶格背景 */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(60deg, rgba(255,255,255,0.02) 25%, transparent 25%),
+        linear-gradient(-60deg, rgba(255,255,255,0.02) 25%, transparent 25%),
+        linear-gradient(60deg, transparent 75%, rgba(255,255,255,0.02) 75%),
+        linear-gradient(-60deg, transparent 75%, rgba(255,255,255,0.02) 75%);
+    background-size: 40px 40px;
+    background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+}
+
+/* 纳米材料晶格结构 */
+.nano-lattice {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.hexagon {
+    position: absolute;
+    width: 40px;
+    height: 23px;
+    background: rgba(255,255,255,0.03);
+    margin: 11px 0;
+    animation: hexPulse 3s ease-in-out infinite;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+.hexagon:before,
+.hexagon:after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 23px;
+    background: rgba(255,255,255,0.03);
+    animation: hexPulse 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+.hexagon:before {
+    transform: rotate(60deg);
+}
+
+.hexagon:after {
+    transform: rotate(-60deg);
+}
+
+/* 晶格网格布局 */
+.hexagon:nth-child(1) { top: 2%; left: 2%; animation-delay: 0s; }
+.hexagon:nth-child(2) { top: 2%; left: 22%; animation-delay: 0.1s; }
+.hexagon:nth-child(3) { top: 2%; left: 42%; animation-delay: 0.2s; }
+.hexagon:nth-child(4) { top: 2%; left: 62%; animation-delay: 0.3s; }
+.hexagon:nth-child(5) { top: 2%; left: 82%; animation-delay: 0.4s; }
+
+.hexagon:nth-child(6) { top: 22%; left: 12%; animation-delay: 0.5s; }
+.hexagon:nth-child(7) { top: 22%; left: 32%; animation-delay: 0.6s; }
+.hexagon:nth-child(8) { top: 22%; left: 52%; animation-delay: 0.7s; }
+.hexagon:nth-child(9) { top: 22%; left: 72%; animation-delay: 0.8s; }
+.hexagon:nth-child(10) { top: 22%; left: 92%; animation-delay: 0.9s; }
+
+.hexagon:nth-child(11) { top: 42%; left: 2%; animation-delay: 1s; }
+.hexagon:nth-child(12) { top: 42%; left: 22%; animation-delay: 1.1s; }
+.hexagon:nth-child(13) { top: 42%; left: 42%; animation-delay: 1.2s; }
+.hexagon:nth-child(14) { top: 42%; left: 62%; animation-delay: 1.3s; }
+.hexagon:nth-child(15) { top: 42%; left: 82%; animation-delay: 1.4s; }
+
+.hexagon:nth-child(16) { top: 62%; left: 12%; animation-delay: 1.5s; }
+.hexagon:nth-child(17) { top: 62%; left: 32%; animation-delay: 1.6s; }
+.hexagon:nth-child(18) { top: 62%; left: 52%; animation-delay: 1.7s; }
+.hexagon:nth-child(19) { top: 62%; left: 72%; animation-delay: 1.8s; }
+.hexagon:nth-child(20) { top: 62%; left: 92%; animation-delay: 1.9s; }
+
+.hexagon:nth-child(21) { top: 82%; left: 2%; animation-delay: 2s; }
+.hexagon:nth-child(22) { top: 82%; left: 22%; animation-delay: 2.1s; }
+.hexagon:nth-child(23) { top: 82%; left: 42%; animation-delay: 2.2s; }
+.hexagon:nth-child(24) { top: 82%; left: 62%; animation-delay: 2.3s; }
+.hexagon:nth-child(25) { top: 82%; left: 82%; animation-delay: 2.4s; }
+
+/* 晶格悬停效果 */
+.hexagon:hover,
+.hexagon:hover:before,
+.hexagon:hover:after {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.2);
+    box-shadow: 0 0 30px rgba(0,255,255,0.4);
+    animation: none;
+}
+
+/* 电火花效果 */
+.spark {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #00ffff;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 1;
+    box-shadow: 0 0 10px #00ffff;
+}
+
+.spark::before,
+.spark::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #00ffff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00ffff;
+}
+
+.spark::before {
+    animation: sparkPulse 0.3s ease-out forwards;
+}
+
+.spark::after {
+    animation: sparkPulse 0.3s ease-out 0.1s forwards;
+}
+
+/* 电火花轨迹 */
+.spark-trail {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,255,255,0.5), transparent);
+    transform-origin: left;
+    animation: trailFade 0.3s linear forwards;
+}
+
+/* 电子效果 */
+.electron {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00ffff;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #00ffff;
+    animation: electronMove 4s linear infinite;
+}
+
+.electron::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0,255,255,0.8) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: electronGlow 2s ease-in-out infinite;
+}
+
+/* 电子轨迹 */
+.electron-trail {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,255,255,0.3), transparent);
+    transform-origin: left;
+    animation: trailFade 1s linear forwards;
+}
+
+/* 电子位置 */
+.electron:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+.electron:nth-child(2) { top: 35%; left: 30%; animation-delay: 1s; }
+.electron:nth-child(3) { top: 55%; left: 50%; animation-delay: 2s; }
+.electron:nth-child(4) { top: 75%; left: 70%; animation-delay: 3s; }
+
+@keyframes latticeMove {
+    display: none;
+}
+
+@keyframes hexPulse {
+    display: none;
+}
+
+@keyframes electronMove {
+    display: none;
+}
+
+@keyframes electronGlow {
+    display: none;
+}
+
+@keyframes trailFade {
+    display: none;
+}
+
+@keyframes sparkPulse {
+    display: none;
+}
+
+/* 移除之前的星星和流星效果 */
+.stars, .shooting-star {
+    display: none;
+}
+
+.navbar {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    padding: 1rem 2rem;
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    padding: 0.5rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.navbar-brand img {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.05);
+}
+
+.navbar-nav {
+    gap: 1.5rem;
+}
+
+.nav-link {
+    position: relative;
+    padding: 0.5rem 0 !important;
+    margin: 0 0.5rem;
+    color: #333 !important;
+    transition: color 0.3s ease !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #3b82f6;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #3b82f6 !important;
+}
+
+/* 导航栏下拉菜单样式 */
+.navbar .dropdown-menu {
+    display: block;
+    position: absolute;
+    background-color: #fff;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.navbar .dropdown:hover .dropdown-menu,
+.navbar .dropdown-menu:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* 当鼠标离开时，延迟消失 */
+.navbar .dropdown-menu:not(:hover) {
+    transition-delay: 0.5s;
+}
+
+/* 添加一个伪元素来创建悬停区域 */
+.navbar .dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background: transparent;
+    pointer-events: none;
+}
+
+.navbar .dropdown-item {
+    padding: 0.75rem 1.5rem;
+    color: #333;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+    padding-left: 2rem;
+}
+
+.navbar .dropdown-item.active {
+    background-color: #e9ecef;
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+/* 确保下拉菜单在移动设备上也能正常工作 */
+@media (max-width: 991.98px) {
+    .navbar .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border: none;
+        padding-left: 1rem;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+    }
+    
+    .navbar .dropdown-item {
+        padding: 0.75rem 1rem;
+    }
+}
+
+.feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.btn-custom {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-custom::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+    transition: left 0.5s ease;
+}
+
+.btn-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-custom:hover::after {
+    left: 100%;
+}
+
+.image-gallery {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.gallery-item {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease;
+}
+
+.gallery-item.active {
+    opacity: 1;
+}
+
+.gallery-nav {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 2;
+}
+
+.gallery-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gallery-dot.active {
+    background: #fff;
+    transform: scale(1.2);
+}
+
+.product-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.product-card img {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+.product-card .card-body {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0.9) 100%);
+}
+
+/* 移除所有晶格相关的动画和效果 */
+.nano-lattice,
+.hexagon,
+.spark,
+.spark-trail,
+.electron,
+.electron-trail {
+    display: none;
+}
+
+/* 页脚样式优化 */
+footer {
+    background: linear-gradient(135deg, #1a1f2a 0%, #2a2f3a 100%) !important;
+    position: relative;
+    overflow: hidden;
+    padding: 4rem 0 2rem;
+}
+
+/* 页脚背景效果 */
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(13, 110, 253, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(13, 110, 253, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* 页脚标题样式 */
+footer h5 {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+}
+
+footer h5::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, #0d6efd, transparent);
+    transition: width 0.3s ease;
+}
+
+footer h5:hover::after {
+    width: 60px;
+}
+
+/* 页脚文本样式 */
+footer p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+footer p:hover {
+    color: #fff;
+}
+
+/* 页脚链接样式 */
+footer .list-unstyled li {
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+footer .list-unstyled a {
+    color: rgba(255,255,255,0.7);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    padding-left: 0;
+}
+
+footer .list-unstyled a::before {
+    content: '→';
+    position: absolute;
+    left: -20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    color: #0d6efd;
+}
+
+footer .list-unstyled a:hover {
+    color: #fff;
+    padding-left: 20px;
+}
+
+footer .list-unstyled a:hover::before {
+    opacity: 1;
+    left: 0;
+}
+
+footer .list-unstyled i {
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+    color: #0d6efd;
+    transition: transform 0.3s ease;
+}
+
+footer .list-unstyled a:hover i {
+    transform: translateX(3px);
+}
+
+/* 页脚分隔线 */
+footer hr {
+    border-color: rgba(255,255,255,0.1);
+    margin: 2rem 0;
+    position: relative;
+}
+
+footer hr::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, #0d6efd, transparent);
+}
+
+/* 社交媒体链接 */
+footer .social-links {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+footer .social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    color: #fff;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+footer .social-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+footer .social-links a:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+footer .social-links a:hover::before {
+    opacity: 1;
+}
+
+footer .social-links a i {
+    position: relative;
+    z-index: 1;
+}
+
+/* 版权信息 */
+footer .copyright {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.9rem;
+    text-align: center;
+    padding-top: 2rem;
+    position: relative;
+}
+
+footer .copyright::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    footer {
+        padding: 3rem 0 1.5rem;
+    }
+    
+    footer h5 {
+        font-size: 1.1rem;
+    }
+    
+    footer .social-links {
+        justify-content: center;
+    }
+}
+
+/* 联系我们页面样式 */
+.contact-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-top: 100px;
+}
+
+.contact-info-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.contact-form-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.form-floating > .form-control {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem 0.75rem;
+}
+
+.form-floating > .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+.form-floating > label {
+    padding: 1rem 0.75rem;
+}
+
+.map-container {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.map-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .contact-section {
+        padding-top: 80px;
+    }
+    
+    .contact-info-card,
+    .contact-form-card,
+    .map-container {
+        margin-bottom: 2rem;
+    }
+}
+
+/* 案例卡片样式 */
+.case-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.case-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.case-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.case-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.case-card .card-body {
+    padding: 1.5rem;
+}
+
+.case-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.case-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.case-card .btn-outline-primary {
+    border-width: 2px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.case-card .btn-outline-primary:hover {
+    transform: translateX(5px);
+}
+
+/* 案例页面标题样式 */
+.cases-title {
+    position: relative;
+    padding-bottom: 1rem;
+    margin-bottom: 3rem;
+}
+
+.cases-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border-radius: 2px;
+}
+
+/* 案例详情页面样式 */
+.case-content {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.case-content h1 {
+    color: #333;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.case-content h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border-radius: 2px;
+}
+
+.case-content h2 {
+    color: #444;
+    margin: 2rem 0 1rem;
+    font-weight: 500;
+}
+
+.case-content p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.case-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.case-content li {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+}
+
+/* 案例图片轮播样式 */
+#caseCarousel {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#caseCarousel .carousel-item img {
+    height: 500px;
+    object-fit: cover;
+}
+
+#caseCarousel .carousel-control-prev,
+#caseCarousel .carousel-control-next {
+    width: 5%;
+    background: rgba(0,0,0,0.3);
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* 案例信息侧边栏样式 */
+.case-info-card {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.case-info-card h5 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.case-info-card h5::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border-radius: 2px;
+}
+
+.case-info-card li {
+    color: #666;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.case-info-card li i {
+    color: #007bff;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .case-content {
+        padding: 1.5rem;
+    }
+    
+    #caseCarousel .carousel-item img {
+        height: 300px;
+    }
+    
+    .case-info-card {
+        margin-top: 2rem;
+    }
+} 

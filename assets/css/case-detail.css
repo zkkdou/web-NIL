@@ -1,0 +1,477 @@
+/* 轮播图样式 */
+.carousel {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.carousel-item {
+    background-color: #f8f9fa;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+}
+
+/* 缩略图导航 */
+.carousel-thumbnails {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.carousel-thumbnails img {
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.carousel-thumbnails img:hover {
+    opacity: 0.8;
+}
+
+.carousel-thumbnails img.active {
+    border: 2px solid #007bff;
+}
+
+/* Markdown 内容样式 */
+.markdown-content {
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.markdown-content h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.markdown-content h2 {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 1rem;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.markdown-content p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: #666;
+}
+
+.markdown-content ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.markdown-content li {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+/* 案例信息卡片样式 */
+.case-info-card {
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.case-info-card h5 {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #007bff;
+    color: #2c3e50;
+}
+
+.case-info-card ul li {
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.case-info-card i {
+    margin-right: 0.5rem;
+    color: #007bff;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .carousel-item img {
+        height: 300px;
+    }
+    
+    .markdown-content {
+        padding: 1rem;
+    }
+    
+    .case-info-card {
+        margin-top: 1rem;
+    }
+}
+
+/* 案例详情页面样式 */
+
+/* 加载动画 */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.loading-spinner .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--bs-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 案例内容样式 */
+.case-content {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+}
+
+.case-header {
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 2rem;
+}
+
+.case-meta {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.case-meta i {
+    margin-right: 0.5rem;
+}
+
+/* 主媒体区域 */
+#mainMedia {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #f8f9fa;
+    margin-bottom: 2rem;
+}
+
+#mainMedia img,
+#mainMedia video {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    background: #f8f9fa;
+}
+
+/* 媒体缩略图 */
+.media-thumbnails {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.media-thumbnail {
+    position: relative;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+}
+
+.media-thumbnail img,
+.media-thumbnail video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-thumbnail.active {
+    border: 2px solid var(--bs-primary);
+}
+
+.media-thumbnail.video::after {
+    content: "▶";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    border-radius: 50%;
+    font-size: 0.8rem;
+}
+
+/* 文章内容样式 */
+.case-detail-content {
+    line-height: 1.8;
+    color: #343a40;
+}
+
+.case-detail-content h2 {
+    font-size: 1.5rem;
+    margin: 2rem 0 1rem;
+    color: #212529;
+}
+
+.case-detail-content p {
+    margin-bottom: 1.5rem;
+}
+
+.case-detail-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+}
+
+.case-detail-content .media-container {
+    margin: 2rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.case-detail-content .media-container.left {
+    float: left;
+    margin-right: 2rem;
+    margin-bottom: 1rem;
+    max-width: 50%;
+}
+
+.case-detail-content .media-container.right {
+    float: right;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+    max-width: 50%;
+}
+
+.case-detail-content .media-container img,
+.case-detail-content .media-container video {
+    width: 100%;
+    height: auto;
+}
+
+.case-detail-content .media-caption {
+    padding: 0.5rem;
+    background: #f8f9fa;
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* 案例信息卡片 */
+.case-info-card {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.case-info-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #343a40;
+}
+
+.case-info-card ul li {
+    margin-bottom: 1rem;
+}
+
+.case-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.case-tags .badge {
+    font-weight: normal;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .case-content {
+        padding: 1rem;
+    }
+
+    .case-header {
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .case-detail-content .media-container.left,
+    .case-detail-content .media-container.right {
+        float: none;
+        margin: 1rem 0;
+        max-width: 100%;
+    }
+
+    .case-info-card {
+        margin-top: 2rem;
+    }
+}
+
+/* 错误提示 */
+.alert-danger {
+    background-color: #fff5f5;
+    border: none;
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.alert-danger .alert-heading {
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.alert-link {
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.alert-link:hover {
+    text-decoration: underline;
+}
+
+/* 右侧轮播图样式 */
+#mediaThumbnailsCarousel {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background: #f8f9fa;
+}
+
+#mediaThumbnailsCarousel .carousel-item {
+    aspect-ratio: 4/3;
+    background: #f8f9fa;
+}
+
+#mediaThumbnailsCarousel .carousel-item img,
+#mediaThumbnailsCarousel .carousel-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+#mediaThumbnailsCarousel .carousel-control-prev,
+#mediaThumbnailsCarousel .carousel-control-next {
+    width: 15%;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#mediaThumbnailsCarousel .carousel-control-prev:hover,
+#mediaThumbnailsCarousel .carousel-control-next:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#mediaThumbnailsCarousel .carousel-control-prev-icon,
+#mediaThumbnailsCarousel .carousel-control-next-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.carousel-item.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 视频缩略图标识 */
+.carousel-item.video::after {
+    content: "▶";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    border-radius: 50%;
+    font-size: 1rem;
+}
+
+/* 相关图片列表样式 */
+.media-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.media-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.media-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.media-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 2px;
+}
+
+.media-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.media-item {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+    aspect-ratio: 16/9;
+    background: #f8f9fa;
+}
+
+.media-item:hover {
+    transform: translateY(-2px);
+}
+
+.media-item img,
+.media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-item.active {
+    border: 2px solid var(--bs-primary);
+}
+
+.media-item.video::after {
+    content: "▶";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    border-radius: 50%;
+    font-size: 0.8rem;
+} 

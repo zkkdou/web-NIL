@@ -1,0 +1,64 @@
+{
+    "cases": [
+        {
+            "id": 1,
+            "title": "5G通信天线超材料解决方案",
+            "date": "2024-01-15",
+            "category": "通信设备",
+            "technology": "超材料技术",
+            "industry": "通信",
+            "imageCount": 3,
+            "folder": "case1"
+        },
+        {
+            "id": 2,
+            "title": "高精度光学元件纳米压印",
+            "date": "2024-01-20",
+            "category": "光学元件",
+            "technology": "纳米压印技术",
+            "industry": "光学",
+            "imageCount": 3,
+            "folder": "case2"
+        },
+        {
+            "id": 3,
+            "title": "生物传感器微纳加工",
+            "date": "2024-01-25",
+            "category": "生物传感",
+            "technology": "微纳刻蚀技术",
+            "industry": "生物科技",
+            "imageCount": 3,
+            "folder": "case3"
+        },
+        {
+            "id": 4,
+            "title": "量子计算芯片制备",
+            "date": "2024-02-01",
+            "category": "量子计算",
+            "technology": "微纳刻蚀技术",
+            "industry": "量子计算",
+            "imageCount": 3,
+            "folder": "case4"
+        },
+        {
+            "id": 5,
+            "title": "柔性显示面板制备",
+            "date": "2024-02-05",
+            "category": "显示技术",
+            "technology": "纳米压印技术",
+            "industry": "显示",
+            "imageCount": 3,
+            "folder": "case5"
+        },
+        {
+            "id": 6,
+            "title": "太阳能电池效率提升",
+            "date": "2024-02-10",
+            "category": "新能源",
+            "technology": "超材料技术",
+            "industry": "新能源",
+            "imageCount": 3,
+            "folder": "case6"
+        }
+    ]
+} 
