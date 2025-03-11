@@ -1,8 +1,8 @@
-# ~~什么是纳米压印技术？~~
+# 什么是纳米压印技术？
 
 纳米压印技术（Nanoimprint Lithography，NIL）是一种高精度的微纳加工方法，通过将具有纳米级图案的模板压印到基材上，实现纳米级图形的转移。这种技术具有分辨率高、成本低、可大规模生产等优点。
 
-## *工作原理*
+## **工作原理**
 
 纳米压印技术的基本工作原理包括以下步骤：
 
@@ -39,5 +39,5 @@
 4. 新材料和新工艺的开发
 5. 智能化和自动化水平提升 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjQ4NjI1OTU1XX0=
+eyJoaXN0b3J5IjpbMTU1NTMzMzY3MSw2NDg2MjU5NTVdfQ==
 -->
