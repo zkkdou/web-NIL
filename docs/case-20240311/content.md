@@ -36,9 +36,6 @@
 
 
 
-![输入图片说明](/imgs/2025-05-06/ANXjMsmS2SoKkRy2.png)
-
-
 3.  **热回流：**
    
 -   将基板加热至光刻胶的玻璃化转变温度（Tg）以上，此时光刻胶圆柱受表面张力影响，逐渐变形成光滑的球形结构。
@@ -51,7 +48,17 @@
 > optical performance." _Microelectronic Engineering_ 2008）。
 
 
+
+## **TASTE 方法**
+
+是对灰度结构选择性热回流效应的进一步发展和拓展。**之前的研究将灰度光刻和热回流相结合，用调制剂量的高能（100keV）电子对正性抗蚀剂进行局部曝光，显影后能得到有明显台阶的高度轮廓，再通过适度加热进行选择性回流，可将台阶结构转变为线性斜坡。**而 TASTE 在此基础上更进一步，它能在同一聚合物薄膜中生成几乎任意倾斜、凸凹的微纳尺度轮廓，为 3D 微纳制造带来了更多可能。**
+
+![输入图片说明](/imgs/2025-05-06/gnfJmqsOuz7hNdHt.png)
+ 
+![输入图片说明](/imgs/2025-05-06/ANXjMsmS2SoKkRy2.png)
+
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwOTQ4NzU2OCwxMzU0MTQ2MzE5LC0yNj
-cxMjA1NzksLTE1NjU5MDMyMjhdfQ==
+eyJoaXN0b3J5IjpbLTg4MTI5ODk2LDEzNTQxNDYzMTksLTI2Nz
+EyMDU3OSwtMTU2NTkwMzIyOF19
 -->
