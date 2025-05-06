@@ -21,7 +21,7 @@
 
    
 
-3.  **掩模曝光和显影：**
+2.  **掩模曝光和显影：**
     
 
 -   使用带有圆形图案的掩模进行紫外线（UV）曝光。曝光能量和时间需精确控制，以确保图案完整转移。
@@ -33,13 +33,10 @@
 > "Optimization of photolithographic parameters for microlens array
 > fabrication." _Optical Engineering_ 2005）。
 
-    
--     
-    
 
-5.  **热回流：**
-    
 
+3.  **热回流：**
+   
 -   将基板加热至光刻胶的玻璃化转变温度（Tg）以上，此时光刻胶圆柱受表面张力影响，逐渐变形成光滑的球形结构。
     
 -   热回流过程需要严格控制温度和时间，以避免光刻胶流动过度或不足。
@@ -51,7 +48,8 @@
 
 ## 部分示例
 
-![输入图片说明](/imgs/2025-05-06/2mRlrjjf4QVJ17OY.jpeg)
+
+
 
 
 ![输入图片说明](/imgs/2025-05-06/ANXjMsmS2SoKkRy2.png)
@@ -59,6 +57,6 @@
 ![输入图片说明](/imgs/2025-05-06/gnfJmqsOuz7hNdHt.png)
  
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc1MjE3NTY2NywxMzU0MTQ2MzE5LC0yNj
-cxMjA1NzksLTE1NjU5MDMyMjhdfQ==
+eyJoaXN0b3J5IjpbLTIwOTExMzM0MTcsMTM1NDE0NjMxOSwtMj
+Y3MTIwNTc5LC0xNTY1OTAzMjI4XX0=
 -->
