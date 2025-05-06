@@ -54,20 +54,11 @@
 ![输入图片说明](/imgs/2025-05-06/2mRlrjjf4QVJ17OY.jpeg)
 
 
+![输入图片说明](/imgs/2025-05-06/ANXjMsmS2SoKkRy2.png)
 
-## 实现效果
-
-该生物传感器在实际应用中展现出优异的性能：
-
-- 检测限：1 fg/mL
-- 线性范围：5个数量级
-- 重复性：CV < 5%
-- 稳定性：>6个月
-
-## 创新特色
-
-本项目的创新点在于采用了独特的微纳结构设计和表面修饰技术，通过优化分子识别界面和信号放大机制，实现了超灵敏检测。同时，开发的微流控集成技术使得检测过程更加自动化和标准化。 
+![输入图片说明](/imgs/2025-05-06/gnfJmqsOuz7hNdHt.png)
+ 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUxOTA2MzkwMiwxMzU0MTQ2MzE5LC0yNj
+eyJoaXN0b3J5IjpbLTc1MjE3NTY2NywxMzU0MTQ2MzE5LC0yNj
 cxMjA1NzksLTE1NjU5MDMyMjhdfQ==
 -->
