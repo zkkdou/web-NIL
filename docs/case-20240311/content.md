@@ -1,20 +1,46 @@
-# 生物传感器微纳加工
+# 光刻胶回流法制备微结构
 
-我们开发的高灵敏度生物传感器微纳加工工艺，实现了快速、准确的生物分子检测能力。该工艺采用创新的表面处理技术和微纳结构设计，大幅提升了检测灵敏度。
+> 本文部分内容节选于： Bioinspired Artificial Compound Eyes: Characteristic,
+> Fabrication, and Application。
 
 ## 技术特点
 
-- **超高灵敏度**：可检测 fg/mL 级浓度
-- **快速响应**：检测时间 < 5分钟
-- **高特异性**：误识别率 < 0.1%
-- **多重检测**：单次可检测多种目标物
+光刻胶热回流法（photoresist thermal reflow method）是一种用于制备微透镜阵列（MLAs）的高效技术。该方法主要利用光刻胶的热流变特性，通过特定的工艺步骤，将光刻胶图案转化为具有光学功能的微透镜结构。
 
 ## 应用场景
 
-- 临床诊断
-- 食品安全检测
-- 环境监测
-- 生物医药研发
+### **主要的制备步骤：**
+
+1.  **光刻胶****涂覆：**
+    
+
+-   将光刻胶均匀旋涂在清洁的基板（如玻璃或硅片）上。旋涂速度和时间控制光刻胶层的厚度。
+    
+-   相关研究表明，旋涂参数直接影响最终微透镜的尺寸和形状（参考文献：Lee, C.-C., et al. "Characterization of spin-coated photoresist layers for microlens fabrication." _Journal of Micromechanics and Microengineering_ 2002）。
+    
+      
+    
+
+3.  **掩模曝光和****显影****：**
+    
+
+-   使用带有圆形图案的掩模进行紫外线（UV）曝光。曝光能量和时间需精确控制，以确保图案完整转移。
+    
+-   曝光后，使用显影液去除未曝光区域的光刻胶，形成圆柱形阵列。
+    
+-   文献中指出，曝光和显影条件的优化对于确保圆柱形阵列的均匀性和质量至关重要（参考文献：Chen, H.-Y., et al. "Optimization of photolithographic parameters for microlens array fabrication." _Optical Engineering_ 2005）。
+    
+-     
+    
+
+5.  **热回流：**
+    
+
+-   将基板加热至光刻胶的玻璃化转变温度（Tg）以上，此时光刻胶圆柱受表面张力影响，逐渐变形成光滑的球形结构。
+    
+-   热回流过程需要严格控制温度和时间，以避免光刻胶流动过度或不足。
+    
+-   研究显示，热回流温度和时间的选择对微透镜的曲率半径和光学性能有显著影响（参考文献：Tseng, S.-C., et al. "Thermal reflow process for microlens fabrication: effects on lens profile and optical performance." _Microelectronic Engineering_ 2008）。
 
 ## 技术优势
 
@@ -36,5 +62,5 @@
 
 本项目的创新点在于采用了独特的微纳结构设计和表面修饰技术，通过优化分子识别界面和信号放大机制，实现了超灵敏检测。同时，开发的微流控集成技术使得检测过程更加自动化和标准化。 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NjU5MDMyMjhdfQ==
+eyJoaXN0b3J5IjpbNzYwOTc0MzE4LC0xNTY1OTAzMjI4XX0=
 -->
