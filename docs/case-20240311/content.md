@@ -49,8 +49,9 @@
 > reflow process for microlens fabrication: effects on lens profile and
 > optical performance." _Microelectronic Engineering_ 2008）。
 
-## 部分示例;
+## 部分示例
 
+![输入图片说明](/imgs/2025-05-06/2mRlrjjf4QVJ17OY.jpeg)
 
 
 
@@ -67,6 +68,6 @@
 
 本项目的创新点在于采用了独特的微纳结构设计和表面修饰技术，通过优化分子识别界面和信号放大机制，实现了超灵敏检测。同时，开发的微流控集成技术使得检测过程更加自动化和标准化。 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM1NDE0NjMxOSwtMjY3MTIwNTc5LC0xNT
-Y1OTAzMjI4XX0=
+eyJoaXN0b3J5IjpbMTUxOTA2MzkwMiwxMzU0MTQ2MzE5LC0yNj
+cxMjA1NzksLTE1NjU5MDMyMjhdfQ==
 -->
