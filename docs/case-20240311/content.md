@@ -51,12 +51,8 @@
 > reflow process for microlens fabrication: effects on lens profile and
 > optical performance." _Microelectronic Engineering_ 2008）。
 
-## 技术优势
-
-1. 检测灵敏度高
-2. 响应速度快
-3. 特异性强
-4. 操作简便
+## 部分示例;
+图片](https://mmbiz.qpic.cn/sz_mmbiz_jpg/6YnVLgWh2vznaZBwGiasBcyvibUq3Pyic1FDmD9B0FC52noO3Je2sastthGZdDX3s8HPUVQre4MOXUaWoMOzaiamgg/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1)
 
 ## 实现效果
 
@@ -71,5 +67,5 @@
 
 本项目的创新点在于采用了独特的微纳结构设计和表面修饰技术，通过优化分子识别界面和信号放大机制，实现了超灵敏检测。同时，开发的微流控集成技术使得检测过程更加自动化和标准化。 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTY5NzYwMTQ3LC0xNTY1OTAzMjI4XX0=
+eyJoaXN0b3J5IjpbNDMxMDgxMjY2LC0xNTY1OTAzMjI4XX0=
 -->
