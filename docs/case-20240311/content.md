@@ -20,8 +20,7 @@
 > 相关研究表明，旋涂参数直接影响最终微透镜的尺寸和形状（参考文献：Lee, C.-C., et al. "Characterization of spin-coated photoresist layers for microlens
 > fabrication." _Journal of Micromechanics and Microengineering_ 2002）。
 
-    
-
+   
 
 3.  **掩模曝光和显影：**
     
@@ -52,7 +51,7 @@
 > optical performance." _Microelectronic Engineering_ 2008）。
 
 ## 部分示例;
-图片](https://mmbiz.qpic.cn/sz_mmbiz_jpg/6YnVLgWh2vznaZBwGiasBcyvibUq3Pyic1FDmD9B0FC52noO3Je2sastthGZdDX3s8HPUVQre4MOXUaWoMOzaiamgg/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1)
+
 
 ## 实现效果
 
@@ -67,5 +66,5 @@
 
 本项目的创新点在于采用了独特的微纳结构设计和表面修饰技术，通过优化分子识别界面和信号放大机制，实现了超灵敏检测。同时，开发的微流控集成技术使得检测过程更加自动化和标准化。 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDMxMDgxMjY2LC0xNTY1OTAzMjI4XX0=
+eyJoaXN0b3J5IjpbLTI2NzEyMDU3OSwtMTU2NTkwMzIyOF19
 -->
