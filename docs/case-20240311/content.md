@@ -5,7 +5,8 @@
 
 ## 技术特点
 
-光刻胶热回流法（photoresist thermal reflow method）是一种用于制备微透镜阵列（MLAs）的高效技术。该方法主要利用光刻胶的热流变特性，通过特定的工艺步骤，将光刻胶图案转化为具有光学功能的微透镜结构。
+**光刻胶热回流法（photoresist thermal reflow method）是一种用于制备微透镜阵列（MLAs）的高效技术。**该方法主要利用光刻胶的热流变特性，通过特定的工艺步骤，将光刻胶图案转化为具有光学功能的微透镜结构。
+
 ![输入图片说明](/imgs/2025-05-06/8K8N6Iyc5RtXBdIy.png)
 
 ## 应用场景
@@ -59,6 +60,6 @@
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg4MTI5ODk2LDEzNTQxNDYzMTksLTI2Nz
-EyMDU3OSwtMTU2NTkwMzIyOF19
+eyJoaXN0b3J5IjpbLTE0OTM2Njg0MTAsMTM1NDE0NjMxOSwtMj
+Y3MTIwNTc5LC0xNTY1OTAzMjI4XX0=
 -->
