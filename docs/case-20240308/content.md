@@ -36,15 +36,36 @@
 
 ![Rodger M. Walser教授](/imgs/2025-05-07/9rgUKR4oSKKXOQ8u.png)
 
-![Richard W. Ziolkowski -美国亚利桑那州图森市亚利桑那大学电气与计算机工程系](/imgs/2025-05-07/cnoDoVt3w97kxisH.png)![图片](https://mmbiz.qpic.cn/sz_mmbiz_jpg/6YnVLgWh2vwlBibLsYUw6J0UBqzGxQGgCuIRYLEsVXHJvfNbziawichqJdjJODpukKNxEnseoE6HPbaFOSU58Hibyg/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1)
+![Richard W. Ziolkowski -美国亚利桑那州图森市亚利桑那大学电气与计算机工程系](/imgs/2025-05-07/cnoDoVt3w97kxisH.png)
 
 
-## 工艺优势
+二、研讨会的召开与影响（1999年11月）
 
-1. 工艺稳定性高
-2. 生产效率显著提升
-3. 制造成本大幅降低
-4. 产品一致性好
+-   **1999年9月，Walser发布公开邀请，首次提及“超材料”概念，即具有自然界不存在的全新响应的人造材料。研讨会涵盖应用和材料建模与加工部分，由DARPA相关人员主持，展示内容包含电磁带隙结构和复杂介质成果，促进了超材料领域的思想交流与成果分享。**
+
+
+三、DARPA MURI计划的启动（2001年）
+
+-   2001年，研讨会推动DARPA MURI（多大学研究计划）CFP（主题33：电磁超材料）发布，目标是开发能在广泛电磁频谱应用中发挥作用的新型合成超材料，吸引众多科研团队参与竞争。
+
+
+-   最终获胜提案“可扩展和可重构的电磁超材料和设备”团队由多位知名人才组成，标志着超材料研究进入有组织、大规模的发展阶段，为后续研究提供了方向与资源支持。
+
+## 超透镜领域
+
+2000年美国，和世界其他地方一样，美国在超材料研究早期的大部分努力都集中在研究和证明超材料的奇异物理特性上。
+
+加州大学圣地亚哥分校 (UCSD) 首次进行了负折射率和负折射的研究和实验，成功证实了超材料的这一特性。与此同时，“完美透镜” 概念的应用论文发表 **《Negative refraction makes a perfect lens》--引用量16000+**，引发了对超材料潜在应用的广泛关注。随后，全波矢量模拟和对双负（DNG）超材料的详细分析进一步证实了其负指数特性。
+![输入图片说明](/imgs/2025-05-07/GULrXVPWL9OUesEV.png)
+![输入图片说明](/imgs/2025-05-07/BUcmMtpT4eCJmrZz.png)
+
+
+**当时人们对超材料的热情具有感染力。由于最初的人工磁性实验是在微波范围内进行的，并且具有完美透镜的潜力，物理学/光学界很快就试图将这些概念推向光学频率。**
+
+《Optics Express》的一期特刊以 Pendry 为客座编辑，总结了当时的一些进展。其中包括加州大学圣地亚哥分校、爱荷华州立大学和亚利桑那大学在模拟 DNG 介质中的传播和散射方面取得的进展；加**州大学洛杉矶分校超级透镜技术的进步；波音公司对负折射实验的改进；**宾夕法尼亚州立大学报告了更多奇异现象，麻省理工学院，以及普渡大学（Purdue）；麻省理工学院-帝国理工学院团队展示了从电磁带隙 (EBG) 结构中获得 DNG 现象的方法。
+
+  
+2008年，在美国西海岸，Xiang Zhang (现 University of Hong Kong) 教授于 2004 年从加州大学洛杉矶分校转到加州大学伯克利分校，并成立了美国国家科学基金会纳米科学与工程中心 (NSEC)。他们展示并验证了许多双透镜和超透镜概念《**Superlenses to overcome the diffraction limit, Nature Mater. 7 (2008)》---引用量1000+**。他们制作了超晶格光学超材料的首批样品之一.他们展示了可见频率的等离子体激光器。
 
 ## 实现效果
 
@@ -59,6 +80,5 @@
 
 本工艺的创新点在于开发了专有的模具处理技术和压印参数优化系统，实现了高精度、高效率的批量化生产。同时，通过智能化控制系统，确保了生产过程的稳定性和可重复性。 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5NTg2ODMwMTgsLTEyNjEzMDY5NzBdfQ
-==
+eyJoaXN0b3J5IjpbNTM0NzgyNSwtMTI2MTMwNjk3MF19
 -->
