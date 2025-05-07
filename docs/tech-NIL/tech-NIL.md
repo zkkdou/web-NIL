@@ -28,7 +28,7 @@
 # **2. 纳米压印技术的分类**
 
 <img src="/docs/tech-NIL/2.png" alt="-" style="display:block; margin:auto; width:100%;" />
-
+![输入图片说明](/imgs/2025-05-07/5tZuqaSXjyCsgDWZ.png)
 ### 热压印与紫外固化的区别与历史
 
 #### 热压印（Hot Embossing Lithography）
@@ -175,6 +175,6 @@
 
 中国需加速核心设备（如高精度对准系统）和材料（如抗粘层试剂）的国产化，以在全球纳米制造竞赛中占据主动。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTEwNzQ2MDM4MCwtMjAyOTY1MjI0MSwxNT
-U1MzMzNjcxLDY0ODYyNTk1NV19
+eyJoaXN0b3J5IjpbLTM2NDU3NjQ5OSwxMTA3NDYwMzgwLC0yMD
+I5NjUyMjQxLDE1NTUzMzM2NzEsNjQ4NjI1OTU1XX0=
 -->
