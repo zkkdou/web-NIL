@@ -5,7 +5,8 @@
 从设计上讲，它们有望实现自然界材料通常无法实现的奇异物理响应，并能够根据特定应用定制其属性。最初几年的发现重点是确认它们的许多奇异属性，并探索它们在科学和工程应用方面的实际潜力。
 
 ## 历史进程
-![输入图片说明](/imgs/2025-05-07/vSB8fnoP1LDasEqA.png)![图片](https://mmbiz.qpic.cn/sz_mmbiz_jpg/6YnVLgWh2vwlBibLsYUw6J0UBqzGxQGgC7AVgYJ3XlVibswNqn6ic2oPuc57ntjCMBbklKcibDFkt879maupatbuBw/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1)
+![输入图片说明](/imgs/2025-05-07/vSB8fnoP1LDasEqA.png)
+
 人造材料在历史上产生了巨大的影响。众所周知的例子包括 13 世纪巴黎圣母院和巴黎圣礼拜堂美丽的彩色玻璃窗，它们的颜色源自玻璃中各种金属夹杂物产生的等离子体效应。
 
 - 19 世纪后期，Jagadis Chunder Bose 发表了关于人造扭曲结构旋转偏振平面的论文，这些结构按照今天的定义确实是人造手性结构。
@@ -91,6 +92,6 @@
 
 与此同时，与之相关的另一个极端概念——完美吸收体，由波士顿学院 - 杜克大学合作团队提出。这一概念引发了众多科研论文的涌现，学者们纷纷探讨其多种设计方案和潜在应用领域。在基于TO或宾夕法尼亚大学（UPenn）散射抵消/透明方法实现隐身的研究中，需要超材料具备极端的材料特性，如接近零或接近无穷大的参数。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjgyMDcxODMsMTk4MDI0NDg4MywtMT
+eyJoaXN0b3J5IjpbLTE5NzM0NDk2NjksMTk4MDI0NDg4MywtMT
 A3OTkyNjM1MSwtMTI2MTMwNjk3MF19
 -->
