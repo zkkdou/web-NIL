@@ -5,7 +5,6 @@
 从设计上讲，它们有望实现自然界材料通常无法实现的奇异物理响应，并能够根据特定应用定制其属性。最初几年的发现重点是确认它们的许多奇异属性，并探索它们在科学和工程应用方面的实际潜力。
 
 ## 历史进程
-![输入图片说明](/imgs/2025-05-07/vSB8fnoP1LDasEqA.png)
 
 人造材料在历史上产生了巨大的影响。众所周知的例子包括 13 世纪巴黎圣母院和巴黎圣礼拜堂美丽的彩色玻璃窗，它们的颜色源自玻璃中各种金属夹杂物产生的等离子体效应。
 
@@ -35,10 +34,10 @@
 
 -   Ziolkowski教授因其在人造原子/分子研究及其在雷达吸波材料（RAMs）和智能皮肤方面的应用成果而受到邀请，其研究成果已涉及有限差分时域（FDTD）模拟中的吸收边界条件（ABCs），是当时完美匹配层（PML）ABCs的“物理”实现形式。
 
-![Rodger M. Walser教授](/imgs/2025-05-07/9rgUKR4oSKKXOQ8u.png)
-
-![Richard W. Ziolkowski -美国亚利桑那州图森市亚利桑那大学电气与计算机工程系](/imgs/2025-05-07/cnoDoVt3w97kxisH.png)
-
+<div style="display: flex; justify-content: center; gap: 20px;">
+    <img src="../docs/case-20240308/2.jpg" alt="Rodger M. Walser教授" style="width:30%;" />
+    <img src="../docs/case-20240308/3.jpg" alt="Richard W. Ziolkowski -美国亚利桑那州图森市亚利桑那大学电气与计算机工程系" style="width:30%;" />
+</div>
 
 二、研讨会的召开与影响（1999年11月）
 
@@ -57,8 +56,11 @@
 2000年美国，和世界其他地方一样，美国在超材料研究早期的大部分努力都集中在研究和证明超材料的奇异物理特性上。
 
 加州大学圣地亚哥分校 (UCSD) 首次进行了负折射率和负折射的研究和实验，成功证实了超材料的这一特性。与此同时，“完美透镜” 概念的应用论文发表 **《Negative refraction makes a perfect lens》--引用量16000+**，引发了对超材料潜在应用的广泛关注。随后，全波矢量模拟和对双负（DNG）超材料的详细分析进一步证实了其负指数特性。
-![输入图片说明](/imgs/2025-05-07/GULrXVPWL9OUesEV.png)
-![输入图片说明](/imgs/2025-05-07/BUcmMtpT4eCJmrZz.png)
+
+<div style="display: flex; justify-content: center; gap: 20px;">
+    <img src="../docs/case-20240308/4.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
+    <img src="../docs/case-20240308/5.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
+</div>
 
 
 **当时人们对超材料的热情具有感染力。由于最初的人工磁性实验是在微波范围内进行的，并且具有完美透镜的潜力，物理学/光学界很快就试图将这些概念推向光学频率。**
@@ -67,12 +69,12 @@
 
 2008年，在美国西海岸，Xiang Zhang (现 University of Hong Kong) 教授于 2004 年从加州大学洛杉矶分校转到加州大学伯克利分校，并成立了美国国家科学基金会纳米科学与工程中心 (NSEC)。他们展示并验证了许多双透镜和超透镜概念《**Superlenses to overcome the diffraction limit, Nature Mater. 7 (2008)》---引用量1000+**。他们制作了超晶格光学超材料的首批样品之一.他们展示了可见频率的等离子体激光器。
 
-![Xiang Zhang](/imgs/2025-05-07/ONocxxPPHVu0682c.png)
-
+<img src="../docs/case-20240308/6.jpg" alt="Xiang Zhang" style="display:block; margin:auto; width:30%;" />
 在南方，阿拉巴马州红石兵工厂的斯卡洛拉和他的同事们考虑了 DNG 介质和亚波长聚焦的多个方面。《Negative refraction and subwavelength focusing in the visible range using transparent metallo-dielectric stacks, Opt. Express 15, 2 (2007) 》.
 
 关于早期第一波发现的一个重要方面是围绕负折射和完美透镜的争议。虽然这样的讨论可能是有益的，但它们往往会分散注意力，影响进度和努力程度。尽管如此，Dr. Browning 还是认识到了辩论的重要性。因为其中一个问题是负指数楔形的大小可能对原始实验产生的影响，她询问了波音幻影工程公司（现为波音研发部）团队构建了一个更大的版本，该版本已由几个独立实验室成功测试，并在2003 年，她还在美国国防高级研究计划局举办了一次研讨会批评者和支持者都被邀请来讨论超材料问题，例如负折射。第二次 DARPA MURI CFP 会议于 2004 年举行，主题是超材料。
-![美国国防部资料 Dr. Browning，目前担任国防研究与工程研究与技术 (DDR&E(RT)) 代理主任。](/imgs/2025-05-07/s6YHnwIv4RuZDwtR.png)
+
+<img src="../docs/case-20240308/7.jpg" alt="美国国防部资料 Dr. Browning，目前担任国防研究与工程研究与技术 (DDR&E(RT)) 代理主任。" style="display:block; margin:auto; width:100%;" />
 
 
 
@@ -81,10 +83,10 @@
 
 
 自2006年起，超材料领域中隐身技术成为备受瞩目的研究热点。杜克大学 - 帝国理工学院团队率先基于变换光学（TO）方法取得隐身技术的重要突破，并在相关文献中进行了报道。这一成果无论是对《星际迷航》中克林贡人的科幻爱好者，还是对《哈利·波特》魔法世界充满向往的人们来说，都极具吸引力，极大地激发了全球电磁学、声学和弹性力学等领域科研人员对隐身技术的研究热情。
-![输入图片说明](/imgs/2025-05-07/xA021p5Dhi4bKn1J.png)
-
-![输入图片说明](/imgs/2025-05-07/rngSGjFjqMq2bUI3.png)
-
+<div style="display: flex; justify-content: center; gap: 20px;">
+    <img src="../docs/case-20240308/8.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
+    <img src="../docs/case-20240308/9.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
+</div>
 > ( A ) 具有精确材料特性的斗篷模拟， 
 > ( B ) 具有降低材料特性的斗篷模拟，
 >  ( C ) 裸露导电圆柱的实验测量 
