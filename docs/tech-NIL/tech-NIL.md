@@ -22,6 +22,10 @@
 - **2023年**：IEEE发布纳米压印技术标准（IEEE P1856），规范模板设计、工艺参数和检测方法。
 
 ---
+<svg width="100" height="100">
+    <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+</svg>
+
 
 ### **2. 关键技术突破（深度解析）**
 
@@ -141,6 +145,6 @@
 
 中国需加速核心设备（如高精度对准系统）和材料（如抗粘层试剂）的国产化，以在全球纳米制造竞赛中占据主动。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjk2NTIyNDEsMTU1NTMzMzY3MSw2ND
-g2MjU5NTVdfQ==
+eyJoaXN0b3J5IjpbLTQ4MTkxMDU4NiwtMjAyOTY1MjI0MSwxNT
+U1MzMzNjcxLDY0ODYyNTk1NV19
 -->
