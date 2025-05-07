@@ -53,30 +53,30 @@
         {
             "id": "case-20240311",
             "folder": "case-20240311",
-            "title": "生物传感器微纳加工",
+            "title": "光刻胶回流法制备微结构",
             "date": "2024-03-11",
-            "category": "生物医疗",
-            "technology": "微纳加工技术",
-            "industry": "医疗器械",
-            "technologyDetail": "微纳结构设计、表面处理、生物兼容性优化",
-            "tags": ["生物传感", "微纳加工", "医疗器械", "高灵敏度"],
-            "summary": "开发高灵敏度生物传感器微纳加工工艺，实现快速、准确的生物分子检测。",
+            "category": "光学制造",
+            "technology": "纳米压印技术",
+            "industry": "光学制造业",
+            "technologyDetail": "纳米压印工艺开发、模具制备、批量化生产",
+            "tags": ["纳米压印", "光学制造", "高精度", "大面积"],
+            "summary": "采用创新纳米压印工艺，实现大面积、高均匀性的光学元件制造。",
             "cover": "1.jpg",
             "media": [
                 {
                     "type": "image",
                     "url": "case-20240311/1.jpg",
-                    "caption": "生物传感器结构图"
+                    "caption": "微纳加工技术"
                 },
                 {
                     "type": "image",
                     "url": "case-20240311/2.jpg",
-                    "caption": "检测性能数据"
+                    "caption": "微纳加工技术"
                 },
                 {
                     "type": "image",
                     "url": "case-20240311/3.jpg",
-                    "caption": "应用场景展示"
+                    "caption": "微纳加工技术"
                 }
             ]
         }
