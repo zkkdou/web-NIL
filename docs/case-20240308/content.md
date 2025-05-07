@@ -64,10 +64,19 @@
 
 《Optics Express》的一期特刊以 Pendry 为客座编辑，总结了当时的一些进展。其中包括加州大学圣地亚哥分校、爱荷华州立大学和亚利桑那大学在模拟 DNG 介质中的传播和散射方面取得的进展；加**州大学洛杉矶分校超级透镜技术的进步；波音公司对负折射实验的改进；**宾夕法尼亚州立大学报告了更多奇异现象，麻省理工学院，以及普渡大学（Purdue）；麻省理工学院-帝国理工学院团队展示了从电磁带隙 (EBG) 结构中获得 DNG 现象的方法。
 
-  
 2008年，在美国西海岸，Xiang Zhang (现 University of Hong Kong) 教授于 2004 年从加州大学洛杉矶分校转到加州大学伯克利分校，并成立了美国国家科学基金会纳米科学与工程中心 (NSEC)。他们展示并验证了许多双透镜和超透镜概念《**Superlenses to overcome the diffraction limit, Nature Mater. 7 (2008)》---引用量1000+**。他们制作了超晶格光学超材料的首批样品之一.他们展示了可见频率的等离子体激光器。
 
-## 实现效果
+![Xiang Zhang](/imgs/2025-05-07/ONocxxPPHVu0682c.png)
+
+在南方，阿拉巴马州红石兵工厂的斯卡洛拉和他的同事们考虑了 DNG 介质和亚波长聚焦的多个方面。《Negative refraction and subwavelength focusing in the visible range using transparent metallo-dielectric stacks, Opt. Express 15, 2 (2007) 》.
+
+关于早期第一波发现的一个重要方面是围绕负折射和完美透镜的争议。虽然这样的讨论可能是有益的，但它们往往会分散注意力，影响进度和努力程度。尽管如此，Dr. Browning 还是认识到了辩论的重要性。因为其中一个问题是负指数楔形的大小可能对原始实验产生的影响，她询问了波音幻影工程公司（现为波音研发部）团队构建了一个更大的版本，该版本已由几个独立实验室成功测试，并在2003 年，她还在美国国防高级研究计划局举办了一次研讨会批评者和支持者都被邀请来讨论超材料问题，例如负折射。第二次 DARPA MURI CFP 会议于 2004 年举行，主题是超材料。
+![美国国防部资料 Dr. Browning，目前担任国防研究与工程研究与技术 (DDR&E(RT)) 代理主任。](/imgs/2025-05-07/s6YHnwIv4RuZDwtR.png)
+
+
+
+
+## 微波领域
 
 该纳米压印工艺在实际生产中取得了优异的效果：
 
@@ -80,5 +89,6 @@
 
 本工艺的创新点在于开发了专有的模具处理技术和压印参数优化系统，实现了高精度、高效率的批量化生产。同时，通过智能化控制系统，确保了生产过程的稳定性和可重复性。 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTM0NzgyNSwtMTI2MTMwNjk3MF19
+eyJoaXN0b3J5IjpbLTEwNzk5MjYzNTEsLTEyNjEzMDY5NzBdfQ
+==
 -->
