@@ -4,17 +4,13 @@
 ---
 
 ### **1. 技术进程与历史事件（扩展版）**
+![输入图片说明](/imgs/2025-05-07/0Bp8uXbKcCrvUKiM.jpeg)
+
 
 #### **1.1 技术起源与早期发展**
 - **1970年代**：微接触印刷（Microcontact Printing）的雏形出现，为机械压印技术奠定基础。
 - **1995年里程碑**：美国普林斯顿大学Stephen Y. Chou团队在《Science》发表论文，首次提出“热压印”（Hot Embossing Lithography）。实验中使用硅模板在聚甲基丙烯酸甲酯（PMMA）上压印25 nm线宽结构，开创了纳米压印的先河。
 - **1999年UV-NIL突破**：美国得克萨斯大学奥斯汀分校的Grant Willson团队提出紫外光固化纳米压印（UV-NIL），利用透明石英模板和光固化树脂（如聚氨酯丙烯酸酯），大幅降低压印温度（室温操作）和压力，提升生产效率。
-![输入图片说明](/imgs/2025-05-07/o2Lj1jikOeFZv9lD.jpeg)
-
-![输入图片说明](/imgs/2025-05-07/OCYCfN5JgwVTfUxB.jpeg)
-
-
-![输入图片说明](/imgs/2025-05-07/Qg33IcjO6FHqnKiF.jpeg)
 #### **1.2 商业化与产业化进程**
 - **2003年**：Molecular Imprints公司（现Canon Nanotechnologies）推出首台商业化步进式纳米压印设备（Imprio 100），支持300 mm晶圆，对准精度达±50 nm，应用于半导体存储器制造。
 - **2007年**：日本东芝宣布将NIL用于NAND闪存生产，推动技术进入半导体工业视野。
@@ -146,6 +142,6 @@
 
 中国需加速核心设备（如高精度对准系统）和材料（如抗粘层试剂）的国产化，以在全球纳米制造竞赛中占据主动。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3OTE0NjU2ODksLTIwMjk2NTIyNDEsMT
-U1NTMzMzY3MSw2NDg2MjU5NTVdfQ==
+eyJoaXN0b3J5IjpbLTE5MDk0MTUwMTAsLTE3OTE0NjU2ODksLT
+IwMjk2NTIyNDEsMTU1NTMzMzY3MSw2NDg2MjU5NTVdfQ==
 -->
