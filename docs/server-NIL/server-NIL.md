@@ -4,8 +4,8 @@
 ---
 
 ### **1. 技术进程与历史事件（扩展版）**
-![输入图片说明](/imgs/2025-05-07/0Bp8uXbKcCrvUKiM.jpeg)
 
+  <img src="/docs/server-NIL/1.jpg" alt="-" style="display:block; margin:auto; width:100%;" />
 
 #### **1.1 技术起源与早期发展**
 - **1970年代**：微接触印刷（Microcontact Printing）的雏形出现，为机械压印技术奠定基础。
