@@ -28,9 +28,7 @@
 # **2. 纳米压印技术的分类**
 
 <img src="/docs/tech-NIL/2.png" alt="-" style="display:block; margin:auto; width:100%;" />
-![输入图片说明](/imgs/2025-05-07/5tZuqaSXjyCsgDWZ.png)
 
-![输入图片说明](/imgs/2025-05-07/X50xKXEPJT7nduQR.png)
 ### 热压印与紫外固化的区别与历史
 
 #### 热压印（Hot Embossing Lithography）
