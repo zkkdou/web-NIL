@@ -87,6 +87,7 @@
     <img src="../docs/case-20240308/8.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
     <img src="../docs/case-20240308/9.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
 </div>
+
 > ( A ) 具有精确材料特性的斗篷模拟， 
 > ( B ) 具有降低材料特性的斗篷模拟，
 >  ( C ) 裸露导电圆柱的实验测量 
@@ -94,6 +95,6 @@
 
 与此同时，与之相关的另一个极端概念——完美吸收体，由波士顿学院 - 杜克大学合作团队提出。这一概念引发了众多科研论文的涌现，学者们纷纷探讨其多种设计方案和潜在应用领域。在基于TO或宾夕法尼亚大学（UPenn）散射抵消/透明方法实现隐身的研究中，需要超材料具备极端的材料特性，如接近零或接近无穷大的参数。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5NzM0NDk2NjksMTk4MDI0NDg4MywtMT
-A3OTkyNjM1MSwtMTI2MTMwNjk3MF19
+eyJoaXN0b3J5IjpbNTQ3NTczMTQ2LC0xOTczNDQ5NjY5LDE5OD
+AyNDQ4ODMsLTEwNzk5MjYzNTEsLTEyNjEzMDY5NzBdfQ==
 -->
