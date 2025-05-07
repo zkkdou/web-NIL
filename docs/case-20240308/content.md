@@ -26,12 +26,18 @@
     
 -   80 - 90年代，人造手性材料因潜在的微波雷达吸收应用再次引起关注，其在雷达技术领域的潜在价值逐渐被认识。
 
-## 应用场景
+## 超材料概念的引入与早期发展
 
-- 衍射光学元件
-- 微透镜阵列
-- AR/VR 光学器件
-- 光通信元件
+一、研讨会的筹备与邀请（1999年7月 - 9月）
+
+-   1999年7月，德州大学奥斯汀分校的Rodger M. Walser教授邀请亚利桑那大学的Ziolkowski教授参加11月的DARPA研讨会，此次研讨会仅限受邀者参加，为超材料研究提供了交流与合作的重要平台。
+
+-   Ziolkowski教授因其在人造原子/分子研究及其在雷达吸波材料（RAMs）和智能皮肤方面的应用成果而受到邀请，其研究成果已涉及有限差分时域（FDTD）模拟中的吸收边界条件（ABCs），是当时完美匹配层（PML）ABCs的“物理”实现形式。
+
+![Rodger M. Walser教授](/imgs/2025-05-07/9rgUKR4oSKKXOQ8u.png)
+
+![Richard W. Ziolkowski -美国亚利桑那州图森市亚利桑那大学电气与计算机工程系](/imgs/2025-05-07/cnoDoVt3w97kxisH.png)![图片](https://mmbiz.qpic.cn/sz_mmbiz_jpg/6YnVLgWh2vwlBibLsYUw6J0UBqzGxQGgCuIRYLEsVXHJvfNbziawichqJdjJODpukKNxEnseoE6HPbaFOSU58Hibyg/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1)
+
 
 ## 工艺优势
 
@@ -53,5 +59,6 @@
 
 本工艺的创新点在于开发了专有的模具处理技术和压印参数优化系统，实现了高精度、高效率的批量化生产。同时，通过智能化控制系统，确保了生产过程的稳定性和可重复性。 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM4MTAyNDM2OCwtMTI2MTMwNjk3MF19
+eyJoaXN0b3J5IjpbLTE5NTg2ODMwMTgsLTEyNjEzMDY5NzBdfQ
+==
 -->
