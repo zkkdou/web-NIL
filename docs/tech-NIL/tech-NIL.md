@@ -52,6 +52,7 @@
 
 ---
 板对板工艺
+来源：用多层掩模去除纳米压印工艺中的残胶-
 ![输入图片说明](/imgs/2025-05-08/IMftsL2eErJCRqPr.png)
 
 
@@ -183,7 +184,7 @@
 
 中国需加速核心设备（如高精度对准系统）和材料（如抗粘层试剂）的国产化，以在全球纳米制造竞赛中占据主动。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg5NDc4ODI4NCwtNTI3NTk1Njk5LC0zNj
-Q1NzY0OTksMTEwNzQ2MDM4MCwtMjAyOTY1MjI0MSwxNTU1MzMz
-NjcxLDY0ODYyNTk1NV19
+eyJoaXN0b3J5IjpbNjA0NDk4MTUzLC01Mjc1OTU2OTksLTM2ND
+U3NjQ5OSwxMTA3NDYwMzgwLC0yMDI5NjUyMjQxLDE1NTUzMzM2
+NzEsNjQ4NjI1OTU1XX0=
 -->
