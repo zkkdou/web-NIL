@@ -42,25 +42,29 @@
 | **对比项** | **热压印** | **紫外固化** |
 |------------------|------------------|------------------|
 | **固化方式** | 机械加热 | 紫外光照射 |
-| **适用材料** | 热塑性聚合物（PMMA） | 光敏聚合物（SU-8） |
+| **适用材料** | 热塑性聚合物（PMMA） | 光敏聚合物 |
 | **温度要求** | 高温（100°C 以上） | 常温固化 |
 | **固化速度** | 需要冷却，较慢 | 几秒到几十秒，较快 |
-| **适用场景** | 半导体、光学器件 | 生物芯片、柔性电子 |
 | **环保性** | 可能有残胶 | 无污染 |
 
 ---
+
 板对板工艺
 
-> 来源：用多层掩模去除纳米压印工艺中的残胶-陈鑫
+> 来源：https://opticsjournal.net/Articles/OJ386b1436f99bad5e/FigureTable
 
-![输入图片说明](/imgs/2025-05-08/IMftsL2eErJCRqPr.png)
+<img src="/docs/tech-NIL/6.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
 
+---
 
 卷对卷工艺
-![输入图片说明](/imgs/2025-05-08/384ADNhfWHxDSE1l.png)
-卷对板工艺
+<img src="/docs/tech-NIL/4.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
 
-![输入图片说明](/imgs/2025-05-08/7BCUO5p5a7JvM6kw.png)
+---
+
+卷对板工艺
+<img src="/docs/tech-NIL/5.jpg" alt="-" style="display:block; margin:auto; width:50%;" />
+
 
 
 
