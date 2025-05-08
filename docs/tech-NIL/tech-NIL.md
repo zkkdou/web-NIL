@@ -49,9 +49,18 @@
 | **环保性** | 可能有残胶 | 无污染 |
 
 ---
+板对板工艺
+
+> 来源：用多层掩模去除纳米压印工艺中的残胶-陈鑫
+
+![输入图片说明](/imgs/2025-05-08/IMftsL2eErJCRqPr.png)
 
 
+卷对卷工艺
+![输入图片说明](/imgs/2025-05-08/384ADNhfWHxDSE1l.png)
+卷对板工艺
 
+![输入图片说明](/imgs/2025-05-08/7BCUO5p5a7JvM6kw.png)
 
 
 
@@ -175,7 +184,7 @@
 
 中国需加速核心设备（如高精度对准系统）和材料（如抗粘层试剂）的国产化，以在全球纳米制造竞赛中占据主动。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUyNzU5NTY5OSwtMzY0NTc2NDk5LDExMD
-c0NjAzODAsLTIwMjk2NTIyNDEsMTU1NTMzMzY3MSw2NDg2MjU5
-NTVdfQ==
+eyJoaXN0b3J5IjpbLTQwMjI1ODkwMiwtNTI3NTk1Njk5LC0zNj
+Q1NzY0OTksMTEwNzQ2MDM4MCwtMjAyOTY1MjI0MSwxNTU1MzMz
+NjcxLDY0ODYyNTk1NV19
 -->
