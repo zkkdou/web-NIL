@@ -100,6 +100,12 @@
 - **高折射率树脂**：德国默克公司开发的“NIL-100”系列光刻胶，折射率>1.8，适用于光子晶体和超表面透镜。
 - **柔性衬底压印**：韩国三星开发可拉伸聚二甲基硅氧烷（PDMS）衬底，用于柔性OLED的微透镜阵列。
 
+
+**常见问题**
+剪切阻力会导致各种缺陷，包括未填充的特征（**a**）和（**c**），以及压力下的变形特征（**b**）
+![输入图片说明](/imgs/2025-05-09/wDPPIhqZk8BXr4bK.png)
+
+
 ---
 
 ### **3. 现有技术能力细节（数据驱动）**
@@ -199,7 +205,7 @@
 
 中国需加速核心设备（如高精度对准系统）和材料（如抗粘层试剂）的国产化，以在全球纳米制造竞赛中占据主动。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQwMjI1ODkwMiwtNTI3NTk1Njk5LC0zNj
-Q1NzY0OTksMTEwNzQ2MDM4MCwtMjAyOTY1MjI0MSwxNTU1MzMz
-NjcxLDY0ODYyNTk1NV19
+eyJoaXN0b3J5IjpbMTc1Nzc2OTYsLTQwMjI1ODkwMiwtNTI3NT
+k1Njk5LC0zNjQ1NzY0OTksMTEwNzQ2MDM4MCwtMjAyOTY1MjI0
+MSwxNTU1MzMzNjcxLDY0ODYyNTk1NV19
 -->
