@@ -739,7 +739,7 @@
                 // 处理文件数据，添加下载URL
                 allFiles = files.map(file => ({
                     ...file,
-                    downloadUrl: `../knowledgehub/${file.path}`
+                    downloadUrl: `../knowledgehub/${file.path}/${file.name}`
                 }));
                 
                 filteredFiles = [...allFiles];
