@@ -585,8 +585,298 @@ httpServer.listen(port, '0.0.0.0', () => {
 // 如果有SSL证书，创建HTTPS服务器
 if (httpsOptions.key && httpsOptions.cert) {
     const httpsServer = https.createServer(httpsOptions, (req, res) => {
-        // 复用HTTP服务器的请求处理逻辑
-        server.emit('request', req, res);
+        // 直接处理请求，复用HTTP服务器的逻辑
+        console.log(`${new Date().toLocaleString()} - ${req.method} ${req.url}`);
+        
+        // 设置 CORS 头
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        res.setHeader('Access-Control-Max-Age', '86400');
+
+        // 处理 OPTIONS 请求
+        if (req.method === 'OPTIONS') {
+            res.writeHead(200);
+            res.end();
+            return;
+        }
+
+        // 处理文件上传API
+        if (req.url === '/api/upload' && req.method === 'POST') {
+            handleFileUpload(req, res);
+            return;
+        }
+
+        // 处理文件删除API
+        if (req.method === 'POST' && req.url === '/api/delete') {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString();
+            });
+            req.on('end', () => {
+                try {
+                    const data = JSON.parse(body);
+                    const { fileId, password } = data;
+                    
+                    // 验证密码
+                    if (password !== 'fjfjfjfj') {
+                        res.writeHead(401, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '密码错误'
+                        }));
+                        return;
+                    }
+                    
+                    // 扫描文件列表找到要删除的文件
+                    const files = scanKnowledgeHub();
+                    const fileToDelete = files.find(f => f.id === fileId);
+                    
+                    if (!fileToDelete) {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '文件不存在'
+                        }));
+                        return;
+                    }
+                    
+                    // 构建文件路径
+                    let filePath;
+                    if (fileToDelete.path === '根目录') {
+                        filePath = path.join(__dirname, 'knowledgehub', fileToDelete.name);
+                    } else {
+                        filePath = path.join(__dirname, 'knowledgehub', fileToDelete.path, fileToDelete.name);
+                    }
+                    
+                    // 检查文件是否存在
+                    if (!fs.existsSync(filePath)) {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '文件不存在'
+                        }));
+                        return;
+                    }
+                    
+                    // 删除文件
+                    fs.unlinkSync(filePath);
+                    
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: '文件删除成功'
+                    }));
+                    
+                } catch (error) {
+                    console.error('删除文件时出错:', error);
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '服务器内部错误'
+                    }));
+                }
+            });
+            return;
+        }
+
+        // 处理知识库API请求
+        if (req.url.startsWith('/api/files') && !req.url.startsWith('/api/delete')) {
+            handleFilesAPI(req, res);
+            return;
+        }
+
+        // 处理 POST 请求 - 联系表单
+        if (req.method === 'POST' && req.url === '/') {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString();
+            });
+            
+            req.on('end', () => {
+                try {
+                    const formData = querystring.parse(body);
+                    
+                    // 验证必填字段
+                    if (!formData.name || !formData.phone) {
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '姓名和电话是必填项'
+                        }));
+                        return;
+                    }
+                    
+                    // 准备CSV数据
+                    const timestamp = new Date().toISOString();
+                    const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
+                    
+                    // 确保数据目录存在
+                    const dataDir = path.join(recordDir, 'data');
+                    if (!fs.existsSync(dataDir)) {
+                        fs.mkdirSync(dataDir, { recursive: true });
+                    }
+                    
+                    // 写入CSV文件
+                    const csvPath = path.join(dataDir, 'contact_forms.csv');
+                    
+                    // 如果文件不存在，创建文件并写入表头
+                    if (!fs.existsSync(csvPath)) {
+                        const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
+                        fs.writeFileSync(csvPath, header);
+                    }
+                    
+                    // 追加数据
+                    fs.appendFileSync(csvPath, csvLine);
+                    
+                    // 发送成功响应
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: '数据已保存'
+                    }));
+                    
+                } catch (error) {
+                    console.error('处理POST请求时出错:', error);
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '服务器内部错误'
+                    }));
+                }
+            });
+            return;
+        }
+
+        // 处理静态文件请求
+        if (req.method === 'GET') {
+            let filePath = url.parse(req.url).pathname;
+            
+            // 默认首页
+            if (filePath === '/') {
+                filePath = '/index.html';
+            }
+            
+            // 处理knowledgehub文件夹的下载
+            if (filePath.startsWith('/knowledgehub/')) {
+                const fullPath = path.join(__dirname, filePath);
+                
+                if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+                    const ext = path.extname(fullPath).toLowerCase();
+                    const fileName = path.basename(fullPath);
+                    const stat = fs.statSync(fullPath);
+                    
+                    // 解析URL参数
+                    const urlObj = url.parse(req.url, true);
+                    const isDownload = urlObj.query.download === 'true';
+                    
+                    // 设置正确的MIME类型和下载头
+                    const mimeTypes = {
+                        '.pdf': 'application/pdf',
+                        '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        '.doc': 'application/msword',
+                        '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        '.xls': 'application/vnd.ms-excel',
+                        '.txt': 'text/plain',
+                        '.zip': 'application/zip',
+                        '.rar': 'application/x-rar-compressed',
+                        '.jpg': 'image/jpeg',
+                        '.jpeg': 'image/jpeg',
+                        '.png': 'image/png',
+                        '.gif': 'image/gif',
+                        '.mp4': 'video/mp4',
+                        '.mp3': 'audio/mpeg'
+                    };
+                    
+                    const contentType = mimeTypes[ext] || 'application/octet-stream';
+                    
+                    // 设置响应头
+                    const headers = {
+                        'Content-Type': contentType,
+                        'Content-Length': stat.size,
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'X-Content-Type-Options': 'nosniff',
+                        'X-Frame-Options': 'DENY',
+                        'X-XSS-Protection': '1; mode=block',
+                        'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+                    };
+                    
+                    // 如果指定了download参数或者是特定文件类型，强制下载
+                    if (isDownload || ['.pdf', '.docx', '.doc', '.xlsx', '.xls', '.zip', '.rar', '.txt', '.jpg', '.jpeg', '.png', '.gif', '.mp4', '.mp3'].includes(ext)) {
+                        headers['Content-Disposition'] = `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+                    } else {
+                        headers['Content-Disposition'] = `inline; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+                    }
+                    
+                    res.writeHead(200, headers);
+                    
+                    const fileStream = fs.createReadStream(fullPath);
+                    fileStream.pipe(res);
+                    
+                    fileStream.on('error', (error) => {
+                        console.error('文件读取错误:', error);
+                        if (!res.headersSent) {
+                            res.writeHead(500, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({ error: '文件读取失败' }));
+                        }
+                    });
+                    
+                    return;
+                }
+            }
+            
+            // 其他静态文件处理
+            const fullPath = path.join(__dirname, filePath);
+            
+            if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+                const ext = path.extname(fullPath);
+                const mimeTypes = {
+                    '.html': 'text/html',
+                    '.css': 'text/css',
+                    '.js': 'application/javascript',
+                    '.json': 'application/json',
+                    '.png': 'image/png',
+                    '.jpg': 'image/jpeg',
+                    '.jpeg': 'image/jpeg',
+                    '.gif': 'image/gif',
+                    '.svg': 'image/svg+xml',
+                    '.ico': 'image/x-icon',
+                    '.pdf': 'application/pdf',
+                    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '.doc': 'application/msword',
+                    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    '.xls': 'application/vnd.ms-excel',
+                    '.txt': 'text/plain',
+                    '.zip': 'application/zip',
+                    '.rar': 'application/x-rar-compressed'
+                };
+                
+                const contentType = mimeTypes[ext] || 'application/octet-stream';
+                
+                res.writeHead(200, {
+                    'Content-Type': contentType,
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type'
+                });
+                
+                const fileStream = fs.createReadStream(fullPath);
+                fileStream.pipe(res);
+            } else {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('File not found');
+            }
+            return;
+        }
+        
+        // 不支持的请求方法或路径
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            success: false,
+            error: '不支持的请求方法或路径'
+        }));
     });
     httpsServer.listen(httpsPort, '0.0.0.0', () => {
         console.log(`HTTPS服务器启动成功，监听端口 ${httpsPort}...`);
