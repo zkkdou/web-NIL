@@ -1,267 +1,119 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const url = require('url');
 const querystring = require('querystring');
 const crypto = require('crypto');
 
-// 生成UUID的函数
+// 生成UUID
 function generateUUID() {
-    return crypto.randomUUID ? crypto.randomUUID() : 
-           ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-               (c ^ crypto.randomBytes(1)[0] & 15 >> c / 4).toString(16)
-           );
+    return crypto.randomUUID();
 }
 
-// 确保 record 目录存在
-const recordDir = path.join(__dirname, 'record');
-if (!fs.existsSync(recordDir)) {
-    fs.mkdirSync(recordDir);
-}
-
-// 确保知识库目录存在
-const knowledgeBaseDir = path.join(__dirname, 'knowledge-base');
-if (!fs.existsSync(knowledgeBaseDir)) {
-    fs.mkdirSync(knowledgeBaseDir);
-}
-
-// 文件信息存储
-const filesInfoPath = path.join(knowledgeBaseDir, 'files-info.json');
-let filesInfo = [];
-
-// 加载文件信息
-function loadFilesInfo() {
-    try {
-        if (fs.existsSync(filesInfoPath)) {
-            filesInfo = JSON.parse(fs.readFileSync(filesInfoPath, 'utf8'));
-        }
-    } catch (error) {
-        console.error('Error loading files info:', error);
-        filesInfo = [];
-    }
-}
-
-// 保存文件信息
-function saveFilesInfo() {
-    try {
-        fs.writeFileSync(filesInfoPath, JSON.stringify(filesInfo, null, 2));
-    } catch (error) {
-        console.error('Error saving files info:', error);
-    }
-}
-
-// 初始化加载文件信息
-loadFilesInfo();
-
-const server = http.createServer((req, res) => {
-    // 添加请求日志
-    console.log(`${new Date().toLocaleString()} - ${req.method} ${req.url}`);
+// 扫描knowledgehub文件夹
+function scanKnowledgeHub() {
+    const knowledgeHubPath = path.join(__dirname, 'knowledgehub');
+    const files = [];
     
-    // 设置 CORS 头
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-    res.setHeader('Access-Control-Max-Age', '86400'); // 24小时
-
-    // 处理 OPTIONS 请求
-    if (req.method === 'OPTIONS') {
-        console.log('处理 OPTIONS 请求');
-        res.writeHead(200);
-        res.end();
-        return;
+    if (!fs.existsSync(knowledgeHubPath)) {
+        return files;
     }
-
-    // 处理知识库API请求
-    if (req.url.startsWith('/api/files')) {
-        handleFilesAPI(req, res);
-        return;
+    
+    function scanDirectory(dirPath, relativePath = '') {
+        const items = fs.readdirSync(dirPath);
+        
+        for (const item of items) {
+            const fullPath = path.join(dirPath, item);
+            const stat = fs.statSync(fullPath);
+            
+            if (stat.isDirectory()) {
+                // 递归扫描子目录
+                const newRelativePath = relativePath ? path.join(relativePath, item) : item;
+                scanDirectory(fullPath, newRelativePath);
+            } else if (stat.isFile()) {
+                // 添加文件信息
+                const fileInfo = {
+                    id: generateUUID(),
+                    name: item,
+                    fileName: item,
+                    size: stat.size,
+                    uploadTime: stat.mtime.toISOString(),
+                    type: path.extname(item).toLowerCase(),
+                    path: relativePath ? path.join(relativePath, item) : item,
+                    fullPath: fullPath
+                };
+                files.push(fileInfo);
+            }
+        }
     }
+    
+    scanDirectory(knowledgeHubPath);
+    return files;
+}
 
-    // 处理 GET 请求 - 提供静态文件
+// 处理文件API
+function handleFilesAPI(req, res) {
+    const parsedUrl = url.parse(req.url, true);
+    const pathname = parsedUrl.pathname;
+    
     if (req.method === 'GET') {
-        let filePath = req.url;
-        
-        // 默认页面
-        if (filePath === '/' || filePath === '/index.html') {
-            filePath = '/index.html';
+        if (pathname === '/api/files') {
+            // 获取文件列表
+            try {
+                const files = scanKnowledgeHub();
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(files));
+            } catch (error) {
+                console.error('Error scanning knowledge hub:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Failed to scan files' }));
+            }
+            return;
         }
         
-        // 构建完整的文件路径
-        const fullPath = path.join(__dirname, filePath);
-        
-        // 检查文件是否存在
-        if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-            const ext = path.extname(fullPath).toLowerCase();
+        // 下载文件
+        const downloadMatch = pathname.match(/^\/api\/files\/([^\/]+)\/download$/);
+        if (downloadMatch) {
+            const fileId = downloadMatch[1];
+            const files = scanKnowledgeHub();
+            const file = files.find(f => f.id === fileId);
             
-            // 设置正确的 Content-Type
-            const mimeTypes = {
-                '.html': 'text/html',
-                '.css': 'text/css',
-                '.js': 'application/javascript',
-                '.json': 'application/json',
-                '.png': 'image/png',
-                '.jpg': 'image/jpeg',
-                '.jpeg': 'image/jpeg',
-                '.gif': 'image/gif',
-                '.svg': 'image/svg+xml',
-                '.ico': 'image/x-icon',
-                '.woff': 'font/woff',
-                '.woff2': 'font/woff2',
-                '.ttf': 'font/ttf',
-                '.eot': 'application/vnd.ms-fontobject'
-            };
-            
-            const contentType = mimeTypes[ext] || 'application/octet-stream';
-            res.setHeader('Content-Type', contentType);
-            
-            // 读取并发送文件
-            const fileStream = fs.createReadStream(fullPath);
-            fileStream.pipe(res);
-            
-            fileStream.on('error', (error) => {
-                console.error('文件读取错误:', error);
-                res.writeHead(500);
-                res.end('服务器内部错误');
-            });
-        } else {
-            // 文件不存在，返回404
-            res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-            res.end(`
-                <html>
-                <head><title>404 - 页面未找到</title></head>
-                <body>
-                    <h1>404 - 页面未找到</h1>
-                    <p>请求的文件 ${filePath} 不存在</p>
-                    <a href="/">返回首页</a>
-                </body>
-                </html>
-            `);
-        }
-        return;
-    }
-
-    // 处理 POST 请求
-    if (req.method === 'POST') {
-        console.log('收到 POST 请求');
-        
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
-        });
-        
-        req.on('end', () => {
-            console.log('POST 请求体:', body);
+            if (!file) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'File not found' }));
+                return;
+            }
             
             try {
-                // 解析表单数据
-                const formData = querystring.parse(body);
-                console.log('解析的表单数据:', formData);
-                
-                // 验证必填字段
-                if (!formData.name || !formData.phone) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                        success: false,
-                        error: '姓名和电话是必填项'
-                    }));
+                const filePath = path.join(__dirname, 'knowledgehub', file.path);
+                if (!fs.existsSync(filePath)) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'File not found' }));
                     return;
                 }
                 
-                // 准备CSV数据
-                const timestamp = new Date().toISOString();
-                const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
+                const stat = fs.statSync(filePath);
+                const fileStream = fs.createReadStream(filePath);
                 
-                // 确保数据目录存在
-                const dataDir = path.join(recordDir, 'data');
-                if (!fs.existsSync(dataDir)) {
-                    fs.mkdirSync(dataDir, { recursive: true });
-                }
+                res.writeHead(200, {
+                    'Content-Type': 'application/octet-stream',
+                    'Content-Disposition': `attachment; filename="${encodeURIComponent(file.name)}"`,
+                    'Content-Length': stat.size
+                });
                 
-                // 写入CSV文件
-                const csvPath = path.join(dataDir, 'contact_forms.csv');
-                
-                // 如果文件不存在，创建文件并写入表头
-                if (!fs.existsSync(csvPath)) {
-                    const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
-                    fs.writeFileSync(csvPath, header);
-                }
-                
-                // 追加数据
-                fs.appendFileSync(csvPath, csvLine);
-                console.log('数据已保存到:', csvPath);
-                
-                // 发送成功响应
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    success: true,
-                    message: '数据已保存'
-                }));
-                
+                fileStream.pipe(res);
             } catch (error) {
-                console.error('处理POST请求时出错:', error);
+                console.error('Error downloading file:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    success: false,
-                    error: '服务器内部错误'
-                }));
+                res.end(JSON.stringify({ error: 'Failed to download file' }));
             }
-        });
-        return;
+            return;
+        }
     }
     
-    // 不支持的请求方法
+    // 不支持的请求
     res.writeHead(405, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-        success: false,
-        error: '不支持的请求方法'
-    }));
-});
-
-// 处理知识库文件API
-function handleFilesAPI(req, res) {
-    const url = req.url;
-    
-    // GET /api/files - 获取文件列表
-    if (req.method === 'GET' && url === '/api/files') {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(filesInfo));
-        return;
-    }
-    
-    // GET /api/files/:id/download - 下载文件
-    if (req.method === 'GET' && url.match(/^\/api\/files\/(.+)\/download$/)) {
-        const fileId = url.match(/^\/api\/files\/(.+)\/download$/)[1];
-        const fileInfo = filesInfo.find(f => f.id === fileId);
-        
-        if (!fileInfo) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: '文件不存在' }));
-            return;
-        }
-        
-        const filePath = path.join(knowledgeBaseDir, fileInfo.fileName);
-        if (!fs.existsSync(filePath)) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: '文件不存在' }));
-            return;
-        }
-        
-        res.setHeader('Content-Type', 'application/octet-stream');
-        res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileInfo.name)}"`);
-        
-        const fileStream = fs.createReadStream(filePath);
-        fileStream.pipe(res);
-        return;
-    }
-    
-    // POST /api/files/upload - 上传文件
-    if (req.method === 'POST' && url === '/api/files/upload') {
-        handleFileUpload(req, res);
-        return;
-    }
-    
-    // 其他API请求
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'API端点不存在' }));
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
 }
 
 // 处理文件上传
@@ -367,23 +219,192 @@ function parseMultipartData(buffer, boundary) {
     return parts;
 }
 
-const PORT = process.env.PORT || 8000;
+// 确保 record 目录存在
+const recordDir = path.join(__dirname, 'record');
+if (!fs.existsSync(recordDir)) {
+    fs.mkdirSync(recordDir);
+}
 
-server.listen(PORT, '0.0.0.0', () => {
-    console.log(`服务器启动成功，监听端口 ${PORT}...`);
-    console.log('按 Ctrl+C 停止服务器');
-    console.log(`访问地址: http://localhost:${PORT}`);
-    console.log(`知识库地址: http://localhost:${PORT}/pages/knowledge-base.html`);
+const server = http.createServer((req, res) => {
+    // 添加请求日志
+    console.log(`${new Date().toLocaleString()} - ${req.method} ${req.url}`);
+    
+    // 设置 CORS 头
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Max-Age', '86400'); // 24小时
+
+    // 处理 OPTIONS 请求
+    if (req.method === 'OPTIONS') {
+        console.log('处理 OPTIONS 请求');
+        res.writeHead(200);
+        res.end();
+        return;
+    }
+
+    // 处理知识库API请求
+    if (req.url.startsWith('/api/files')) {
+        handleFilesAPI(req, res);
+        return;
+    }
+
+    // 处理 GET 请求 - 提供静态文件
+    if (req.method === 'GET') {
+        let filePath = req.url;
+        
+        // 默认页面
+        if (filePath === '/' || filePath === '/index.html') {
+            filePath = '/index.html';
+        }
+        
+        // 构建完整的文件路径
+        const fullPath = path.join(__dirname, filePath);
+        
+        // 检查文件是否存在
+        if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+            const ext = path.extname(fullPath).toLowerCase();
+            
+            // 设置正确的 Content-Type
+            const mimeTypes = {
+                '.html': 'text/html',
+                '.css': 'text/css',
+                '.js': 'application/javascript',
+                '.json': 'application/json',
+                '.png': 'image/png',
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.gif': 'image/gif',
+                '.svg': 'image/svg+xml',
+                '.ico': 'image/x-icon',
+                '.woff': 'font/woff',
+                '.woff2': 'font/woff2',
+                '.ttf': 'font/ttf',
+                '.eot': 'application/vnd.ms-fontobject'
+            };
+            
+            const contentType = mimeTypes[ext] || 'application/octet-stream';
+            res.setHeader('Content-Type', contentType);
+            
+            // 读取并发送文件
+            const fileStream = fs.createReadStream(fullPath);
+            fileStream.pipe(res);
+            
+            fileStream.on('error', (error) => {
+                console.error('文件读取错误:', error);
+                res.writeHead(500);
+                res.end('服务器内部错误');
+            });
+        } else {
+            // 文件不存在，返回404
+            res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end(`
+                <html>
+                <head><title>404 - 页面未找到</title></head>
+                <body>
+                    <h1>404 - 页面未找到</h1>
+                    <p>请求的文件 ${filePath} 不存在</p>
+                    <a href="/">返回首页</a>
+                </body>
+                </html>
+            `);
+        }
+        return;
+    }
+    
+    // 处理 POST 请求 - 联系表单
+    if (req.method === 'POST') {
+        console.log('收到 POST 请求');
+        
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        
+        req.on('end', () => {
+            console.log('POST 请求体:', body);
+            
+            try {
+                // 解析表单数据
+                const formData = querystring.parse(body);
+                console.log('解析的表单数据:', formData);
+                
+                // 验证必填字段
+                if (!formData.name || !formData.phone) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '姓名和电话是必填项'
+                    }));
+                    return;
+                }
+                
+                // 准备CSV数据
+                const timestamp = new Date().toISOString();
+                const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
+                
+                // 确保数据目录存在
+                const dataDir = path.join(recordDir, 'data');
+                if (!fs.existsSync(dataDir)) {
+                    fs.mkdirSync(dataDir, { recursive: true });
+                }
+                
+                // 写入CSV文件
+                const csvPath = path.join(dataDir, 'contact_forms.csv');
+                
+                // 如果文件不存在，创建文件并写入表头
+                if (!fs.existsSync(csvPath)) {
+                    const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
+                    fs.writeFileSync(csvPath, header);
+                }
+                
+                // 追加数据
+                fs.appendFileSync(csvPath, csvLine);
+                console.log('数据已保存到:', csvPath);
+                
+                // 发送成功响应
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    message: '数据已保存'
+                }));
+                
+            } catch (error) {
+                console.error('处理POST请求时出错:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    error: '服务器内部错误'
+                }));
+            }
+        });
+        return;
+    }
+    
+    // 不支持的请求方法
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+        success: false,
+        error: '不支持的请求方法'
+    }));
 });
 
+// 错误处理
 server.on('error', (error) => {
     if (error.code === 'EADDRINUSE') {
-        console.error(`端口 ${PORT} 已被占用，请检查是否有其他服务正在运行`);
-        console.error('您可以尝试以下命令停止占用端口的进程：');
-        console.error(`  pkill -f "node.*${PORT}"`);
-        console.error(`  或者使用其他端口: PORT=${PORT + 1} node 06-server.js`);
+        console.log('端口 8000 已被占用，请检查是否有其他服务正在运行');
+        console.log('您可以尝试以下命令停止占用端口的进程：');
+        console.log('  pkill -f "node.*8000"');
+        console.log('  或者使用其他端口: PORT=8001 node 06-server.js');
     } else {
-        console.error('服务器启动失败:', error);
+        console.error('服务器错误:', error);
     }
-    process.exit(1);
+});
+
+// 启动服务器
+const port = process.env.PORT || 8000;
+server.listen(port, '0.0.0.0', () => {
+    console.log(`服务器启动成功，监听端口 ${port}...`);
+    console.log('按 Ctrl+C 停止服务器');
+    console.log(`访问地址: http://localhost:${port}`);
 }); 

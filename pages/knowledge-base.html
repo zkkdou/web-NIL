@@ -16,22 +16,6 @@
     
     <style>
         .knowledge-page { padding-top: 100px !important; }
-        .upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-        .upload-area:hover {
-            border-color: #007bff;
-            background: #e3f2fd;
-        }
-        .upload-area.dragover {
-            border-color: #007bff;
-            background: #e3f2fd;
-        }
         .file-item {
             background: white;
             border: 1px solid #e9ecef;
@@ -55,30 +39,25 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
-        .month-section {
+        .folder-section {
             background: white;
             border-radius: 10px;
             padding: 1.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
-        .month-header {
+        .folder-header {
             border-bottom: 2px solid #007bff;
             padding-bottom: 0.5rem;
             margin-bottom: 1rem;
         }
-        .progress-bar {
-            height: 4px;
-            background: #e9ecef;
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 0.5rem;
+        .btn-copy {
+            margin-left: 0.5rem;
         }
-        .progress-fill {
-            height: 100%;
-            background: #007bff;
-            width: 0%;
-            transition: width 0.3s ease;
+        .copy-success {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
         }
     </style>
 </head>
@@ -140,7 +119,7 @@
             <div class="row">
                 <div class="col-12">
                     <h1 class="mb-4 text-center">知识库</h1>
-                    <p class="text-muted text-center mb-5">上传、管理和下载技术文档、资料和文件</p>
+                    <p class="text-muted text-center mb-5">浏览和下载技术文档、资料和文件</p>
                 </div>
             </div>
 
@@ -154,8 +133,8 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                            <i class="bi bi-cloud-upload me-2"></i>上传文件
+                        <button class="btn btn-outline-secondary w-100" onclick="refreshFileList()">
+                            <i class="bi bi-arrow-clockwise me-2"></i>刷新列表
                         </button>
                     </div>
                 </div>
@@ -171,55 +150,17 @@
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">加载中...</span>
                 </div>
-                <p class="mt-3 text-muted">正在加载文件列表...</p>
+                <p class="mt-3 text-muted">正在扫描文件...</p>
             </div>
 
             <!-- 无文件提示 -->
             <div id="noFilesMessage" class="text-center py-5" style="display: none;">
                 <i class="bi bi-folder-x text-muted" style="font-size: 3rem;"></i>
                 <h4 class="mt-3 text-muted">暂无文件</h4>
-                <p class="text-muted">点击上方"上传文件"按钮开始上传</p>
+                <p class="text-muted">请检查 knowledgehub 文件夹是否包含文件</p>
             </div>
         </div>
     </main>
-
-    <!-- 上传文件模态框 -->
-    <div class="modal fade" id="uploadModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">上传文件</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="upload-area" id="uploadArea">
-                        <i class="bi bi-cloud-upload text-primary" style="font-size: 3rem;"></i>
-                        <h5 class="mt-3">拖拽文件到此处或点击选择文件</h5>
-                        <p class="text-muted">支持所有文件格式</p>
-                        <input type="file" id="fileInput" multiple style="display: none;">
-                        <button class="btn btn-outline-primary mt-3" onclick="document.getElementById('fileInput').click()">
-                            选择文件
-                        </button>
-                    </div>
-                    
-                    <div id="uploadProgress" style="display: none;">
-                        <h6 class="mt-3">上传进度</h6>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
-                        <p class="text-muted mt-2" id="progressText">准备上传...</p>
-                    </div>
-
-                    <div id="uploadedFiles" class="mt-3">
-                        <!-- 已上传文件列表 -->
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- 页脚 -->
     <footer class="bg-dark text-light py-4 mt-5">
@@ -296,16 +237,6 @@
             document.getElementById('searchInput').addEventListener('input', function() {
                 filterFiles(this.value);
             });
-
-            // 文件上传
-            document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-            
-            // 拖拽上传
-            const uploadArea = document.getElementById('uploadArea');
-            uploadArea.addEventListener('dragover', handleDragOver);
-            uploadArea.addEventListener('dragleave', handleDragLeave);
-            uploadArea.addEventListener('drop', handleDrop);
-            uploadArea.addEventListener('click', () => document.getElementById('fileInput').click());
         }
 
         // 加载文件列表
@@ -325,6 +256,14 @@
             }
         }
 
+        // 刷新文件列表
+        function refreshFileList() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('noFilesMessage').style.display = 'none';
+            document.getElementById('fileList').innerHTML = '';
+            loadFileList();
+        }
+
         // 显示文件列表
         function displayFiles() {
             const fileList = document.getElementById('fileList');
@@ -341,15 +280,15 @@
 
             noFilesMessage.style.display = 'none';
 
-            // 按月份分组
-            const filesByMonth = groupFilesByMonth(filteredFiles);
+            // 按文件夹分组
+            const filesByFolder = groupFilesByFolder(filteredFiles);
             
             let html = '';
-            for (const [month, files] of Object.entries(filesByMonth)) {
+            for (const [folder, files] of Object.entries(filesByFolder)) {
                 html += `
-                    <div class="month-section">
-                        <div class="month-header">
-                            <h4 class="mb-0"><i class="bi bi-calendar3 me-2"></i>${month}</h4>
+                    <div class="folder-section">
+                        <div class="folder-header">
+                            <h4 class="mb-0"><i class="bi bi-folder me-2"></i>${folder}</h4>
                         </div>
                         <div class="row">
                             ${files.map(file => createFileItem(file)).join('')}
@@ -361,16 +300,15 @@
             fileList.innerHTML = html;
         }
 
-        // 按月份分组文件
-        function groupFilesByMonth(files) {
+        // 按文件夹分组文件
+        function groupFilesByFolder(files) {
             const groups = {};
             files.forEach(file => {
-                const date = new Date(file.uploadTime);
-                const month = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' });
-                if (!groups[month]) {
-                    groups[month] = [];
+                const folder = file.path.split('/')[0] || '根目录';
+                if (!groups[folder]) {
+                    groups[folder] = [];
                 }
-                groups[month].push(file);
+                groups[folder].push(file);
             });
             return groups;
         }
@@ -380,6 +318,7 @@
             const fileIcon = getFileIcon(file.name);
             const fileSize = formatFileSize(file.size);
             const uploadTime = new Date(file.uploadTime).toLocaleString('zh-CN');
+            const downloadUrl = `/api/files/${file.id}/download`;
             
             return `
                 <div class="col-md-6 col-lg-4 mb-3">
@@ -393,9 +332,12 @@
                                 <p class="text-muted small mb-1">${fileSize}</p>
                                 <p class="text-muted small mb-0">${uploadTime}</p>
                             </div>
-                            <div class="ms-2">
-                                <button class="btn btn-sm btn-outline-primary" onclick="downloadFile('${file.id}')" title="下载">
+                            <div class="ms-2 d-flex">
+                                <button class="btn btn-sm btn-primary" onclick="downloadFile('${file.id}')" title="下载">
                                     <i class="bi bi-download"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary btn-copy" onclick="copyDownloadLink('${downloadUrl}', this)" title="复制下载链接">
+                                    <i class="bi bi-link-45deg"></i>
                                 </button>
                             </div>
                         </div>
@@ -529,87 +471,30 @@
             }
         }
 
-        // 文件选择处理
-        function handleFileSelect(event) {
-            const files = Array.from(event.target.files);
-            uploadFiles(files);
-        }
-
-        // 拖拽处理
-        function handleDragOver(event) {
-            event.preventDefault();
-            event.currentTarget.classList.add('dragover');
-        }
-
-        function handleDragLeave(event) {
-            event.currentTarget.classList.remove('dragover');
-        }
-
-        function handleDrop(event) {
-            event.preventDefault();
-            event.currentTarget.classList.remove('dragover');
-            const files = Array.from(event.dataTransfer.files);
-            uploadFiles(files);
-        }
-
-        // 上传文件
-        async function uploadFiles(files) {
-            const uploadProgress = document.getElementById('uploadProgress');
-            const progressFill = document.getElementById('progressFill');
-            const progressText = document.getElementById('progressText');
-            const uploadedFiles = document.getElementById('uploadedFiles');
-
-            uploadProgress.style.display = 'block';
-            uploadedFiles.innerHTML = '';
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const formData = new FormData();
-                formData.append('file', file);
-
-                try {
-                    progressText.textContent = `正在上传: ${file.name}`;
-                    progressFill.style.width = `${((i + 1) / files.length) * 100}%`;
-
-                    const response = await fetch('/api/files/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Upload failed');
-                    }
-
-                    const result = await response.json();
-                    
-                    // 添加到已上传文件列表
-                    uploadedFiles.innerHTML += `
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-2"></i>
-                            ${file.name} 上传成功
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
-
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    uploadedFiles.innerHTML += `
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            ${file.name} 上传失败
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
-                }
+        // 复制下载链接
+        async function copyDownloadLink(url, button) {
+            try {
+                const fullUrl = window.location.origin + url;
+                await navigator.clipboard.writeText(fullUrl);
+                
+                // 显示成功状态
+                const originalClass = button.className;
+                const originalHTML = button.innerHTML;
+                
+                button.className = 'btn btn-sm btn-success btn-copy';
+                button.innerHTML = '<i class="bi bi-check"></i>';
+                button.title = '已复制';
+                
+                setTimeout(() => {
+                    button.className = originalClass;
+                    button.innerHTML = originalHTML;
+                    button.title = '复制下载链接';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Copy error:', error);
+                alert('复制失败，请手动复制链接');
             }
-
-            // 重新加载文件列表
-            setTimeout(() => {
-                loadFileList();
-                uploadProgress.style.display = 'none';
-                progressFill.style.width = '0%';
-                document.getElementById('fileInput').value = '';
-            }, 1000);
         }
     </script>
 </body>
