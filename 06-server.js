@@ -1,12 +1,7 @@
-import http from 'http';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import querystring from 'querystring';
-
-// 获取 __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const querystring = require('querystring');
 
 // 确保 record 目录存在
 const recordDir = path.join(__dirname, 'record');
@@ -98,20 +93,22 @@ const server = http.createServer((req, res) => {
     // 处理 POST 请求
     if (req.method === 'POST') {
         console.log('收到 POST 请求');
+        
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
         });
-
+        
         req.on('end', () => {
             console.log('POST 请求体:', body);
+            
             try {
+                // 解析表单数据
                 const formData = querystring.parse(body);
                 console.log('解析的表单数据:', formData);
                 
                 // 验证必填字段
                 if (!formData.name || !formData.phone) {
-                    console.log('验证失败: 缺少必填字段');
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: false,
@@ -119,38 +116,39 @@ const server = http.createServer((req, res) => {
                     }));
                     return;
                 }
-
-                // 准备数据行
-                const data = [
-                    new Date().toLocaleString('zh-CN'),
-                    formData.name,
-                    formData.email || '',
-                    formData.phone,
-                    formData.subject || '',
-                    (formData.message || '').replace(/\r\n|\n/g, ' ')
-                ].map(field => `"${field}"`).join(',');
-
-                const csvFile = path.join(recordDir, 'contact_forms.csv');
-                const header = '"提交时间","姓名","邮箱","电话","主题","消息内容"\n';
-
-                // 如果文件不存在，先写入表头
-                if (!fs.existsSync(csvFile)) {
-                    fs.writeFileSync(csvFile, '\ufeff' + header, 'utf8');
+                
+                // 准备CSV数据
+                const timestamp = new Date().toISOString();
+                const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
+                
+                // 确保数据目录存在
+                const dataDir = path.join(recordDir, 'data');
+                if (!fs.existsSync(dataDir)) {
+                    fs.mkdirSync(dataDir, { recursive: true });
                 }
-
+                
+                // 写入CSV文件
+                const csvPath = path.join(dataDir, 'contact_forms.csv');
+                
+                // 如果文件不存在，创建文件并写入表头
+                if (!fs.existsSync(csvPath)) {
+                    const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
+                    fs.writeFileSync(csvPath, header);
+                }
+                
                 // 追加数据
-                fs.appendFileSync(csvFile, data + '\n', 'utf8');
-                console.log('数据已保存到:', csvFile);
-
+                fs.appendFileSync(csvPath, csvLine);
+                console.log('数据已保存到:', csvPath);
+                
+                // 发送成功响应
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                const response = JSON.stringify({
+                res.end(JSON.stringify({
                     success: true,
                     message: '数据已保存'
-                });
-                console.log('发送响应:', response);
-                res.end(response);
+                }));
+                
             } catch (error) {
-                console.error('处理 POST 请求时出错:', error);
+                console.error('处理POST请求时出错:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: false,
@@ -160,9 +158,8 @@ const server = http.createServer((req, res) => {
         });
         return;
     }
-
-    // 其他请求方法
-    console.log('不支持的请求方法:', req.method);
+    
+    // 不支持的请求方法
     res.writeHead(405, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
         success: false,
@@ -170,9 +167,22 @@ const server = http.createServer((req, res) => {
     }));
 });
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
+
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`服务器启动成功，监听端口 ${PORT}...`);
     console.log('按 Ctrl+C 停止服务器');
     console.log(`访问地址: http://localhost:${PORT}`);
+});
+
+server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`端口 ${PORT} 已被占用，请检查是否有其他服务正在运行`);
+        console.error('您可以尝试以下命令停止占用端口的进程：');
+        console.error(`  pkill -f "node.*${PORT}"`);
+        console.error(`  或者使用其他端口: PORT=${PORT + 1} node 06-server.js`);
+    } else {
+        console.error('服务器启动失败:', error);
+    }
+    process.exit(1);
 }); 

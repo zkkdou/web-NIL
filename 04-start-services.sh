@@ -23,6 +23,23 @@ fi
 
 echo "✅ 检查完成，开始启动服务..."
 
+# 检查并清理端口占用
+echo "🔍 检查端口占用情况..."
+
+# 检查3000端口
+if netstat -tlnp 2>/dev/null | grep -q ":3000 "; then
+    echo "⚠️  端口3000已被占用，正在清理..."
+    pkill -f "contact-api.js" 2>/dev/null || true
+    sleep 2
+fi
+
+# 检查8000端口
+if netstat -tlnp 2>/dev/null | grep -q ":8000 "; then
+    echo "⚠️  端口8000已被占用，正在清理..."
+    pkill -f "06-server.js" 2>/dev/null || true
+    sleep 2
+fi
+
 # 启动API服务（后台运行）
 echo "📡 启动API服务（端口3000）..."
 cd record
@@ -31,13 +48,18 @@ API_PID=$!
 cd ..
 
 # 等待API服务启动
-sleep 2
+sleep 3
 
 # 检查API服务是否启动成功
 if curl -s http://localhost:3000/ > /dev/null 2>&1; then
     echo "✅ API服务启动成功！"
 else
     echo "⚠️  API服务可能未完全启动，请稍等..."
+    # 检查进程是否还在运行
+    if ! ps -p $API_PID > /dev/null 2>&1; then
+        echo "❌ API服务启动失败，请检查错误信息"
+        exit 1
+    fi
 fi
 
 # 启动主服务器
@@ -46,13 +68,18 @@ node 06-server.js &
 SERVER_PID=$!
 
 # 等待主服务器启动
-sleep 2
+sleep 3
 
 # 检查主服务器是否启动成功
 if curl -s http://localhost:8000/ > /dev/null 2>&1; then
     echo "✅ 主服务器启动成功！"
 else
     echo "⚠️  主服务器可能未完全启动，请稍等..."
+    # 检查进程是否还在运行
+    if ! ps -p $SERVER_PID > /dev/null 2>&1; then
+        echo "❌ 主服务器启动失败，请检查错误信息"
+        exit 1
+    fi
 fi
 
 echo ""
@@ -62,8 +89,7 @@ echo "🌐 主网站: http://localhost:8000"
 echo "📊 数据文件: record/data/contact_forms.csv"
 echo ""
 echo "💡 停止服务:"
-echo "   pkill -f contact-api.js"
-echo "   pkill -f 06-server.js"
+echo "   ./05-stop-services.sh"
 echo ""
 echo "🔍 检查服务状态:"
 echo "   netstat -tlnp | grep :3000"
