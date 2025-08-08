@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 快速部署微纳科技表单处理服务"
+echo "🚀 简单部署微纳科技表单处理服务"
 echo "=================================="
 
 # 检查Node.js是否安装
@@ -9,11 +9,10 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
-# 创建项目目录
-PROJECT_DIR="./record"
-echo "📁 创建项目目录: $PROJECT_DIR"
-mkdir -p $PROJECT_DIR
-cd $PROJECT_DIR
+# 创建record目录
+echo "📁 创建record目录"
+mkdir -p record
+cd record
 
 # 创建package.json
 echo "📦 创建package.json"
@@ -119,42 +118,24 @@ server.listen(PORT, '0.0.0.0', () => {
 });
 EOF
 
-# 设置权限
-echo "🔐 设置文件权限"
-chmod +x contact-api.js
-
 # 创建数据目录
 echo "📂 创建数据目录"
 mkdir -p data
 
-# 启动服务
-echo "🚀 启动服务"
-node contact-api.js &
-
-# 检查服务状态
-sleep 2
-if curl -s http://localhost:3000/ > /dev/null 2>&1; then
-    echo "✅ 服务启动成功！"
-    echo "🌐 访问地址: http://124.220.134.33:3000/"
-    echo "📊 数据文件: $PROJECT_DIR/data/contact_forms.csv"
-else
-    echo "❌ 服务启动失败，请检查日志"
-    echo "🔍 尝试手动启动: cd $PROJECT_DIR && node contact-api.js"
-fi
-
 echo ""
-echo "📋 下一步："
-echo "1. 开放防火墙端口: sudo ufw allow 3000"
-echo "2. 测试API: curl -X POST http://124.220.134.33:3000/ -d 'name=test&phone=123'"
-echo "3. 更新表单配置使用3000端口"
+echo "✅ 文件创建完成！"
+echo "📁 文件位置："
+echo "   - 服务文件: record/contact-api.js"
+echo "   - 配置文件: record/package.json"
+echo "   - 数据文件: record/data/contact_forms.csv"
+echo ""
+echo "🚀 启动服务："
+echo "   cd record && node contact-api.js"
 echo ""
 echo "🧪 测试命令："
 echo "curl -X POST http://124.220.134.33:3000/ -d \"name=测试&phone=123456\" -H \"Content-Type: application/x-www-form-urlencoded\""
 echo ""
-echo "📁 文件位置："
-echo "   - 服务文件: $PROJECT_DIR/contact-api.js"
-echo "   - 配置文件: $PROJECT_DIR/package.json"
-echo "   - 数据文件: $PROJECT_DIR/data/contact_forms.csv"
-echo ""
-echo "🔄 重启服务："
-echo "   cd $PROJECT_DIR && node contact-api.js" 
+echo "📋 下一步："
+echo "1. 开放防火墙端口: sudo ufw allow 3000"
+echo "2. 启动服务: cd record && node contact-api.js"
+echo "3. 测试表单提交功能" 
