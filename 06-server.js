@@ -345,17 +345,21 @@ const server = http.createServer((req, res) => {
 
     // 处理文件删除API
     if (req.method === 'POST' && req.url === '/api/delete') {
+        console.log('收到删除文件请求:', req.url);
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
         });
         req.on('end', () => {
+            console.log('删除请求体:', body);
             try {
                 const data = JSON.parse(body);
                 const { fileId, password } = data;
+                console.log('解析的删除数据:', { fileId, password: password ? '***' : 'undefined' });
                 
                 // 验证密码
                 if (password !== 'fjfjfjfj') {
+                    console.log('密码验证失败');
                     res.writeHead(401, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: false,
@@ -365,10 +369,15 @@ const server = http.createServer((req, res) => {
                 }
                 
                 // 扫描文件列表找到要删除的文件
+                console.log('开始扫描文件列表...');
                 const files = scanKnowledgeHub();
+                console.log('扫描到的文件列表:', files.map(f => ({ id: f.id, name: f.name, path: f.path })));
+                
                 const fileToDelete = files.find(f => f.id === fileId);
+                console.log('要删除的文件:', fileToDelete);
                 
                 if (!fileToDelete) {
+                    console.log('未找到要删除的文件，fileId:', fileId);
                     res.writeHead(404, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: false,
@@ -387,10 +396,12 @@ const server = http.createServer((req, res) => {
                     filePath = path.join(__dirname, 'knowledgehub', fileToDelete.path, fileToDelete.name);
                 }
                 
-                console.log('尝试删除文件路径:', filePath);
+                console.log('构建的文件路径:', filePath);
+                console.log('文件是否存在:', fs.existsSync(filePath));
                 
                 // 检查文件是否存在
                 if (!fs.existsSync(filePath)) {
+                    console.log('文件不存在于路径:', filePath);
                     res.writeHead(404, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: false,
