@@ -158,6 +158,28 @@
             padding: 0.375rem 0.75rem;
             font-size: 0.875rem;
         }
+        
+        /* 图标按钮样式 */
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+        
+        .btn-icon i {
+            font-size: 1rem;
+        }
+        
+        /* 文件操作按钮容器 */
+        .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -256,8 +278,8 @@
                                 </button>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-primary w-100" onclick="showUploadModal()">
-                                    <i class="bi bi-cloud-upload me-2"></i>上传文件
+                                <button class="btn btn-primary w-100" onclick="showManageModal()">
+                                    <i class="bi bi-gear me-2"></i>管理文件
                                 </button>
                             </div>
                         </div>
@@ -287,54 +309,91 @@
         </div>
     </main>
 
-    <!-- 上传文件模态框 -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <!-- 文件管理模态框 -->
+    <div class="modal fade" id="manageModal" tabindex="-1" aria-labelledby="manageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="uploadModalLabel">
-                        <i class="bi bi-cloud-upload me-2"></i>上传文件
+                    <h5 class="modal-title" id="manageModalLabel">
+                        <i class="bi bi-gear me-2"></i>文件管理
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="uploadForm" enctype="multipart/form-data">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="uploadPassword" class="form-label">上传密码</label>
-                                    <input type="password" class="form-control" id="uploadPassword" required>
-                                    <div class="form-text">请输入上传密码</div>
+                    <!-- 标签页导航 -->
+                    <ul class="nav nav-tabs mb-3" id="manageTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-tab-pane" type="button" role="tab">
+                                <i class="bi bi-cloud-upload me-2"></i>上传文件
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-tab-pane" type="button" role="tab">
+                                <i class="bi bi-trash me-2"></i>删除文件
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- 标签页内容 -->
+                    <div class="tab-content" id="manageTabsContent">
+                        <!-- 上传文件标签页 -->
+                        <div class="tab-pane fade show active" id="upload-tab-pane" role="tabpanel">
+                            <form id="uploadForm" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="uploadPassword" class="form-label">上传密码</label>
+                                            <input type="password" class="form-control" id="uploadPassword" required>
+                                            <div class="form-text">请输入上传密码</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="uploadDirectory" class="form-label">存放目录</label>
+                                            <select class="form-select" id="uploadDirectory" required>
+                                                <option value="">请选择目录</option>
+                                                <option value="auto">自动创建（按当前月份）</option>
+                                            </select>
+                                            <div class="form-text">选择文件存放的目录</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="uploadDirectory" class="form-label">存放目录</label>
-                                    <select class="form-select" id="uploadDirectory" required>
-                                        <option value="">请选择目录</option>
-                                        <option value="auto">自动创建（按当前月份）</option>
-                                    </select>
-                                    <div class="form-text">选择文件存放的目录</div>
+                                    <label for="uploadFile" class="form-label">选择文件</label>
+                                    <input type="file" class="form-control" id="uploadFile" required multiple>
+                                    <div class="form-text">支持所有文件格式，可多选</div>
                                 </div>
+                                <div class="mb-3">
+                                    <div id="uploadProgress" class="progress" style="display: none;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div id="uploadStatus"></div>
+                            </form>
+                        </div>
+                        
+                        <!-- 删除文件标签页 -->
+                        <div class="tab-pane fade" id="delete-tab-pane" role="tabpanel">
+                            <div class="mb-3">
+                                <label for="deletePassword" class="form-label">删除密码</label>
+                                <input type="password" class="form-control" id="deletePassword" required>
+                                <div class="form-text">请输入删除密码</div>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="uploadFile" class="form-label">选择文件</label>
-                            <input type="file" class="form-control" id="uploadFile" required multiple>
-                            <div class="form-text">支持所有文件格式，可多选</div>
-                        </div>
-                        <div class="mb-3">
-                            <div id="uploadProgress" class="progress" style="display: none;">
-                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            <div class="mb-3">
+                                <label for="deleteFileSelect" class="form-label">选择要删除的文件</label>
+                                <select class="form-select" id="deleteFileSelect" required>
+                                    <option value="">请选择文件</option>
+                                </select>
+                                <div class="form-text">选择要删除的文件</div>
                             </div>
+                            <div id="deleteStatus"></div>
                         </div>
-                        <div id="uploadStatus"></div>
-                    </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" onclick="handleFileUpload()">
-                        <i class="bi bi-upload me-2"></i>开始上传
+                    <button type="button" class="btn btn-primary" id="manageActionBtn">
+                        <i class="bi bi-upload me-2"></i>上传文件
                     </button>
                 </div>
             </div>
@@ -436,7 +495,7 @@
             document.querySelector('.btn-outline-secondary').addEventListener('click', refreshFileList);
             
             // 上传按钮点击事件
-            document.querySelector('.btn-primary').addEventListener('click', showUploadModal);
+            document.querySelector('.btn-primary').addEventListener('click', showManageModal);
             
             // 滚动监听，自动高亮当前可见的文件夹
             window.addEventListener('scroll', function() {
@@ -444,7 +503,7 @@
             });
             
             // 模态框关闭事件监听
-            const modalElement = document.getElementById('uploadModal');
+            const modalElement = document.getElementById('manageModal');
             modalElement.addEventListener('hidden.bs.modal', function () {
                 // 模态框关闭后清理状态
                 document.getElementById('uploadForm').reset();
@@ -518,7 +577,7 @@
 
         // 紧急修复模态框卡住的问题
         function forceCloseModal() {
-            const modalElement = document.getElementById('uploadModal');
+            const modalElement = document.getElementById('manageModal');
             const backdrop = document.querySelector('.modal-backdrop');
             
             // 移除遮罩层
@@ -543,16 +602,42 @@
             console.log('模态框已强制关闭');
         }
 
-        // 显示上传模态框
-        function showUploadModal() {
+        // 显示管理模态框
+        function showManageModal() {
             // 更新目录选项
             updateDirectoryOptions();
+            // 更新删除文件选项
+            updateDeleteFileOptions();
             
             // 确保之前的模态框完全关闭
             forceCloseModal();
             
-            const modal = new bootstrap.Modal(document.getElementById('uploadModal'));
+            const modal = new bootstrap.Modal(document.getElementById('manageModal'));
             modal.show();
+            
+            // 设置标签页切换事件
+            setupTabEvents();
+        }
+
+        // 设置标签页切换事件
+        function setupTabEvents() {
+            const uploadTab = document.getElementById('upload-tab');
+            const deleteTab = document.getElementById('delete-tab');
+            const actionBtn = document.getElementById('manageActionBtn');
+            
+            uploadTab.addEventListener('click', function() {
+                actionBtn.innerHTML = '<i class="bi bi-upload me-2"></i>上传文件';
+                actionBtn.onclick = handleFileUpload;
+            });
+            
+            deleteTab.addEventListener('click', function() {
+                actionBtn.innerHTML = '<i class="bi bi-trash me-2"></i>删除文件';
+                actionBtn.onclick = handleFileDelete;
+            });
+            
+            // 默认设置为上传模式
+            actionBtn.innerHTML = '<i class="bi bi-upload me-2"></i>上传文件';
+            actionBtn.onclick = handleFileUpload;
         }
 
         // 更新目录选项
@@ -571,6 +656,30 @@
                 const option = document.createElement('option');
                 option.value = folder;
                 option.textContent = folder;
+                select.appendChild(option);
+            });
+            
+            // 恢复选择的值
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        }
+
+        // 更新删除文件选项
+        function updateDeleteFileOptions() {
+            const select = document.getElementById('deleteFileSelect');
+            const currentValue = select.value;
+            
+            // 清空现有选项（保留第一个）
+            while (select.children.length > 1) {
+                select.removeChild(select.lastChild);
+            }
+            
+            // 添加文件选项
+            allFiles.forEach(file => {
+                const option = document.createElement('option');
+                option.value = file.id;
+                option.textContent = `${file.path}/${file.name} (${formatFileSize(file.size)})`;
                 select.appendChild(option);
             });
             
@@ -649,7 +758,7 @@
                     refreshFileList();
                     
                     // 然后关闭模态框
-                    const modalElement = document.getElementById('uploadModal');
+                    const modalElement = document.getElementById('manageModal');
                     const modal = bootstrap.Modal.getInstance(modalElement);
                     if (modal) {
                         modal.hide();
@@ -709,6 +818,97 @@
         // 显示上传状态
         function showUploadStatus(message, type) {
             const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+
+        // 处理文件删除
+        async function handleFileDelete() {
+            const password = document.getElementById('deletePassword').value;
+            const fileId = document.getElementById('deleteFileSelect').value;
+            
+            // 验证密码
+            if (password !== 'fjfjfjfj') {
+                showDeleteStatus('密码错误，请重新输入', 'danger');
+                return;
+            }
+            
+            // 验证文件选择
+            if (!fileId) {
+                showDeleteStatus('请选择要删除的文件', 'danger');
+                return;
+            }
+            
+            // 确认删除
+            const file = allFiles.find(f => f.id === fileId);
+            if (!file) {
+                showDeleteStatus('文件不存在', 'danger');
+                return;
+            }
+            
+            if (!confirm(`确定要删除文件 "${file.name}" 吗？此操作不可恢复。`)) {
+                return;
+            }
+            
+            try {
+                // 根据当前页面URL确定API地址
+                const currentHost = window.location.hostname;
+                const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
+                    ? 'http://localhost:8000/api/delete'
+                    : `http://${currentHost}:8000/api/delete`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fileId: fileId,
+                        password: password
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || '删除失败');
+                }
+                
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.error || '删除失败');
+                }
+                
+                showDeleteStatus(`文件 "${file.name}" 删除成功`, 'success');
+                
+                // 清空表单
+                document.getElementById('deletePassword').value = '';
+                document.getElementById('deleteFileSelect').value = '';
+                
+                // 刷新文件列表
+                setTimeout(() => {
+                    refreshFileList();
+                    
+                    // 关闭模态框
+                    const modalElement = document.getElementById('manageModal');
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) {
+                        modal.hide();
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                console.error('删除错误:', error);
+                showDeleteStatus('删除失败: ' + error.message, 'danger');
+            }
+        }
+
+        // 显示删除状态
+        function showDeleteStatus(message, type) {
+            const statusDiv = document.getElementById('deleteStatus');
             statusDiv.innerHTML = `
                 <div class="alert alert-${type} alert-dismissible fade show" role="alert">
                     ${message}
@@ -923,12 +1123,12 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button class="btn btn-sm btn-primary" onclick="downloadFile('${file.id}')" title="下载">
-                                        <i class="bi bi-download me-1"></i>下载
+                                <div class="file-actions">
+                                    <button class="btn btn-sm btn-primary btn-icon" onclick="downloadFile('${file.id}')" title="下载">
+                                        <i class="bi bi-download"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" onclick="copyDownloadLink('${file.downloadUrl}', this)" title="复制下载链接">
-                                        <i class="bi bi-link-45deg me-1"></i>复制链接
+                                    <button class="btn btn-sm btn-outline-secondary btn-icon" onclick="copyDownloadLink('${file.downloadUrl}', this)" title="复制下载链接">
+                                        <i class="bi bi-link-45deg"></i>
                                     </button>
                                 </div>
                             </div>
@@ -1069,8 +1269,8 @@
         // 复制下载链接
         async function copyDownloadLink(url, button) {
             try {
-                // 构建完整的下载URL
-                const fullUrl = window.location.origin + '/' + url.replace('../', '');
+                // 构建完整的下载URL，添加download参数确保直接下载
+                const fullUrl = window.location.origin + '/' + url.replace('../', '') + '?download=true';
                 
                 // 尝试使用现代API
                 if (navigator.clipboard && window.isSecureContext) {
@@ -1093,8 +1293,8 @@
                 const originalClass = button.className;
                 const originalHTML = button.innerHTML;
                 
-                button.className = 'btn btn-sm btn-success';
-                button.innerHTML = '<i class="bi bi-check me-1"></i>已复制';
+                button.className = 'btn btn-sm btn-success btn-icon';
+                button.innerHTML = '<i class="bi bi-check"></i>';
                 button.title = '已复制';
                 
                 setTimeout(() => {
@@ -1107,7 +1307,7 @@
             } catch (error) {
                 console.error('Copy error:', error);
                 // 如果复制失败，显示链接让用户手动复制
-                const fullUrl = window.location.origin + '/' + url.replace('../', '');
+                const fullUrl = window.location.origin + '/' + url.replace('../', '') + '?download=true';
                 alert(`复制失败，请手动复制以下链接：\n\n${fullUrl}`);
             }
         }

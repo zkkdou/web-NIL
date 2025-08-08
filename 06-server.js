@@ -343,6 +343,75 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // 处理文件删除API
+    if (req.method === 'POST' && req.url === '/api/delete') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body);
+                const { fileId, password } = data;
+                
+                // 验证密码
+                if (password !== 'fjfjfjfj') {
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '密码错误'
+                    }));
+                    return;
+                }
+                
+                // 扫描文件列表找到要删除的文件
+                const files = scanKnowledgeHub();
+                const fileToDelete = files.find(f => f.id === fileId);
+                
+                if (!fileToDelete) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '文件不存在'
+                    }));
+                    return;
+                }
+                
+                // 构建文件路径
+                const filePath = path.join(__dirname, 'knowledgehub', fileToDelete.path, fileToDelete.name);
+                
+                // 检查文件是否存在
+                if (!fs.existsSync(filePath)) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '文件不存在'
+                    }));
+                    return;
+                }
+                
+                // 删除文件
+                fs.unlinkSync(filePath);
+                console.log('文件已删除:', filePath);
+                
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    message: '文件删除成功'
+                }));
+                
+            } catch (error) {
+                console.error('删除文件时出错:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    error: '服务器内部错误'
+                }));
+            }
+        });
+        return;
+    }
+
     // 处理知识库API请求
     if (req.url.startsWith('/api/files')) {
         handleFilesAPI(req, res);
@@ -437,6 +506,10 @@ const server = http.createServer((req, res) => {
                 const fileName = path.basename(fullPath);
                 const stat = fs.statSync(fullPath);
                 
+                // 解析URL参数
+                const urlObj = url.parse(req.url, true);
+                const isDownload = urlObj.query.download === 'true';
+                
                 // 设置正确的MIME类型和下载头
                 const mimeTypes = {
                     '.pdf': 'application/pdf',
@@ -457,10 +530,9 @@ const server = http.createServer((req, res) => {
                 
                 const contentType = mimeTypes[ext] || 'application/octet-stream';
                 
-                // 设置安全的响应头
+                // 设置响应头
                 const headers = {
                     'Content-Type': contentType,
-                    'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
                     'Content-Length': stat.size,
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -472,6 +544,14 @@ const server = http.createServer((req, res) => {
                     // 允许下载的头部
                     'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
                 };
+                
+                // 如果指定了download参数或者是特定文件类型，强制下载
+                if (isDownload || ['.pdf', '.docx', '.doc', '.xlsx', '.xls', '.zip', '.rar'].includes(ext)) {
+                    headers['Content-Disposition'] = `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+                } else {
+                    // 对于图片等文件，允许在浏览器中显示
+                    headers['Content-Disposition'] = `inline; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+                }
                 
                 res.writeHead(200, headers);
                 
