@@ -10,6 +10,13 @@ function generateUUID() {
     return crypto.randomUUID();
 }
 
+function generateFileId(filePath, fileName) {
+    // 使用文件路径和文件名生成稳定的ID
+    const idString = `${filePath}/${fileName}`;
+    const hash = require('crypto').createHash('md5').update(idString).digest('hex');
+    return hash.substring(0, 8) + '-' + hash.substring(8, 12) + '-' + hash.substring(12, 16) + '-' + hash.substring(16, 20) + '-' + hash.substring(20, 32);
+}
+
 // 扫描knowledgehub文件夹
 function scanKnowledgeHub() {
     const knowledgeHubPath = path.join(__dirname, 'knowledgehub');
@@ -35,7 +42,7 @@ function scanKnowledgeHub() {
                 } else if (stat.isFile()) {
                     // 添加文件信息
                     const fileInfo = {
-                        id: generateUUID(),
+                        id: generateFileId(relativePath || '根目录', item),
                         name: item,
                         fileName: item,
                         size: stat.size,
@@ -208,7 +215,7 @@ function handleFileUpload(req, res) {
             
             // 创建文件信息
             const fileInfo = {
-                id: generateUUID(),
+                id: generateFileId(directory, uniqueFileName),
                 name: fileName,
                 fileName: uniqueFileName,
                 size: fileContent.length,
@@ -340,6 +347,18 @@ const server = http.createServer((req, res) => {
     if (req.url === '/api/upload' && req.method === 'POST') {
         console.log('处理文件上传请求');
         handleFileUpload(req, res);
+        return;
+    }
+
+    // 测试路由
+    if (req.url === '/api/test') {
+        console.log('收到测试请求');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            success: true,
+            message: '服务器正在运行',
+            timestamp: new Date().toISOString()
+        }));
         return;
     }
 
