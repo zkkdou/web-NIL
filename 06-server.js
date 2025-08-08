@@ -34,87 +34,67 @@ function generateFileId(filePath, fileName) {
 
 // 扫描knowledgehub文件夹
 function scanKnowledgeHub() {
-    console.log('=== 开始扫描knowledgehub文件夹 ===');
     const knowledgeHubPath = path.join(__dirname, 'knowledgehub');
-    console.log('扫描路径:', knowledgeHubPath);
-    
     const files = [];
     
     if (!fs.existsSync(knowledgeHubPath)) {
-        console.log('knowledgehub目录不存在，创建目录');
         fs.mkdirSync(knowledgeHubPath, { recursive: true });
-        console.log('=== 扫描完成，目录为空 ===');
         return files;
     }
     
     function scanDirectory(dirPath, relativePath = '') {
-        console.log(`扫描目录: ${dirPath}, 相对路径: ${relativePath || '根目录'}`);
         try {
             const items = fs.readdirSync(dirPath);
-            console.log(`目录 ${dirPath} 包含 ${items.length} 个项目:`, items);
             
             for (const item of items) {
                 const fullPath = path.join(dirPath, item);
                 const stat = fs.statSync(fullPath);
                 
                 if (stat.isDirectory()) {
-                    console.log(`发现子目录: ${item}`);
+                    // 递归扫描子目录
                     const newRelativePath = relativePath ? path.join(relativePath, item) : item;
                     scanDirectory(fullPath, newRelativePath);
                 } else if (stat.isFile()) {
-                    console.log(`发现文件: ${item}, 大小: ${stat.size} 字节`);
-                    const fileInfo = {
-                        id: generateFileId(relativePath || '根目录', item),
+                    // 生成稳定的文件ID
+                    const fileId = generateFileId(relativePath, item);
+                    
+                    files.push({
+                        id: fileId,
                         name: item,
-                        fileName: item,
+                        path: relativePath,
                         size: stat.size,
-                        uploadTime: stat.mtime.toISOString(),
-                        type: path.extname(item).toLowerCase(),
-                        path: relativePath || '根目录'
-                    };
-                    console.log(`添加文件信息:`, fileInfo);
-                    files.push(fileInfo);
+                        uploadTime: stat.mtime.toISOString()
+                    });
                 }
             }
         } catch (error) {
-            console.error('扫描目录时出错:', error);
+            console.error(`Error scanning directory ${dirPath}:`, error);
         }
     }
     
     scanDirectory(knowledgeHubPath);
-    console.log(`=== 扫描完成，共找到 ${files.length} 个文件 ===`);
-    console.log('文件列表:', files);
     return files;
 }
 
 // 处理文件API
 function handleFilesAPI(req, res) {
-    console.log('=== 处理文件API请求 ===');
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
-    console.log('请求路径:', pathname);
-    console.log('请求方法:', req.method);
     
     if (req.method === 'GET' && pathname === '/api/files') {
-        console.log('开始处理 /api/files 请求');
         try {
             const files = scanKnowledgeHub();
-            console.log('扫描完成，返回文件列表');
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            const response = JSON.stringify(files);
-            console.log('响应内容:', response);
-            res.end(response);
+            res.end(JSON.stringify(files));
         } catch (error) {
             console.error('Error scanning knowledge hub:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Failed to scan files' }));
         }
-        return;
+    } else {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'API endpoint not found' }));
     }
-    
-    console.log('不支持的API请求');
-    res.writeHead(405, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Method not allowed' }));
 }
 
 // 处理文件上传
