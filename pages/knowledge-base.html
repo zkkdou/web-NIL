@@ -184,8 +184,7 @@
         
         /* 模式切换按钮样式 */
         .btn-outline-primary.active,
-        .btn-outline-danger.active,
-        .btn-outline-success.active {
+        .btn-outline-danger.active {
             color: white;
         }
         
@@ -199,11 +198,6 @@
             border-color: #dc3545;
         }
         
-        .btn-outline-success.active {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-        
         /* 模态框优化 */
         .modal-dialog {
             max-width: 500px;
@@ -211,6 +205,37 @@
         
         .modal-body {
             padding: 1.5rem;
+        }
+        
+        /* 统一按钮颜色 */
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        
+        .btn-outline-primary {
+            color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .btn-outline-danger {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
         }
     </style>
 </head>
@@ -360,9 +385,6 @@
                         <button class="btn btn-outline-danger flex-fill" id="deleteModeBtn" onclick="switchToDeleteMode()">
                             <i class="bi bi-trash me-2"></i>删除文件
                         </button>
-                        <button class="btn btn-outline-success flex-fill" id="externalDownloadModeBtn" onclick="switchToExternalDownloadMode()">
-                            <i class="bi bi-link-45deg me-2"></i>外部下载
-                        </button>
                     </div>
                     
                     <!-- 上传文件内容 -->
@@ -405,19 +427,6 @@
                             </select>
                         </div>
                         <div id="deleteStatus"></div>
-                    </div>
-                    
-                    <!-- 外部下载内容 -->
-                    <div id="externalDownloadContent" style="display: none;">
-                        <div class="mb-3">
-                            <label for="externalUrl" class="form-label">外部下载链接</label>
-                            <input type="url" class="form-control" id="externalUrl" placeholder="请输入完整的下载链接" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="externalFilename" class="form-label">文件名（可选）</label>
-                            <input type="text" class="form-control" id="externalFilename" placeholder="如果不填写，将使用链接中的文件名">
-                        </div>
-                        <div id="externalDownloadStatus"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -654,10 +663,8 @@
         function switchToUploadMode() {
             document.getElementById('uploadContent').style.display = 'block';
             document.getElementById('deleteContent').style.display = 'none';
-            document.getElementById('externalDownloadContent').style.display = 'none'; // 隐藏外部下载内容
             document.getElementById('uploadModeBtn').classList.add('active');
             document.getElementById('deleteModeBtn').classList.remove('active');
-            document.getElementById('externalDownloadModeBtn').classList.remove('active'); // 移除外部下载按钮的active状态
             document.getElementById('manageActionBtn').innerHTML = '<i class="bi bi-upload me-2"></i>上传文件';
             document.getElementById('manageActionBtn').onclick = handleFileUpload;
         }
@@ -668,21 +675,8 @@
             document.getElementById('deleteContent').style.display = 'block';
             document.getElementById('uploadModeBtn').classList.remove('active');
             document.getElementById('deleteModeBtn').classList.add('active');
-            document.getElementById('externalDownloadModeBtn').classList.remove('active'); // 移除外部下载按钮的active状态
             document.getElementById('manageActionBtn').innerHTML = '<i class="bi bi-trash me-2"></i>删除文件';
             document.getElementById('manageActionBtn').onclick = handleFileDelete;
-        }
-
-        // 切换到外部下载模式
-        function switchToExternalDownloadMode() {
-            document.getElementById('uploadContent').style.display = 'none';
-            document.getElementById('deleteContent').style.display = 'none';
-            document.getElementById('externalDownloadContent').style.display = 'block';
-            document.getElementById('uploadModeBtn').classList.remove('active');
-            document.getElementById('deleteModeBtn').classList.remove('active');
-            document.getElementById('externalDownloadModeBtn').classList.add('active'); // 添加外部下载按钮的active状态
-            document.getElementById('manageActionBtn').innerHTML = '<i class="bi bi-link-45deg me-2"></i>外部下载';
-            document.getElementById('manageActionBtn').onclick = handleExternalDownload;
         }
 
         // 更新目录选项
@@ -968,50 +962,9 @@
             }
         }
 
-        // 处理外部下载
-        async function handleExternalDownload() {
-            const url = document.getElementById('externalUrl').value;
-            const filename = document.getElementById('externalFilename').value || url.split('/').pop(); // 从URL中提取文件名
-            
-            if (!url) {
-                showExternalDownloadStatus('请输入下载链接', 'danger');
-                return;
-            }
-
-            try {
-                // 创建一个临时的下载链接
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
-                showExternalDownloadStatus(`文件 "${filename}" 已从 "${url}" 下载`, 'success');
-                console.log(`文件 "${filename}" 已从 "${url}" 下载`);
-            } catch (error) {
-                console.error('外部下载错误:', error);
-                showExternalDownloadStatus(`下载失败: ${error.message}`, 'danger');
-            }
-        }
-
         // 显示删除状态
         function showDeleteStatus(message, type) {
             const statusDiv = document.getElementById('deleteStatus');
-            statusDiv.innerHTML = `
-                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-        }
-
-        // 显示外部下载状态
-        function showExternalDownloadStatus(message, type) {
-            const statusDiv = document.getElementById('externalDownloadStatus');
             statusDiv.innerHTML = `
                 <div class="alert alert-${type} alert-dismissible fade show" role="alert">
                     ${message}
@@ -1372,8 +1325,10 @@
         // 复制下载链接
         async function copyDownloadLink(url, button) {
             try {
-                // 构建完整的下载URL，添加download参数确保直接下载
-                const fullUrl = window.location.origin + '/' + url.replace('../', '') + '?download=true';
+                // 使用相对协议，自动匹配当前页面的协议
+                const protocol = window.location.protocol;
+                const host = window.location.host;
+                const fullUrl = `${protocol}//${host}/${url.replace('../', '')}?download=true`;
                 
                 // 尝试使用现代API
                 if (navigator.clipboard && window.isSecureContext) {
@@ -1410,7 +1365,9 @@
             } catch (error) {
                 console.error('Copy error:', error);
                 // 如果复制失败，显示链接让用户手动复制
-                const fullUrl = window.location.origin + '/' + url.replace('../', '') + '?download=true';
+                const protocol = window.location.protocol;
+                const host = window.location.host;
+                const fullUrl = `${protocol}//${host}/${url.replace('../', '')}?download=true`;
                 alert(`复制失败，请手动复制以下链接：\n\n${fullUrl}`);
             }
         }

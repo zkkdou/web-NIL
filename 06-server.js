@@ -1,9 +1,29 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const querystring = require('querystring');
 const crypto = require('crypto');
+
+// HTTPS配置
+const httpsOptions = {
+    key: null,
+    cert: null
+};
+
+// 尝试加载SSL证书
+try {
+    // 如果有证书文件，加载它们
+    if (fs.existsSync(path.join(__dirname, 'ssl', 'private.key')) && 
+        fs.existsSync(path.join(__dirname, 'ssl', 'certificate.crt'))) {
+        httpsOptions.key = fs.readFileSync(path.join(__dirname, 'ssl', 'private.key'));
+        httpsOptions.cert = fs.readFileSync(path.join(__dirname, 'ssl', 'certificate.crt'));
+        console.log('SSL证书加载成功');
+    }
+} catch (error) {
+    console.log('SSL证书加载失败，将使用HTTP模式');
+}
 
 // 生成稳定的文件ID
 function generateFileId(filePath, fileName) {
@@ -352,105 +372,6 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // 处理外部文件下载API
-    if (req.method === 'POST' && req.url === '/api/download-external') {
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
-        });
-        req.on('end', () => {
-            try {
-                const data = JSON.parse(body);
-                const { url, filename } = data;
-                
-                if (!url) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                        success: false,
-                        error: '缺少下载URL'
-                    }));
-                    return;
-                }
-                
-                // 使用Node.js的http/https模块下载文件
-                const http = require('http');
-                const https = require('https');
-                const urlObj = new URL(url);
-                
-                const client = urlObj.protocol === 'https:' ? https : http;
-                
-                const request = client.get(url, (response) => {
-                    if (response.statusCode !== 200) {
-                        res.writeHead(500, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({
-                            success: false,
-                            error: `下载失败，状态码: ${response.statusCode}`
-                        }));
-                        return;
-                    }
-                    
-                    // 设置响应头
-                    const headers = {
-                        'Content-Type': response.headers['content-type'] || 'application/octet-stream',
-                        'Content-Length': response.headers['content-length'] || '',
-                        'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(filename || 'download')}`,
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                        'Access-Control-Allow-Headers': 'Content-Type'
-                    };
-                    
-                    res.writeHead(200, headers);
-                    
-                    // 流式传输文件
-                    response.pipe(res);
-                    
-                    response.on('error', (error) => {
-                        console.error('下载流错误:', error);
-                        if (!res.headersSent) {
-                            res.writeHead(500, { 'Content-Type': 'application/json' });
-                            res.end(JSON.stringify({
-                                success: false,
-                                error: '下载过程中出错'
-                            }));
-                        }
-                    });
-                });
-                
-                request.on('error', (error) => {
-                    console.error('下载请求错误:', error);
-                    if (!res.headersSent) {
-                        res.writeHead(500, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({
-                            success: false,
-                            error: '无法连接到下载服务器'
-                        }));
-                    }
-                });
-                
-                // 设置超时
-                request.setTimeout(30000, () => {
-                    request.destroy();
-                    if (!res.headersSent) {
-                        res.writeHead(500, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({
-                            success: false,
-                            error: '下载超时'
-                        }));
-                    }
-                });
-                
-            } catch (error) {
-                console.error('处理外部下载时出错:', error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    success: false,
-                    error: '服务器内部错误'
-                }));
-            }
-        });
-        return;
-    }
-
     // 处理知识库API请求
     if (req.url.startsWith('/api/files') && !req.url.startsWith('/api/delete')) {
         handleFilesAPI(req, res);
@@ -650,22 +571,47 @@ const server = http.createServer((req, res) => {
     }));
 });
 
+// 启动服务器
+const port = process.env.PORT || 8000;
+const httpsPort = process.env.HTTPS_PORT || 8443;
+
+// 创建HTTP服务器
+const httpServer = http.createServer(server);
+httpServer.listen(port, '0.0.0.0', () => {
+    console.log(`HTTP服务器启动成功，监听端口 ${port}...`);
+    console.log(`访问地址: http://localhost:${port}`);
+});
+
+// 如果有SSL证书，创建HTTPS服务器
+if (httpsOptions.key && httpsOptions.cert) {
+    const httpsServer = https.createServer(httpsOptions, server);
+    httpsServer.listen(httpsPort, '0.0.0.0', () => {
+        console.log(`HTTPS服务器启动成功，监听端口 ${httpsPort}...`);
+        console.log(`安全访问地址: https://localhost:${httpsPort}`);
+    });
+    
+    httpsServer.on('error', (error) => {
+        if (error.code === 'EADDRINUSE') {
+            console.log(`端口 ${httpsPort} 已被占用，HTTPS服务器启动失败`);
+        } else {
+            console.error('HTTPS服务器错误:', error);
+        }
+    });
+} else {
+    console.log('未找到SSL证书，仅启动HTTP服务器');
+    console.log('要启用HTTPS，请将SSL证书文件放在 ssl/ 目录下');
+}
+
 // 错误处理
-server.on('error', (error) => {
+httpServer.on('error', (error) => {
     if (error.code === 'EADDRINUSE') {
         console.log('端口 8000 已被占用，请检查是否有其他服务正在运行');
         console.log('您可以尝试以下命令停止占用端口的进程：');
         console.log('  pkill -f "node.*8000"');
         console.log('  或者使用其他端口: PORT=8001 node 06-server.js');
     } else {
-        console.error('服务器错误:', error);
+        console.error('HTTP服务器错误:', error);
     }
 });
 
-// 启动服务器
-const port = process.env.PORT || 8000;
-server.listen(port, '0.0.0.0', () => {
-    console.log(`服务器启动成功，监听端口 ${port}...`);
-    console.log('按 Ctrl+C 停止服务器');
-    console.log(`访问地址: http://localhost:${port}`);
-}); 
+console.log('按 Ctrl+C 停止服务器'); 
