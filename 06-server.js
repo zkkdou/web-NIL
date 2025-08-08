@@ -81,9 +81,12 @@ function handleFilesAPI(req, res) {
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
     
-    if (req.method === 'GET' && pathname === '/api/files') {
+    console.log('API请求:', req.method, pathname);
+    
+    if (req.method === 'GET' && (pathname === '/api/files' || pathname.startsWith('/api/files'))) {
         try {
             const files = scanKnowledgeHub();
+            console.log('扫描到文件数量:', files.length);
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(files));
         } catch (error) {
@@ -92,6 +95,7 @@ function handleFilesAPI(req, res) {
             res.end(JSON.stringify({ error: 'Failed to scan files' }));
         }
     } else {
+        console.log('不支持的API请求:', req.method, pathname);
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'API endpoint not found' }));
     }
