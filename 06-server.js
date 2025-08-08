@@ -453,8 +453,8 @@ const server = http.createServer((req, res) => {
     }
 
     // 处理 POST 请求 - 联系表单
-    if (req.method === 'POST') {
-        console.log('收到 POST 请求');
+    if (req.method === 'POST' && req.url === '/') {
+        console.log('收到联系表单 POST 请求');
         
         let body = '';
         req.on('data', chunk => {
@@ -521,11 +521,11 @@ const server = http.createServer((req, res) => {
         return;
     }
     
-    // 不支持的请求方法
+    // 不支持的请求方法或路径
     res.writeHead(405, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
         success: false,
-        error: '不支持的请求方法'
+        error: '不支持的请求方法或路径'
     }));
 });
 
