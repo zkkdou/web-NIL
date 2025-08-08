@@ -374,7 +374,7 @@ const server = http.createServer((req, res) => {
     }
 
     // 处理知识库API请求
-    if (req.url.startsWith('/api/files') && !req.url.startsWith('/api/delete')) {
+    if (req.url.startsWith('/api/files')) {
         handleFilesAPI(req, res);
         return;
     }
@@ -682,7 +682,7 @@ if (httpsOptions.key && httpsOptions.cert) {
         }
 
         // 处理知识库API请求
-        if (req.url.startsWith('/api/files') && !req.url.startsWith('/api/delete')) {
+        if (req.url.startsWith('/api/files')) {
             handleFilesAPI(req, res);
             return;
         }
