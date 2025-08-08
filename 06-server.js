@@ -16,38 +16,45 @@ function scanKnowledgeHub() {
     const files = [];
     
     if (!fs.existsSync(knowledgeHubPath)) {
+        console.log('knowledgehub文件夹不存在');
         return files;
     }
     
     function scanDirectory(dirPath, relativePath = '') {
-        const items = fs.readdirSync(dirPath);
-        
-        for (const item of items) {
-            const fullPath = path.join(dirPath, item);
-            const stat = fs.statSync(fullPath);
+        try {
+            const items = fs.readdirSync(dirPath);
             
-            if (stat.isDirectory()) {
-                // 递归扫描子目录
-                const newRelativePath = relativePath ? path.join(relativePath, item) : item;
-                scanDirectory(fullPath, newRelativePath);
-            } else if (stat.isFile()) {
-                // 添加文件信息
-                const fileInfo = {
-                    id: generateUUID(),
-                    name: item,
-                    fileName: item,
-                    size: stat.size,
-                    uploadTime: stat.mtime.toISOString(),
-                    type: path.extname(item).toLowerCase(),
-                    path: relativePath ? path.join(relativePath, item) : item,
-                    fullPath: fullPath
-                };
-                files.push(fileInfo);
+            for (const item of items) {
+                const fullPath = path.join(dirPath, item);
+                const stat = fs.statSync(fullPath);
+                
+                if (stat.isDirectory()) {
+                    // 递归扫描子目录
+                    const newRelativePath = relativePath ? path.join(relativePath, item) : item;
+                    scanDirectory(fullPath, newRelativePath);
+                } else if (stat.isFile()) {
+                    // 添加文件信息
+                    const fileInfo = {
+                        id: generateUUID(),
+                        name: item,
+                        fileName: item,
+                        size: stat.size,
+                        uploadTime: stat.mtime.toISOString(),
+                        type: path.extname(item).toLowerCase(),
+                        path: relativePath || '根目录'
+                    };
+                    files.push(fileInfo);
+                    console.log('发现文件:', fileInfo);
+                }
             }
+        } catch (error) {
+            console.error('扫描目录时出错:', error);
         }
     }
     
+    console.log('开始扫描knowledgehub文件夹:', knowledgeHubPath);
     scanDirectory(knowledgeHubPath);
+    console.log('扫描完成，共发现', files.length, '个文件');
     return files;
 }
 
