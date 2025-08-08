@@ -30,6 +30,7 @@ const startupScripts = [
 - **执行位置**: 项目根目录
 - **执行命令**: `./00-startup-all.sh`
 - **功能**: 自动执行首次部署（如果需要）+ 启动服务
+- **智能检测**: ✅ 自动检测依赖文件是否已下载，CDN链接是否已替换
 - **重复运行**: ✅ 每次重启服务器都使用这个
 
 ### 1. `01-deploy-api-FIRST-ONLY.sh` ⭐ 仅首次运行
@@ -44,6 +45,7 @@ const startupScripts = [
 - **执行位置**: 项目根目录
 - **执行命令**: `node 02-download-deps-FIRST-ONLY.cjs`
 - **功能**: 下载Bootstrap、Bootstrap Icons、Animate.css等
+- **智能跳过**: ✅ 如果 `assets/vendor/bootstrap/bootstrap.min.css` 已存在则跳过
 - **重复运行**: ❌ 不需要，文件已下载
 
 ### 3. `03-replace-cdn-FIRST-ONLY.cjs` ⭐ 仅首次运行
@@ -51,6 +53,7 @@ const startupScripts = [
 - **执行位置**: 项目根目录
 - **执行命令**: `node 03-replace-cdn-FIRST-ONLY.cjs`
 - **功能**: 将所有CDN链接替换为本地文件路径
+- **智能跳过**: ✅ 如果HTML文件中没有CDN链接则跳过
 - **重复运行**: ❌ 不需要，已替换完成
 
 ### 4. `04-start-services.sh` ✅ 日常重启使用

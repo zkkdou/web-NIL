@@ -38,33 +38,41 @@ if [ ! -d "record" ] || [ ! -f "record/contact-api.js" ]; then
     fi
     echo ""
     
-    # 2. 下载依赖文件
-    echo "📥 步骤2: 下载依赖文件..."
-    if [ -f "02-download-deps-FIRST-ONLY.cjs" ]; then
-        node 02-download-deps-FIRST-ONLY.cjs
-        if [ $? -ne 0 ]; then
-            echo "❌ 依赖文件下载失败"
+    # 2. 检查是否需要下载依赖文件
+    if [ ! -d "assets/vendor/bootstrap" ] || [ ! -f "assets/vendor/bootstrap/bootstrap.min.css" ]; then
+        echo "📥 步骤2: 下载依赖文件..."
+        if [ -f "02-download-deps-FIRST-ONLY.cjs" ]; then
+            node 02-download-deps-FIRST-ONLY.cjs
+            if [ $? -ne 0 ]; then
+                echo "❌ 依赖文件下载失败"
+                exit 1
+            fi
+            echo "✅ 依赖文件下载完成"
+        else
+            echo "❌ 02-download-deps-FIRST-ONLY.cjs 文件不存在"
             exit 1
         fi
-        echo "✅ 依赖文件下载完成"
     else
-        echo "❌ 02-download-deps-FIRST-ONLY.cjs 文件不存在"
-        exit 1
+        echo "⚡ 步骤2: 跳过依赖文件下载（文件已存在）"
     fi
     echo ""
     
-    # 3. 替换CDN链接
-    echo "🔄 步骤3: 替换CDN链接..."
-    if [ -f "03-replace-cdn-FIRST-ONLY.cjs" ]; then
-        node 03-replace-cdn-FIRST-ONLY.cjs
-        if [ $? -ne 0 ]; then
-            echo "❌ CDN链接替换失败"
+    # 3. 检查是否需要替换CDN链接
+    if grep -q "cdn\.jsdelivr\.net\|cdnjs\.cloudflare\.com" *.html pages/*.html pages/*/*.html 2>/dev/null; then
+        echo "🔄 步骤3: 替换CDN链接..."
+        if [ -f "03-replace-cdn-FIRST-ONLY.cjs" ]; then
+            node 03-replace-cdn-FIRST-ONLY.cjs
+            if [ $? -ne 0 ]; then
+                echo "❌ CDN链接替换失败"
+                exit 1
+            fi
+            echo "✅ CDN链接替换完成"
+        else
+            echo "❌ 03-replace-cdn-FIRST-ONLY.cjs 文件不存在"
             exit 1
         fi
-        echo "✅ CDN链接替换完成"
     else
-        echo "❌ 03-replace-cdn-FIRST-ONLY.cjs 文件不存在"
-        exit 1
+        echo "⚡ 步骤3: 跳过CDN链接替换（已替换完成）"
     fi
     echo ""
 else
