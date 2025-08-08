@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识库 - 微纳科技</title>
+    
+    <!-- CSS -->
+    <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+    <link href="../assets/css/styles.css" rel="stylesheet">
+    
+    <!-- 添加网站图标 -->
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <style>
+        .knowledge-page { padding-top: 100px !important; }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        .upload-area:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .upload-area.dragover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .file-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .file-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .file-icon {
+            font-size: 2rem;
+            color: #007bff;
+        }
+        .search-box {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .month-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .month-header {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .progress-bar {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <img src="../images/logo.png" alt="微纳科技" height="40" onerror="this.src='https://via.placeholder.com/120x40?text=微纳科技'">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">首页</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            服务
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="servers/nanoimprint-server.html">纳米压印</a></li>
+                            <li><a class="dropdown-item" href="servers/etching-server.html">微纳刻蚀</a></li>
+                            <li><a class="dropdown-item" href="servers/metamaterial-server.html">超材料产品</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            技术知识
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="knowledge/nanoimprint-knowledge.html">纳米压印技术</a></li>
+                            <li><a class="dropdown-item" href="knowledge/etching-knowledge.html">微纳刻蚀技术</a></li>
+                            <li><a class="dropdown-item" href="knowledge/metamaterial-knowledge.html">超材料技术</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="knowledge-base.html">知识库</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">关于我们</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面内容 -->
+    <main class="knowledge-page">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="mb-4 text-center">知识库</h1>
+                    <p class="text-muted text-center mb-5">上传、管理和下载技术文档、资料和文件</p>
+                </div>
+            </div>
+
+            <!-- 搜索框 -->
+            <div class="search-box">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" id="searchInput" placeholder="搜索文件名...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                            <i class="bi bi-cloud-upload me-2"></i>上传文件
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 文件列表 -->
+            <div id="fileList">
+                <!-- 文件列表将通过JavaScript动态加载 -->
+            </div>
+
+            <!-- 加载提示 -->
+            <div id="loadingIndicator" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+                <p class="mt-3 text-muted">正在加载文件列表...</p>
+            </div>
+
+            <!-- 无文件提示 -->
+            <div id="noFilesMessage" class="text-center py-5" style="display: none;">
+                <i class="bi bi-folder-x text-muted" style="font-size: 3rem;"></i>
+                <h4 class="mt-3 text-muted">暂无文件</h4>
+                <p class="text-muted">点击上方"上传文件"按钮开始上传</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 上传文件模态框 -->
+    <div class="modal fade" id="uploadModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">上传文件</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="bi bi-cloud-upload text-primary" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">拖拽文件到此处或点击选择文件</h5>
+                        <p class="text-muted">支持所有文件格式</p>
+                        <input type="file" id="fileInput" multiple style="display: none;">
+                        <button class="btn btn-outline-primary mt-3" onclick="document.getElementById('fileInput').click()">
+                            选择文件
+                        </button>
+                    </div>
+                    
+                    <div id="uploadProgress" style="display: none;">
+                        <h6 class="mt-3">上传进度</h6>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p class="text-muted mt-2" id="progressText">准备上传...</p>
+                    </div>
+
+                    <div id="uploadedFiles" class="mt-3">
+                        <!-- 已上传文件列表 -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">关于我们</h5>
+                    <p class="small text-start">微纳科技专注于微纳加工技术的研发与应用，为客户提供高品质的微纳加工解决方案。</p>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">联系方式</h5>
+                    <ul class="list-unstyled small text-start">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>上海市松江区泗泾镇泗通路 246 号</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>+86 18701960619</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>service@oplasmon.com</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">快速链接</h5>
+                    <ul class="list-unstyled small text-start">
+                        <li class="mb-2"><a href="servers/nanoimprint-server.html" class="text-light text-decoration-none">纳米压印服务</a></li>
+                        <li class="mb-2"><a href="servers/etching-server.html" class="text-light text-decoration-none">微纳刻蚀服务</a></li>
+                        <li class="mb-2"><a href="servers/metamaterial-server.html" class="text-light text-decoration-none">超材料产品</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3 text-center">关注我们</h5>
+                    <div class="d-flex justify-content-center gap-4">
+                        <div class="qr-code-wrapper">
+                            <img src="../images/qrcode-weixin.jpg" alt="微信公众号">
+                        </div>
+                        <div class="qr-code-wrapper">
+                            <img src="../images/qrcode-douyin.jpg" alt="抖音号">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="text-center">
+                <p class="copyright small mb-0">&copy; 2024 微纳科技. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../assets/js/scripts.js"></script>
+    
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 文件列表数据
+        let allFiles = [];
+        let filteredFiles = [];
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFileList();
+            setupEventListeners();
+        });
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 搜索功能
+            document.getElementById('searchInput').addEventListener('input', function() {
+                filterFiles(this.value);
+            });
+
+            // 文件上传
+            document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+            
+            // 拖拽上传
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            uploadArea.addEventListener('click', () => document.getElementById('fileInput').click());
+        }
+
+        // 加载文件列表
+        async function loadFileList() {
+            try {
+                const response = await fetch('/api/files');
+                if (!response.ok) {
+                    throw new Error('Failed to load files');
+                }
+                allFiles = await response.json();
+                filteredFiles = [...allFiles];
+                displayFiles();
+            } catch (error) {
+                console.error('Error loading files:', error);
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('noFilesMessage').style.display = 'block';
+            }
+        }
+
+        // 显示文件列表
+        function displayFiles() {
+            const fileList = document.getElementById('fileList');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const noFilesMessage = document.getElementById('noFilesMessage');
+
+            loadingIndicator.style.display = 'none';
+
+            if (filteredFiles.length === 0) {
+                noFilesMessage.style.display = 'block';
+                fileList.innerHTML = '';
+                return;
+            }
+
+            noFilesMessage.style.display = 'none';
+
+            // 按月份分组
+            const filesByMonth = groupFilesByMonth(filteredFiles);
+            
+            let html = '';
+            for (const [month, files] of Object.entries(filesByMonth)) {
+                html += `
+                    <div class="month-section">
+                        <div class="month-header">
+                            <h4 class="mb-0"><i class="bi bi-calendar3 me-2"></i>${month}</h4>
+                        </div>
+                        <div class="row">
+                            ${files.map(file => createFileItem(file)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            fileList.innerHTML = html;
+        }
+
+        // 按月份分组文件
+        function groupFilesByMonth(files) {
+            const groups = {};
+            files.forEach(file => {
+                const date = new Date(file.uploadTime);
+                const month = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' });
+                if (!groups[month]) {
+                    groups[month] = [];
+                }
+                groups[month].push(file);
+            });
+            return groups;
+        }
+
+        // 创建文件项HTML
+        function createFileItem(file) {
+            const fileIcon = getFileIcon(file.name);
+            const fileSize = formatFileSize(file.size);
+            const uploadTime = new Date(file.uploadTime).toLocaleString('zh-CN');
+            
+            return `
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="file-item">
+                        <div class="d-flex align-items-center">
+                            <div class="file-icon me-3">
+                                <i class="bi ${fileIcon}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 text-truncate" title="${file.name}">${file.name}</h6>
+                                <p class="text-muted small mb-1">${fileSize}</p>
+                                <p class="text-muted small mb-0">${uploadTime}</p>
+                            </div>
+                            <div class="ms-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="downloadFile('${file.id}')" title="下载">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 获取文件图标
+        function getFileIcon(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            const iconMap = {
+                // 文档类型
+                'pdf': 'bi-file-earmark-pdf',
+                'doc': 'bi-file-earmark-word',
+                'docx': 'bi-file-earmark-word',
+                'ppt': 'bi-file-earmark-ppt',
+                'pptx': 'bi-file-earmark-ppt',
+                'xls': 'bi-file-earmark-excel',
+                'xlsx': 'bi-file-earmark-excel',
+                'txt': 'bi-file-earmark-text',
+                'rtf': 'bi-file-earmark-text',
+                'md': 'bi-file-earmark-text',
+                
+                // 图片类型
+                'jpg': 'bi-file-earmark-image',
+                'jpeg': 'bi-file-earmark-image',
+                'png': 'bi-file-earmark-image',
+                'gif': 'bi-file-earmark-image',
+                'bmp': 'bi-file-earmark-image',
+                'svg': 'bi-file-earmark-image',
+                'webp': 'bi-file-earmark-image',
+                'tiff': 'bi-file-earmark-image',
+                
+                // 视频类型
+                'mp4': 'bi-file-earmark-play',
+                'avi': 'bi-file-earmark-play',
+                'mov': 'bi-file-earmark-play',
+                'wmv': 'bi-file-earmark-play',
+                'flv': 'bi-file-earmark-play',
+                'mkv': 'bi-file-earmark-play',
+                'webm': 'bi-file-earmark-play',
+                
+                // 音频类型
+                'mp3': 'bi-file-earmark-music',
+                'wav': 'bi-file-earmark-music',
+                'flac': 'bi-file-earmark-music',
+                'aac': 'bi-file-earmark-music',
+                'ogg': 'bi-file-earmark-music',
+                
+                // 压缩文件
+                'zip': 'bi-file-earmark-zip',
+                'rar': 'bi-file-earmark-zip',
+                '7z': 'bi-file-earmark-zip',
+                'tar': 'bi-file-earmark-zip',
+                'gz': 'bi-file-earmark-zip',
+                
+                // 代码文件
+                'html': 'bi-file-earmark-code',
+                'css': 'bi-file-earmark-code',
+                'js': 'bi-file-earmark-code',
+                'json': 'bi-file-earmark-code',
+                'xml': 'bi-file-earmark-code',
+                'py': 'bi-file-earmark-code',
+                'java': 'bi-file-earmark-code',
+                'cpp': 'bi-file-earmark-code',
+                'c': 'bi-file-earmark-code',
+                'php': 'bi-file-earmark-code',
+                'sql': 'bi-file-earmark-code',
+                'sh': 'bi-file-earmark-code',
+                'bat': 'bi-file-earmark-code',
+                
+                // 3D文件
+                'stl': 'bi-file-earmark-3d',
+                'obj': 'bi-file-earmark-3d',
+                'fbx': 'bi-file-earmark-3d',
+                'dae': 'bi-file-earmark-3d',
+                
+                // 其他常见格式
+                'csv': 'bi-file-earmark-spreadsheet',
+                'tsv': 'bi-file-earmark-spreadsheet',
+                'log': 'bi-file-earmark-text',
+                'ini': 'bi-file-earmark-text',
+                'cfg': 'bi-file-earmark-text',
+                'conf': 'bi-file-earmark-text'
+            };
+            return iconMap[ext] || 'bi-file-earmark';
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 过滤文件
+        function filterFiles(searchTerm) {
+            if (!searchTerm.trim()) {
+                filteredFiles = [...allFiles];
+            } else {
+                filteredFiles = allFiles.filter(file => 
+                    file.name.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            displayFiles();
+        }
+
+        // 下载文件
+        async function downloadFile(fileId) {
+            try {
+                const response = await fetch(`/api/files/${fileId}/download`);
+                if (!response.ok) {
+                    throw new Error('Download failed');
+                }
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = ''; // 使用服务器返回的文件名
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('下载失败，请稍后重试');
+            }
+        }
+
+        // 文件选择处理
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            uploadFiles(files);
+        }
+
+        // 拖拽处理
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            const files = Array.from(event.dataTransfer.files);
+            uploadFiles(files);
+        }
+
+        // 上传文件
+        async function uploadFiles(files) {
+            const uploadProgress = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const uploadedFiles = document.getElementById('uploadedFiles');
+
+            uploadProgress.style.display = 'block';
+            uploadedFiles.innerHTML = '';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    progressText.textContent = `正在上传: ${file.name}`;
+                    progressFill.style.width = `${((i + 1) / files.length) * 100}%`;
+
+                    const response = await fetch('/api/files/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Upload failed');
+                    }
+
+                    const result = await response.json();
+                    
+                    // 添加到已上传文件列表
+                    uploadedFiles.innerHTML += `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i>
+                            ${file.name} 上传成功
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    uploadedFiles.innerHTML += `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            ${file.name} 上传失败
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                }
+            }
+
+            // 重新加载文件列表
+            setTimeout(() => {
+                loadFileList();
+                uploadProgress.style.display = 'none';
+                progressFill.style.width = '0%';
+                document.getElementById('fileInput').value = '';
+            }, 1000);
+        }
+    </script>
+</body>
+</html> 
