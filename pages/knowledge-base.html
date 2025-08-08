@@ -181,6 +181,31 @@
             gap: 0.5rem;
             justify-content: flex-end;
         }
+        
+        /* 模式切换按钮样式 */
+        .btn-outline-primary.active,
+        .btn-outline-danger.active {
+            color: white;
+        }
+        
+        .btn-outline-primary.active {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .btn-outline-danger.active {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        /* 模态框优化 */
+        .modal-dialog {
+            max-width: 500px;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -312,7 +337,7 @@
 
     <!-- 文件管理模态框 -->
     <div class="modal fade" id="manageModal" tabindex="-1" aria-labelledby="manageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="manageModalLabel">
@@ -321,74 +346,56 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- 标签页导航 -->
-                    <ul class="nav nav-tabs mb-3" id="manageTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-tab-pane" type="button" role="tab">
-                                <i class="bi bi-cloud-upload me-2"></i>上传文件
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-tab-pane" type="button" role="tab">
-                                <i class="bi bi-trash me-2"></i>删除文件
-                            </button>
-                        </li>
-                    </ul>
+                    <!-- 模式切换按钮 -->
+                    <div class="d-flex gap-2 mb-3">
+                        <button class="btn btn-outline-primary flex-fill" id="uploadModeBtn" onclick="switchToUploadMode()">
+                            <i class="bi bi-cloud-upload me-2"></i>上传文件
+                        </button>
+                        <button class="btn btn-outline-danger flex-fill" id="deleteModeBtn" onclick="switchToDeleteMode()">
+                            <i class="bi bi-trash me-2"></i>删除文件
+                        </button>
+                    </div>
                     
-                    <!-- 标签页内容 -->
-                    <div class="tab-content" id="manageTabsContent">
-                        <!-- 上传文件标签页 -->
-                        <div class="tab-pane fade show active" id="upload-tab-pane" role="tabpanel">
-                            <form id="uploadForm" enctype="multipart/form-data">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="uploadPassword" class="form-label">上传密码</label>
-                                            <input type="password" class="form-control" id="uploadPassword" required>
-                                            <div class="form-text">请输入上传密码</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="uploadDirectory" class="form-label">存放目录</label>
-                                            <select class="form-select" id="uploadDirectory" required>
-                                                <option value="">请选择目录</option>
-                                                <option value="auto">自动创建（按当前月份）</option>
-                                            </select>
-                                            <div class="form-text">选择文件存放的目录</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="uploadFile" class="form-label">选择文件</label>
-                                    <input type="file" class="form-control" id="uploadFile" required multiple>
-                                    <div class="form-text">支持所有文件格式，可多选</div>
-                                </div>
-                                <div class="mb-3">
-                                    <div id="uploadProgress" class="progress" style="display: none;">
-                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                                <div id="uploadStatus"></div>
-                            </form>
-                        </div>
-                        
-                        <!-- 删除文件标签页 -->
-                        <div class="tab-pane fade" id="delete-tab-pane" role="tabpanel">
+                    <!-- 上传文件内容 -->
+                    <div id="uploadContent">
+                        <form id="uploadForm" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label for="deletePassword" class="form-label">删除密码</label>
-                                <input type="password" class="form-control" id="deletePassword" required>
-                                <div class="form-text">请输入删除密码</div>
+                                <label for="uploadPassword" class="form-label">上传密码</label>
+                                <input type="password" class="form-control" id="uploadPassword" required>
                             </div>
                             <div class="mb-3">
-                                <label for="deleteFileSelect" class="form-label">选择要删除的文件</label>
-                                <select class="form-select" id="deleteFileSelect" required>
-                                    <option value="">请选择文件</option>
+                                <label for="uploadDirectory" class="form-label">存放目录</label>
+                                <select class="form-select" id="uploadDirectory" required>
+                                    <option value="">请选择目录</option>
+                                    <option value="auto">自动创建（按当前月份）</option>
                                 </select>
-                                <div class="form-text">选择要删除的文件</div>
                             </div>
-                            <div id="deleteStatus"></div>
+                            <div class="mb-3">
+                                <label for="uploadFile" class="form-label">选择文件</label>
+                                <input type="file" class="form-control" id="uploadFile" required multiple>
+                            </div>
+                            <div class="mb-3">
+                                <div id="uploadProgress" class="progress" style="display: none;">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div id="uploadStatus"></div>
+                        </form>
+                    </div>
+                    
+                    <!-- 删除文件内容 -->
+                    <div id="deleteContent" style="display: none;">
+                        <div class="mb-3">
+                            <label for="deletePassword" class="form-label">删除密码</label>
+                            <input type="password" class="form-control" id="deletePassword" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="deleteFileSelect" class="form-label">选择要删除的文件</label>
+                            <select class="form-select" id="deleteFileSelect" required>
+                                <option value="">请选择文件</option>
+                            </select>
+                        </div>
+                        <div id="deleteStatus"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -510,6 +517,7 @@
                 document.getElementById('uploadForm').reset();
                 document.getElementById('uploadProgress').style.display = 'none';
                 document.getElementById('uploadStatus').innerHTML = '';
+                switchToUploadMode(); // 切换回上传模式
             });
             
             // 模态框关闭按钮事件
@@ -616,29 +624,28 @@
             const modal = new bootstrap.Modal(document.getElementById('manageModal'));
             modal.show();
             
-            // 设置标签页切换事件
-            setupTabEvents();
+            // 默认显示上传模式
+            switchToUploadMode();
         }
 
-        // 设置标签页切换事件
-        function setupTabEvents() {
-            const uploadTab = document.getElementById('upload-tab');
-            const deleteTab = document.getElementById('delete-tab');
-            const actionBtn = document.getElementById('manageActionBtn');
-            
-            uploadTab.addEventListener('click', function() {
-                actionBtn.innerHTML = '<i class="bi bi-upload me-2"></i>上传文件';
-                actionBtn.onclick = handleFileUpload;
-            });
-            
-            deleteTab.addEventListener('click', function() {
-                actionBtn.innerHTML = '<i class="bi bi-trash me-2"></i>删除文件';
-                actionBtn.onclick = handleFileDelete;
-            });
-            
-            // 默认设置为上传模式
-            actionBtn.innerHTML = '<i class="bi bi-upload me-2"></i>上传文件';
-            actionBtn.onclick = handleFileUpload;
+        // 切换到上传模式
+        function switchToUploadMode() {
+            document.getElementById('uploadContent').style.display = 'block';
+            document.getElementById('deleteContent').style.display = 'none';
+            document.getElementById('uploadModeBtn').classList.add('active');
+            document.getElementById('deleteModeBtn').classList.remove('active');
+            document.getElementById('manageActionBtn').innerHTML = '<i class="bi bi-upload me-2"></i>上传文件';
+            document.getElementById('manageActionBtn').onclick = handleFileUpload;
+        }
+
+        // 切换到删除模式
+        function switchToDeleteMode() {
+            document.getElementById('uploadContent').style.display = 'none';
+            document.getElementById('deleteContent').style.display = 'block';
+            document.getElementById('uploadModeBtn').classList.remove('active');
+            document.getElementById('deleteModeBtn').classList.add('active');
+            document.getElementById('manageActionBtn').innerHTML = '<i class="bi bi-trash me-2"></i>删除文件';
+            document.getElementById('manageActionBtn').onclick = handleFileDelete;
         }
 
         // 更新目录选项
