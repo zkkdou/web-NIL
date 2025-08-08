@@ -15,7 +15,7 @@ const postData = querystring.stringify(testData);
 
 const options = {
     hostname: '124.220.134.33',
-    port: 80, // 临时使用80端口
+    port: 3000, // 使用3000端口
     path: '/',
     method: 'POST',
     headers: {
