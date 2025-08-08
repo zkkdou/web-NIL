@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (navbar) {
         window.addEventListener('scroll', function() {
             if (window.scrollY > 50) {
-                navbar.classList.add('navbar-scrolled');
+                navbar.classList.add('scrolled');
             } else {
-                navbar.classList.remove('navbar-scrolled');
+                navbar.classList.remove('scrolled');
             }
         });
     }

@@ -7,12 +7,13 @@
     <!-- 预加载关键资源 -->
     <link rel="preload" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" as="style">
     <link rel="preload" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" as="style">
-    <link rel="preload" href="../assets/css/style.css" as="style">
+    <link rel="preload" href="../assets/css/styles.css" as="style">
     
     <!-- CSS -->
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="../assets/css/styles.css" rel="stylesheet">
     <style>
         /* 内联关键CSS，减少请求 */
         .contact-page { padding-top: 76px; }
@@ -64,7 +65,7 @@
         }
     </style>
     <!-- 添加网站图标 -->
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <link rel="icon" type="image/png" href="../images/logo.png">
 </head>
 <body>
     <!-- 导航栏 -->
@@ -304,13 +305,17 @@
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>发送中...';
 
-            // 发送请求到Node.js后端
-            fetch('http://localhost:8000', {
+            // 动态选择 API 地址（优先当前主机，其次回退 localhost:8000）
+            const apiPort = 8000;
+            const apiHost = window.location.hostname && window.location.hostname !== '' ? window.location.hostname : 'localhost';
+            const apiUrl = `http://${apiHost}:${apiPort}`;
+
+            fetch(apiUrl, {
                 method: 'POST',
                 body: formData.toString(),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             })
-            .then(response => response.ok ? response.json() : Promise.reject('HTTP error'))
+            .then(response => response.ok ? response.json() : Promise.reject(new Error('HTTP error')))
             .then(data => {
                 if (data.success) {
                     alert('提交成功！我们会尽快与您联系。');
@@ -321,7 +326,8 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert(error.message.includes('Failed to fetch') 
+                const isNetwork = (error.message && error.message.includes('Failed to fetch'));
+                alert(isNetwork 
                     ? '无法连接到服务器，请确保服务器已启动并运行在正确的端口上。\n\n提示：请联系：+86 18701960619'
                     : '提交失败：' + error.message);
             })

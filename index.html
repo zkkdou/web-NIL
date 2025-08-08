@@ -20,6 +20,45 @@
                  url("https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/fonts/bootstrap-icons.woff") format("woff");
         }
     </style>
+    <script>
+        (function() {
+            function injectCss(href) {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = href;
+                document.head.appendChild(link);
+            }
+            function isBootstrapLoaded() {
+                var val = getComputedStyle(document.documentElement).getPropertyValue('--bs-body-bg');
+                return !!val && val.trim() !== '';
+            }
+            function areIconsLoaded() {
+                var test = document.createElement('i');
+                test.className = 'bi';
+                document.body.appendChild(test);
+                var ff = getComputedStyle(test).fontFamily || '';
+                document.body.removeChild(test);
+                return ff.indexOf('bootstrap-icons') !== -1;
+            }
+            // 在页面加载后检测并回退到本地依赖
+            window.addEventListener('load', function() {
+                // Bootstrap CSS fallback
+                if (!isBootstrapLoaded()) {
+                    injectCss('assets/vendor/bootstrap/bootstrap.min.css');
+                    console.warn('[Fallback] 使用本地 Bootstrap CSS');
+                }
+                // Bootstrap Icons CSS fallback
+                try {
+                    if (!areIconsLoaded()) {
+                        injectCss('assets/vendor/bootstrap-icons/bootstrap-icons.css');
+                        console.warn('[Fallback] 使用本地 Bootstrap Icons CSS');
+                    }
+                } catch (_) {
+                    injectCss('assets/vendor/bootstrap-icons/bootstrap-icons.css');
+                }
+            });
+        })();
+    </script>
 </head>
 <body>
     <!-- 导航栏 -->
