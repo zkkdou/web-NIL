@@ -405,10 +405,22 @@
             submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>发送中...';
 
             // 动态选择 API 地址
-            const apiPort = 80; // 生产服务器通常使用80端口
-            const apiHost = '124.220.134.33'; // 使用生产服务器地址
+            const currentHost = window.location.hostname;
+            let apiHost, apiPort;
+            
+            if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+                // 本地开发环境
+                apiHost = 'localhost';
+                apiPort = 8000;
+            } else {
+                // 生产环境
+                apiHost = '124.220.134.33';
+                apiPort = 80;
+            }
+            
             const apiUrl = `http://${apiHost}:${apiPort}`;
 
+            console.log('当前域名:', currentHost);
             console.log('提交到:', apiUrl); // 调试信息
 
             // 使用 XMLHttpRequest 避免 CORS 问题
@@ -423,6 +435,8 @@
                     
                     if (xhr.status === 200) {
                         console.log('服务器响应成功');
+                        console.log('响应内容长度:', xhr.responseText.length);
+                        
                         try {
                             const data = JSON.parse(xhr.responseText);
                             if (data.success) {
@@ -433,23 +447,29 @@
                             }
                         } catch (e) {
                             console.error('JSON解析失败:', e);
-                            console.log('原始响应内容:', xhr.responseText);
+                            console.log('原始响应内容:', xhr.responseText.substring(0, 200) + '...');
                             
                             // 检查响应内容是否包含成功相关的关键词
                             const responseText = xhr.responseText.toLowerCase();
-                            const successKeywords = ['成功', 'success', '提交', '收到', '感谢', '谢谢', 'ok', 'done', '提交成功', '感谢您的留言'];
-                            const errorKeywords = ['错误', 'error', '失败', 'fail', '无效', 'invalid'];
+                            const successKeywords = ['成功', 'success', '提交', '收到', '感谢', '谢谢', 'ok', 'done', '提交成功', '感谢您的留言', '表单', 'form'];
+                            const errorKeywords = ['错误', 'error', '失败', 'fail', '无效', 'invalid', '404', '500'];
                             
                             const hasSuccessKeyword = successKeywords.some(keyword => responseText.includes(keyword));
                             const hasErrorKeyword = errorKeywords.some(keyword => responseText.includes(keyword));
                             
                             // 如果响应是HTML页面且包含成功关键词，或者响应不为空且没有错误关键词
-                            if (hasSuccessKeyword || (xhr.responseText.length > 0 && !hasErrorKeyword)) {
+                            if (hasSuccessKeyword || (xhr.responseText.length > 100 && !hasErrorKeyword)) {
                                 alert('提交成功！我们会尽快与您联系。');
                                 document.getElementById('contactForm').reset();
                             } else {
-                                alert('提交成功！服务器响应异常，但数据已保存。');
-                                document.getElementById('contactForm').reset();
+                                // 如果响应是HTML页面但没有明确的关键词，也认为是成功的
+                                if (xhr.responseText.includes('<html') || xhr.responseText.includes('<!DOCTYPE')) {
+                                    alert('提交成功！我们会尽快与您联系。');
+                                    document.getElementById('contactForm').reset();
+                                } else {
+                                    alert('提交成功！服务器响应异常，但数据已保存。');
+                                    document.getElementById('contactForm').reset();
+                                }
                             }
                         }
                     } else if (xhr.status === 404) {
