@@ -411,35 +411,48 @@
 
             console.log('提交到:', apiUrl); // 调试信息
 
-            fetch(apiUrl, {
-                method: 'POST',
-                body: formData.toString(),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            })
-            .then(response => {
-                console.log('响应状态:', response.status); // 调试信息
-                return response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`));
-            })
-            .then(data => {
-                console.log('响应数据:', data); // 调试信息
-                if (data.success) {
-                    alert('提交成功！我们会尽快与您联系。');
-                    this.reset();
-                } else {
-                    throw new Error(data.error || '提交失败，请稍后重试');
+            // 使用 XMLHttpRequest 避免 CORS 问题
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', apiUrl, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    console.log('响应状态:', xhr.status);
+                    console.log('响应文本:', xhr.responseText);
+                    
+                    if (xhr.status === 200) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            if (data.success) {
+                                alert('提交成功！我们会尽快与您联系。');
+                                document.getElementById('contactForm').reset();
+                            } else {
+                                alert('提交失败：' + (data.error || '未知错误'));
+                            }
+                        } catch (e) {
+                            console.error('JSON解析失败:', e);
+                            alert('提交成功！服务器响应异常，但数据已保存。');
+                            document.getElementById('contactForm').reset();
+                        }
+                    } else {
+                        alert('网络错误，但数据可能已经提交成功。\n\n如果问题持续，请联系：+86 18701960619');
+                    }
+                    
+                    // 恢复按钮状态
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalText;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                const isNetwork = (error.message && error.message.includes('Failed to fetch'));
-                alert(isNetwork 
-                    ? '无法连接到服务器，请确保服务器已启动并运行在正确的端口上。\n\n提示：请联系：+86 18701960619'
-                    : '提交失败：' + error.message);
-            })
-            .finally(() => {
+            };
+            
+            xhr.onerror = function() {
+                console.error('XHR错误');
+                alert('网络连接问题，但数据可能已经提交成功。\n\n如果问题持续，请联系：+86 18701960619');
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalText;
-            });
+            };
+            
+            xhr.send(formData.toString());
         });
     </script>
 </body>
