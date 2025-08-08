@@ -12,7 +12,7 @@ fi
 
 echo "📋 执行顺序："
 echo "1. 01-deploy-api-FIRST-ONLY.sh - 部署API服务（仅首次）"
-echo "2. 02-download-deps-FIRST-ONLY.js - 下载依赖文件（仅首次）"
+echo "2. 02-download-deps-FIRST-ONLY.cjs - 下载依赖文件（仅首次）"
 echo "3. 03-replace-cdn-FIRST-ONLY.cjs - 替换CDN链接（仅首次）"
 echo "4. 04-start-services.sh - 启动所有服务"
 echo ""
@@ -40,15 +40,15 @@ if [ ! -d "record" ] || [ ! -f "record/contact-api.js" ]; then
     
     # 2. 下载依赖文件
     echo "📥 步骤2: 下载依赖文件..."
-    if [ -f "02-download-deps-FIRST-ONLY.js" ]; then
-        node 02-download-deps-FIRST-ONLY.js
+    if [ -f "02-download-deps-FIRST-ONLY.cjs" ]; then
+        node 02-download-deps-FIRST-ONLY.cjs
         if [ $? -ne 0 ]; then
             echo "❌ 依赖文件下载失败"
             exit 1
         fi
         echo "✅ 依赖文件下载完成"
     else
-        echo "❌ 02-download-deps-FIRST-ONLY.js 文件不存在"
+        echo "❌ 02-download-deps-FIRST-ONLY.cjs 文件不存在"
         exit 1
     fi
     echo ""

@@ -6,7 +6,7 @@
 const startupScripts = [
     "00-startup-all.sh",                    // 0. 一键启动所有服务（推荐使用）
     "01-deploy-api-FIRST-ONLY.sh",          // 1. 部署API服务到record目录（仅首次运行）
-    "02-download-deps-FIRST-ONLY.js",       // 2. 下载依赖文件（仅首次运行）
+    "02-download-deps-FIRST-ONLY.cjs",      // 2. 下载依赖文件（仅首次运行）
     "03-replace-cdn-FIRST-ONLY.cjs",        // 3. 替换CDN链接（仅首次运行）
     "04-start-services.sh",                 // 4. 启动所有服务（日常重启）
     "05-stop-services.sh",                  // 5. 停止所有服务
@@ -39,10 +39,10 @@ const startupScripts = [
 - **功能**: 创建contact-api.js、package.json和数据目录
 - **重复运行**: ❌ 不需要，文件已存在
 
-### 2. `02-download-deps-FIRST-ONLY.js` ⭐ 仅首次运行
+### 2. `02-download-deps-FIRST-ONLY.cjs` ⭐ 仅首次运行
 - **作用**: 下载本地依赖文件
 - **执行位置**: 项目根目录
-- **执行命令**: `node 02-download-deps-FIRST-ONLY.js`
+- **执行命令**: `node 02-download-deps-FIRST-ONLY.cjs`
 - **功能**: 下载Bootstrap、Bootstrap Icons、Animate.css等
 - **重复运行**: ❌ 不需要，文件已下载
 
@@ -139,7 +139,7 @@ const startupScripts = [
 web-NIL/
 ├── 00-startup-all.sh                    # 一键启动脚本
 ├── 01-deploy-api-FIRST-ONLY.sh          # 部署API服务（仅首次）
-├── 02-download-deps-FIRST-ONLY.js       # 下载依赖（仅首次）
+├── 02-download-deps-FIRST-ONLY.cjs      # 下载依赖（仅首次）
 ├── 03-replace-cdn-FIRST-ONLY.cjs        # 替换CDN链接（仅首次）
 ├── 04-start-services.sh                 # 启动服务
 ├── 05-stop-services.sh                  # 停止服务
@@ -155,7 +155,7 @@ web-NIL/
 
 ### 🔴 仅首次运行（FIRST-ONLY标记）
 - `01-deploy-api-FIRST-ONLY.sh`
-- `02-download-deps-FIRST-ONLY.js`
+- `02-download-deps-FIRST-ONLY.cjs`
 - `03-replace-cdn-FIRST-ONLY.cjs`
 
 ### 🟢 日常使用

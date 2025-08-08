@@ -1,11 +1,6 @@
-import https from 'https';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
 const dependencies = [
     {
@@ -98,7 +93,7 @@ async function downloadFile(url, filePath, attempt = 1) {
             request.destroy();
             file.close();
             fs.unlink(filePath, () => {});
-            reject(new Error(`下载超时: ${url}`));
+            reject(new Error('请求超时'));
         });
 
         request.on('error', (err) => {
@@ -106,49 +101,67 @@ async function downloadFile(url, filePath, attempt = 1) {
             fs.unlink(filePath, () => {});
             reject(err);
         });
-    }).catch(async (error) => {
-        if (attempt < MAX_RETRIES) {
-            console.log(`重试下载 (${attempt + 1}/${MAX_RETRIES}): ${url}`);
-            await sleep(1000 * attempt); // 指数退避
-            return downloadFile(url, filePath, attempt + 1);
-        }
-        throw error;
     });
 }
 
-async function downloadAll() {
-    const results = {
-        success: [],
-        failed: []
-    };
-
-    for (const dep of dependencies) {
+async function downloadWithRetry(url, filePath) {
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         try {
-            console.log(`开始下载: ${dep.url}`);
-            await downloadFile(dep.url, dep.path);
-            results.success.push(dep.path);
+            await downloadFile(url, filePath, attempt);
+            return;
         } catch (error) {
-            console.error(`下载失败 ${dep.url}:`, error.message);
-            results.failed.push({
-                path: dep.path,
-                error: error.message
-            });
+            console.log(`下载失败 (尝试 ${attempt}/${MAX_RETRIES}): ${filePath}`);
+            console.log(`错误: ${error.message}`);
+            
+            if (attempt < MAX_RETRIES) {
+                console.log(`等待 ${attempt * 2} 秒后重试...`);
+                await sleep(attempt * 2000);
+            } else {
+                throw error;
+            }
         }
-    }
-
-    // 打印总结
-    console.log('\n下载总结:');
-    console.log(`成功: ${results.success.length}`);
-    console.log(`失败: ${results.failed.length}`);
-    
-    if (results.failed.length > 0) {
-        console.log('\n失败的下载:');
-        results.failed.forEach(item => {
-            console.log(`- ${item.path}: ${item.error}`);
-        });
-        process.exit(1);
     }
 }
 
-console.log('开始下载依赖文件...\n');
-downloadAll(); 
+async function downloadAll() {
+    console.log('🚀 开始下载依赖文件...');
+    console.log('=====================================');
+    
+    const startTime = Date.now();
+    let successCount = 0;
+    let failCount = 0;
+    
+    for (const dep of dependencies) {
+        try {
+            console.log(`📥 下载: ${dep.path}`);
+            await downloadWithRetry(dep.url, dep.path);
+            successCount++;
+        } catch (error) {
+            console.log(`❌ 下载失败: ${dep.path}`);
+            console.log(`   错误: ${error.message}`);
+            failCount++;
+        }
+        console.log('');
+    }
+    
+    const endTime = Date.now();
+    const duration = ((endTime - startTime) / 1000).toFixed(2);
+    
+    console.log('=====================================');
+    console.log(`🎉 下载完成！用时: ${duration} 秒`);
+    console.log(`✅ 成功: ${successCount} 个文件`);
+    console.log(`❌ 失败: ${failCount} 个文件`);
+    
+    if (failCount > 0) {
+        console.log('');
+        console.log('⚠️  部分文件下载失败，但网站仍可正常运行');
+        console.log('💡 建议检查网络连接后重新运行此脚本');
+    }
+    
+    console.log('');
+    console.log('📁 文件位置: assets/vendor/');
+    console.log('🌐 网站可以正常访问了！');
+}
+
+// 运行下载
+downloadAll().catch(console.error); 
