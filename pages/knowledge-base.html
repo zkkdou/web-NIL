@@ -212,20 +212,25 @@
                     <!-- 搜索框 -->
                     <div class="search-box">
                         <div class="row align-items-center">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                                     <input type="text" class="form-control" id="searchInput" placeholder="搜索文件名...">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <button class="btn btn-outline-secondary w-100" onclick="refreshFileList()">
                                     <i class="bi bi-arrow-clockwise me-2"></i>刷新列表
                                 </button>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <button class="btn btn-primary w-100" onclick="showUploadModal()">
                                     <i class="bi bi-cloud-upload me-2"></i>上传文件
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-warning w-100" onclick="forceCloseModal()" title="如果页面卡住，点击此按钮修复">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>修复页面
                                 </button>
                             </div>
                         </div>
@@ -410,6 +415,32 @@
             window.addEventListener('scroll', function() {
                 highlightVisibleFolder();
             });
+            
+            // 模态框关闭事件监听
+            const modalElement = document.getElementById('uploadModal');
+            modalElement.addEventListener('hidden.bs.modal', function () {
+                // 模态框关闭后清理状态
+                document.getElementById('uploadForm').reset();
+                document.getElementById('uploadProgress').style.display = 'none';
+                document.getElementById('uploadStatus').innerHTML = '';
+            });
+            
+            // 模态框关闭按钮事件
+            const closeButtons = modalElement.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 确保模态框完全关闭
+                    setTimeout(() => {
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) {
+                            backdrop.remove();
+                        }
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+                    }, 100);
+                });
+            });
         }
 
         // 高亮当前可见的文件夹
@@ -454,10 +485,41 @@
             loadFileList();
         }
 
+        // 紧急修复模态框卡住的问题
+        function forceCloseModal() {
+            const modalElement = document.getElementById('uploadModal');
+            const backdrop = document.querySelector('.modal-backdrop');
+            
+            // 移除遮罩层
+            if (backdrop) {
+                backdrop.remove();
+            }
+            
+            // 重置模态框状态
+            modalElement.style.display = 'none';
+            modalElement.classList.remove('show');
+            
+            // 重置body状态
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            // 清理表单
+            document.getElementById('uploadForm').reset();
+            document.getElementById('uploadProgress').style.display = 'none';
+            document.getElementById('uploadStatus').innerHTML = '';
+            
+            console.log('模态框已强制关闭');
+        }
+
         // 显示上传模态框
         function showUploadModal() {
             // 更新目录选项
             updateDirectoryOptions();
+            
+            // 确保之前的模态框完全关闭
+            forceCloseModal();
+            
             const modal = new bootstrap.Modal(document.getElementById('uploadModal'));
             modal.show();
         }
@@ -552,9 +614,28 @@
                 
                 // 刷新文件列表并关闭模态框
                 setTimeout(() => {
+                    // 先刷新文件列表
                     refreshFileList();
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-                    modal.hide();
+                    
+                    // 然后关闭模态框
+                    const modalElement = document.getElementById('uploadModal');
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) {
+                        modal.hide();
+                    } else {
+                        // 如果无法获取模态框实例，手动移除遮罩层
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) {
+                            backdrop.remove();
+                        }
+                        modalElement.style.display = 'none';
+                        modalElement.classList.remove('show');
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+                    }
+                    
+                    // 隐藏进度条
                     progressDiv.style.display = 'none';
                 }, 2000);
                 
