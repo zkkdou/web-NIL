@@ -50,6 +50,19 @@
             border-bottom: 2px solid #007bff;
             padding-bottom: 0.5rem;
             margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .folder-header:hover {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin: -0.5rem -0.5rem 0.5rem -0.5rem;
+        }
+        .folder-toggle {
+            transition: transform 0.3s ease;
+        }
+        .folder-content {
+            transition: all 0.3s ease;
         }
         .btn-copy {
             margin-left: 0.5rem;
@@ -369,17 +382,39 @@
             for (const [folder, files] of Object.entries(filesByFolder)) {
                 html += `
                     <div class="folder-section">
-                        <div class="folder-header">
-                            <h4 class="mb-0"><i class="bi bi-folder me-2"></i>${folder}</h4>
+                        <div class="folder-header" onclick="toggleFolder('${folder}')" style="cursor: pointer;">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h4 class="mb-0">
+                                    <i class="bi bi-folder me-2"></i>${folder}
+                                    <span class="badge bg-primary ms-2">${files.length}</span>
+                                </h4>
+                                <i class="bi bi-chevron-down folder-toggle" id="toggle-${folder}"></i>
+                            </div>
                         </div>
-                        <div class="row">
-                            ${files.map(file => createFileItem(file)).join('')}
+                        <div class="folder-content" id="content-${folder}">
+                            <div class="row">
+                                ${files.map(file => createFileItem(file)).join('')}
+                            </div>
                         </div>
                     </div>
                 `;
             }
             
             fileList.innerHTML = html;
+        }
+
+        // 切换文件夹展开/折叠
+        function toggleFolder(folder) {
+            const content = document.getElementById(`content-${folder}`);
+            const toggle = document.getElementById(`toggle-${folder}`);
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggle.className = 'bi bi-chevron-down folder-toggle';
+            } else {
+                content.style.display = 'none';
+                toggle.className = 'bi bi-chevron-right folder-toggle';
+            }
         }
 
         // 按文件夹分组文件
@@ -402,24 +437,29 @@
             const uploadTime = new Date(file.uploadTime).toLocaleString('zh-CN');
             
             return `
-                <div class="col-md-6 col-lg-4 mb-3">
+                <div class="col-12 mb-3">
                     <div class="file-item">
-                        <div class="d-flex align-items-center">
-                            <div class="file-icon me-3">
-                                <i class="bi ${fileIcon}"></i>
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center">
+                                    <div class="file-icon me-3">
+                                        <i class="bi ${fileIcon}"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-truncate" title="${file.name}">${file.name}</h6>
+                                        <p class="text-muted small mb-1">${fileSize} • ${uploadTime}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 text-truncate" title="${file.name}">${file.name}</h6>
-                                <p class="text-muted small mb-1">${fileSize}</p>
-                                <p class="text-muted small mb-0">${uploadTime}</p>
-                            </div>
-                            <div class="ms-2 d-flex">
-                                <button class="btn btn-sm btn-primary" onclick="downloadFile('${file.id}')" title="下载">
-                                    <i class="bi bi-download"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary btn-copy" onclick="copyDownloadLink('${file.downloadUrl}', this)" title="复制下载链接">
-                                    <i class="bi bi-link-45deg"></i>
-                                </button>
+                            <div class="col-md-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button class="btn btn-sm btn-primary" onclick="downloadFile('${file.id}')" title="下载">
+                                        <i class="bi bi-download me-1"></i>下载
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="copyDownloadLink('${file.downloadUrl}', this)" title="复制下载链接">
+                                        <i class="bi bi-link-45deg me-1"></i>复制链接
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -558,14 +598,30 @@
             try {
                 // 构建完整的下载URL
                 const fullUrl = window.location.origin + '/' + url.replace('../', '');
-                await navigator.clipboard.writeText(fullUrl);
+                
+                // 尝试使用现代API
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(fullUrl);
+                } else {
+                    // 降级方案：使用传统方法
+                    const textArea = document.createElement('textarea');
+                    textArea.value = fullUrl;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '-999999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
                 
                 // 显示成功状态
                 const originalClass = button.className;
                 const originalHTML = button.innerHTML;
                 
-                button.className = 'btn btn-sm btn-success btn-copy';
-                button.innerHTML = '<i class="bi bi-check"></i>';
+                button.className = 'btn btn-sm btn-success';
+                button.innerHTML = '<i class="bi bi-check me-1"></i>已复制';
                 button.title = '已复制';
                 
                 setTimeout(() => {
@@ -577,7 +633,9 @@
                 console.log('已复制下载链接:', fullUrl);
             } catch (error) {
                 console.error('Copy error:', error);
-                alert('复制失败，请手动复制链接');
+                // 如果复制失败，显示链接让用户手动复制
+                const fullUrl = window.location.origin + '/' + url.replace('../', '');
+                alert(`复制失败，请手动复制以下链接：\n\n${fullUrl}`);
             }
         }
     </script>
