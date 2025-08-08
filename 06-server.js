@@ -583,7 +583,7 @@ const server = http.createServer((req, res) => {
         }
         return;
     }
-    
+
     // 不支持的请求方法或路径
     res.writeHead(405, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
@@ -709,25 +709,25 @@ if (httpsOptions.key && httpsOptions.cert) {
 
         // 处理 POST 请求 - 联系表单
         if (req.method === 'POST' && req.url === '/') {
-            let body = '';
-            req.on('data', chunk => {
-                body += chunk.toString();
-            });
-            
-            req.on('end', () => {
-                try {
-                    const formData = querystring.parse(body);
-                    
-                    // 验证必填字段
-                    if (!formData.name || !formData.phone) {
-                        res.writeHead(400, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({
-                            success: false,
-                            error: '姓名和电话是必填项'
-                        }));
-                        return;
-                    }
-                    
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        req.on('end', () => {
+            try {
+                const formData = querystring.parse(body);
+                
+                // 验证必填字段
+                if (!formData.name || !formData.phone) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '姓名和电话是必填项'
+                    }));
+                    return;
+                }
+
                     // 准备CSV数据
                     const timestamp = new Date().toISOString();
                     const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
@@ -745,29 +745,29 @@ if (httpsOptions.key && httpsOptions.cert) {
                     if (!fs.existsSync(csvPath)) {
                         const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
                         fs.writeFileSync(csvPath, header);
-                    }
-                    
-                    // 追加数据
-                    fs.appendFileSync(csvPath, csvLine);
-                    
-                    // 发送成功响应
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                        success: true,
-                        message: '数据已保存'
-                    }));
-                    
-                } catch (error) {
-                    console.error('处理POST请求时出错:', error);
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                        success: false,
-                        error: '服务器内部错误'
-                    }));
                 }
-            });
-            return;
-        }
+
+                // 追加数据
+                    fs.appendFileSync(csvPath, csvLine);
+
+                    // 发送成功响应
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                    success: true,
+                    message: '数据已保存'
+                    }));
+                    
+            } catch (error) {
+                    console.error('处理POST请求时出错:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    error: '服务器内部错误'
+                }));
+            }
+        });
+        return;
+    }
 
         // 处理静态文件请求
         if (req.method === 'GET') {
@@ -893,12 +893,12 @@ if (httpsOptions.key && httpsOptions.cert) {
         }
         
         // 不支持的请求方法或路径
-        res.writeHead(405, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-            success: false,
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+        success: false,
             error: '不支持的请求方法或路径'
-        }));
-    });
+    }));
+});
     httpsServer.listen(httpsPort, '0.0.0.0', () => {
         console.log(`HTTPS服务器启动成功，监听端口 ${httpsPort}...`);
         console.log(`安全访问地址: https://localhost:${httpsPort}`);
