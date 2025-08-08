@@ -835,8 +835,8 @@
             // 根据当前页面URL确定API地址
             const currentHost = window.location.hostname;
             const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
-                ? 'http://localhost:8000/api/upload'
-                : `http://${currentHost}:8000/api/upload`;
+                ? 'https://localhost:8443/api/upload'
+                : `https://${currentHost}:8443/api/upload`;
             
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -905,8 +905,8 @@
                 // 根据当前页面URL确定API地址
                 const currentHost = window.location.hostname;
                 const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
-                    ? 'http://localhost:8000/api/delete'
-                    : `http://${currentHost}:8000/api/delete`;
+                    ? 'https://localhost:8443/api/delete'
+                    : `https://${currentHost}:8443/api/delete`;
                 
                 console.log('发送删除请求到:', apiUrl);
                 console.log('请求数据:', { fileId, password: '***' });
@@ -981,8 +981,8 @@
                 // 从服务器获取文件列表
                 const currentHost = window.location.hostname;
                 const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
-                    ? 'http://localhost:8000/api/files'
-                    : `http://${currentHost}:8000/api/files`;
+                    ? 'https://localhost:8443/api/files'
+                    : `https://${currentHost}:8443/api/files`;
                 
                 console.log('当前主机:', currentHost);
                 console.log('API URL:', apiUrl);
