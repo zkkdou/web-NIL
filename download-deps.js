@@ -13,8 +13,8 @@ const dependencies = [
         path: 'assets/vendor/bootstrap/bootstrap.min.css'
     },
     {
-        url: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js',
-        path: 'assets/vendor/bootstrap/bootstrap.min.js'
+        url: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',
+        path: 'assets/vendor/bootstrap/bootstrap.bundle.min.js'
     },
     {
         url: 'https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js',
@@ -39,6 +39,14 @@ const dependencies = [
     {
         url: 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/fonts/bootstrap-icons.woff2',
         path: 'assets/vendor/bootstrap-icons/fonts/bootstrap-icons.woff2'
+    },
+    {
+        url: 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css',
+        path: 'assets/vendor/animate.css/animate.min.css'
+    },
+    {
+        url: 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css',
+        path: 'assets/vendor/github-markdown-css/github-markdown.min.css'
     }
 ];
 

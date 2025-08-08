@@ -4,79 +4,203 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>联系我们 - 微纳科技</title>
+    
+    <!-- 关键CSS - 防止FOUC -->
+    <style>
+        /* 关键CSS - 防止FOUC */
+        .navbar {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+        .navbar.scrolled {
+            padding: 0.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        .col-lg-6, .col-md-12 {
+            padding: 0 15px;
+        }
+        .col-lg-6 { flex: 0 0 50%; max-width: 50%; }
+        .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+        @media (max-width: 991.98px) {
+            .col-lg-6 { flex: 0 0 100%; max-width: 100%; }
+        }
+        
+        /* 加载状态 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 页面样式 */
+        .contact-page { padding-top: 100px !important; }
+        .contact-card { 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            padding: 2rem; 
+            margin-bottom: 2rem;
+        }
+        .contact-item { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 1.5rem; 
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .contact-item i { 
+            font-size: 1.5rem; 
+            color: #007bff; 
+            margin-right: 1rem; 
+            width: 40px;
+            text-align: center;
+        }
+        .contact-form { 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            padding: 2rem; 
+        }
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+        .btn-primary {
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+    </style>
+    
     <!-- 预加载关键资源 -->
-    <link rel="preload" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" as="style">
-    <link rel="preload" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" as="style">
+    <link rel="preload" href="../assets/vendor/bootstrap/bootstrap.min.css" as="style">
+    <link rel="preload" href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" as="style">
     <link rel="preload" href="../assets/css/styles.css" as="style">
     
     <!-- CSS -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/vendor/animate.css/animate.min.css" rel="stylesheet">
     <link href="../assets/css/styles.css" rel="stylesheet">
-    <style>
-        /* 内联关键CSS，减少请求 */
-        .contact-page { padding-top: 76px; }
-        .contact-info { background-color: #f8f9fa; }
-        .contact-item { display: flex; align-items: flex-start; margin-bottom: 2rem; }
-        .contact-item i { font-size: 1.5rem; color: #007bff; margin-right: 1rem; }
-        .contact-form { background-color: white; padding: 2rem; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-        .map-section { height: 400px; width: 100%; }
-        @media (max-width: 768px) { .map-section { height: 300px; } }
-        
-        /* Logo 样式 */
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
-        .brand-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
-        }
-        .brand-slogan {
-            font-size: 0.75rem;
-            color: #666;
-        }
-        @media (max-width: 768px) {
-            .brand-text { display: none; }
-        }
-
-        /* 添加 Bootstrap Icons 字体 */
-        @font-face {
-            font-family: "bootstrap-icons";
-            src: url("https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/fonts/bootstrap-icons.woff2") format("woff2"),
-                 url("https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/fonts/bootstrap-icons.woff") format("woff");
-        }
-
-        .qr-code-wrapper img {
-            width: 150px;
-            height: 150px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-        .qr-code-wrapper img:hover {
-            transform: scale(1.2);
-        }
-        .footer-divider {
-            margin: 1rem 0;
-            opacity: 0.2;
-        }
-    </style>
+    
     <!-- 添加网站图标 -->
     <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <script>
+        (function() {
+            // 注入CSS的函数
+            function injectCss(url) {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = url;
+                document.head.appendChild(link);
+            }
+            
+            // 检查Bootstrap是否加载
+            function isBootstrapLoaded() {
+                return document.querySelector('.container') && 
+                       getComputedStyle(document.querySelector('.container')).maxWidth !== 'none';
+            }
+            
+            // 检查Bootstrap Icons是否加载
+            function areIconsLoaded() {
+                return document.querySelector('.bi') && 
+                       getComputedStyle(document.querySelector('.bi')).fontFamily.includes('bootstrap-icons');
+            }
+            
+            // 隐藏加载遮罩
+            function hideLoading() {
+                var overlay = document.getElementById('loadingOverlay');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(function() {
+                        overlay.style.display = 'none';
+                    }, 300);
+                }
+            }
+            
+            window.addEventListener('load', function() {
+                // 检查Bootstrap CSS是否加载成功
+                setTimeout(function() {
+                    if (!isBootstrapLoaded()) {
+                        console.log('Bootstrap CSS 加载失败，使用本地备用');
+                        injectCss('../assets/vendor/bootstrap/bootstrap.min.css');
+                    }
+                }, 1000);
+                
+                // 检查Bootstrap Icons是否加载成功
+                setTimeout(function() {
+                    if (!areIconsLoaded()) {
+                        console.log('Bootstrap Icons 加载失败，使用本地备用');
+                        injectCss('../assets/vendor/bootstrap-icons/bootstrap-icons.css');
+                    }
+                }, 1500);
+                
+                setTimeout(hideLoading, 500); // Delay hide to ensure styles load
+            });
+            
+            setTimeout(hideLoading, 5000); // Force hide after 5s
+        })();
+    </script>
 </head>
 <body>
+    <!-- 加载遮罩 -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
     <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="../index.html">
                 <img src="../images/logo.png" alt="微纳科技" height="36" class="me-2">
-                <div class="brand-text">
-                    <div class="brand-name">微纳科技</div>
-                    <div class="brand-slogan">纳米技术引领未来</div>
-                </div>
+                <span class="fw-bold">微纳科技</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -121,45 +245,50 @@
     </nav>
 
     <!-- 联系我们页面内容 -->
-    <section class="contact-section py-5 mt-5">
+    <section class="contact-page py-5">
         <div class="container">
+            <!-- 页面标题 -->
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-8 text-center">
-                    <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeIn">联系我们</h1>
+                    <h1 class="display-5 fw-bold mb-3 animate__animated animate__fadeIn">联系我们</h1>
                     <p class="lead text-muted animate__animated animate__fadeIn animate__delay-1s">
-                        我们期待与您的合作，为您提供专业的微纳加工解决方案
+                        期待与您的合作，为您提供专业的微纳加工解决方案
                     </p>
                 </div>
             </div>
 
             <div class="row g-4">
-                <!-- 联系信息卡片 -->
-                <div class="col-lg-4">
-                    <div class="contact-info-card p-4 h-100 animate__animated animate__fadeInLeft">
+                <!-- 联系信息 -->
+                <div class="col-lg-6">
+                    <div class="contact-card animate__animated animate__fadeInLeft">
                         <h3 class="h4 mb-4">联系方式</h3>
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-geo-alt-fill text-primary me-3"></i>
+                        
+                        <div class="contact-item">
+                            <i class="bi bi-geo-alt-fill"></i>
                             <div>
                                 <h5 class="h6 mb-1">公司地址</h5>
-                                <p class="mb-0">北京市海淀区中关村科技园区</p>
+                                <p class="mb-0">上海市松江区泗泾镇泗通路 246 号</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-telephone-fill text-primary me-3"></i>
+                        
+                        <div class="contact-item">
+                            <i class="bi bi-telephone-fill"></i>
                             <div>
                                 <h5 class="h6 mb-1">联系电话</h5>
-                                <p class="mb-0">+86 10 1234 5678</p>
+                                <p class="mb-0">+86 18701960619</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-envelope-fill text-primary me-3"></i>
+                        
+                        <div class="contact-item">
+                            <i class="bi bi-envelope-fill"></i>
                             <div>
                                 <h5 class="h6 mb-1">电子邮箱</h5>
-                                <p class="mb-0">contact@nano-tech.com</p>
+                                <p class="mb-0">service@oplasmon.com</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-clock-fill text-primary me-3"></i>
+                        
+                        <div class="contact-item">
+                            <i class="bi bi-clock-fill"></i>
                             <div>
                                 <h5 class="h6 mb-1">工作时间</h5>
                                 <p class="mb-0">周一至周五: 9:00 - 18:00</p>
@@ -169,58 +298,39 @@
                 </div>
 
                 <!-- 联系表单 -->
-                <div class="col-lg-8">
-                    <div class="contact-form-card p-4 animate__animated animate__fadeInRight">
+                <div class="col-lg-6">
+                    <div class="contact-form animate__animated animate__fadeInRight">
                         <h3 class="h4 mb-4">发送消息</h3>
                         <form id="contactForm">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="name" placeholder="您的姓名" required>
-                                        <label for="name">您的姓名 *</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="email" class="form-control" id="email" placeholder="电子邮箱">
-                                        <label for="email">电子邮箱</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="tel" class="form-control" id="phone" placeholder="联系电话" required>
-                                        <label for="phone">联系电话 *</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="subject" placeholder="主题">
-                                        <label for="subject">主题</label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-floating">
-                                        <textarea class="form-control" id="message" placeholder="消息内容" style="height: 150px"></textarea>
-                                        <label for="message">消息内容（选填）</label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                                        <i class="bi bi-send me-2"></i>发送消息
-                                    </button>
-                                </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">姓名 *</label>
+                                <input type="text" class="form-control" id="name" required>
                             </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">电话 *</label>
+                                <input type="tel" class="form-control" id="phone" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">邮箱</label>
+                                <input type="email" class="form-control" id="email">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">主题</label>
+                                <input type="text" class="form-control" id="subject">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="message" class="form-label">消息内容</label>
+                                <textarea class="form-control" id="message" rows="4"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-send me-2"></i>发送消息
+                            </button>
                         </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 地图部分 -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <div class="map-container rounded-3 overflow-hidden shadow-sm animate__animated animate__fadeInUp">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3411.865572442456!2d121.58083531521084!3d31.233809979999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35b2798329f2367d%3A0xca4a40fb8298ae7!2z5LiK5rW35rWm5Lic5paw5Yy65YWJ5rGf6auY56eR5oqA5Zut!5e0!3m2!1szh-CN!2scn!4v1621234567890!5m2!1szh-CN!2scn" 
-                                width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 </div>
             </div>
@@ -228,49 +338,38 @@
     </section>
 
     <!-- 页脚 -->
-    <footer class="bg-dark text-light py-4">
+    <footer class="bg-dark text-light py-4 mt-5">
         <div class="container">
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-3">
-                    <h5 class="mb-3 text-center">关于我们</h5>
-                    <p class="small text-start">微纳科技专注于微纳加工技术的研发与应用，为客户提供高品质的微纳加工解决方案。</p>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="mb-3">关于我们</h5>
+                    <p class="small">微纳科技专注于微纳加工技术的研发与应用，为客户提供高品质的微纳加工解决方案。</p>
                 </div>
-                <div class="col-lg-3">
-                    <h5 class="mb-3 text-center">联系方式</h5>
-                    <ul class="list-unstyled small text-start">
-                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>上海市松江区泗泾镇泗通路 246 号 </li>
+                <div class="col-lg-4">
+                    <h5 class="mb-3">联系方式</h5>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>上海市松江区泗泾镇泗通路 246 号</li>
                         <li class="mb-2"><i class="bi bi-telephone me-2"></i>+86 18701960619</li>
                         <li class="mb-2"><i class="bi bi-envelope me-2"></i>service@oplasmon.com</li>
                     </ul>
                 </div>
-                <div class="col-lg-3">
-                    <h5 class="mb-3 text-center">快速链接</h5>
-                    <ul class="list-unstyled small text-start">
+                <div class="col-lg-4">
+                    <h5 class="mb-3">快速链接</h5>
+                    <ul class="list-unstyled small">
                         <li class="mb-2"><a href="servers/nanoimprint-server.html" class="text-light text-decoration-none">纳米压印服务</a></li>
                         <li class="mb-2"><a href="servers/etching-server.html" class="text-light text-decoration-none">微纳刻蚀服务</a></li>
                         <li class="mb-2"><a href="servers/metamaterial-server.html" class="text-light text-decoration-none">超材料产品</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3">
-                    <h5 class="mb-3 text-center">关注我们</h5>
-                    <div class="d-flex justify-content-center gap-4">
-                        <div class="qr-code-wrapper">
-                            <img src="../images/qrcode-weixin.jpg" alt="微信公众号">
-                        </div>
-                        <div class="qr-code-wrapper">
-                            <img src="../images/qrcode-douyin.jpg" alt="抖音号">
-                        </div>
-                    </div>
-                </div>
             </div>
-            <hr class="footer-divider">
+            <hr class="my-4">
             <div class="text-center">
-                <p class="copyright small mb-0">&copy; 2024 微纳科技. 保留所有权利.</p>
+                <p class="small mb-0">&copy; 2024 微纳科技. 保留所有权利.</p>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
     <script>
         // 导航栏滚动效果
         window.addEventListener('scroll', function() {
@@ -305,7 +404,7 @@
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>发送中...';
 
-            // 动态选择 API 地址（优先当前主机，其次回退 localhost:8000）
+            // 动态选择 API 地址
             const apiPort = 8000;
             const apiHost = window.location.hostname && window.location.hostname !== '' ? window.location.hostname : 'localhost';
             const apiUrl = `http://${apiHost}:${apiPort}`;
