@@ -406,16 +406,22 @@
 
             // 动态选择 API 地址
             const apiPort = 8000;
-            const apiHost = window.location.hostname && window.location.hostname !== '' ? window.location.hostname : 'localhost';
+            const apiHost = 'localhost'; // 直接使用 localhost
             const apiUrl = `http://${apiHost}:${apiPort}`;
+
+            console.log('提交到:', apiUrl); // 调试信息
 
             fetch(apiUrl, {
                 method: 'POST',
                 body: formData.toString(),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             })
-            .then(response => response.ok ? response.json() : Promise.reject(new Error('HTTP error')))
+            .then(response => {
+                console.log('响应状态:', response.status); // 调试信息
+                return response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`));
+            })
             .then(data => {
+                console.log('响应数据:', data); // 调试信息
                 if (data.success) {
                     alert('提交成功！我们会尽快与您联系。');
                     this.reset();

@@ -15,6 +15,9 @@ if (!fs.existsSync(recordDir)) {
 }
 
 const server = http.createServer((req, res) => {
+    // 添加请求日志
+    console.log(`${new Date().toLocaleString()} - ${req.method} ${req.url}`);
+    
     // 设置 CORS 头
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -22,6 +25,7 @@ const server = http.createServer((req, res) => {
 
     // 处理 OPTIONS 请求
     if (req.method === 'OPTIONS') {
+        console.log('处理 OPTIONS 请求');
         res.writeHead(200);
         res.end();
         return;
@@ -92,17 +96,21 @@ const server = http.createServer((req, res) => {
 
     // 处理 POST 请求
     if (req.method === 'POST') {
+        console.log('收到 POST 请求');
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
         });
 
         req.on('end', () => {
+            console.log('POST 请求体:', body);
             try {
                 const formData = querystring.parse(body);
+                console.log('解析的表单数据:', formData);
                 
                 // 验证必填字段
                 if (!formData.name || !formData.phone) {
+                    console.log('验证失败: 缺少必填字段');
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: false,
@@ -131,14 +139,17 @@ const server = http.createServer((req, res) => {
 
                 // 追加数据
                 fs.appendFileSync(csvFile, data + '\n', 'utf8');
+                console.log('数据已保存到:', csvFile);
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
+                const response = JSON.stringify({
                     success: true,
                     message: '数据已保存'
-                }));
+                });
+                console.log('发送响应:', response);
+                res.end(response);
             } catch (error) {
-                console.error('Error:', error);
+                console.error('处理 POST 请求时出错:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: false,
@@ -150,6 +161,7 @@ const server = http.createServer((req, res) => {
     }
 
     // 其他请求方法
+    console.log('不支持的请求方法:', req.method);
     res.writeHead(405, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
         success: false,
