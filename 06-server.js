@@ -127,35 +127,70 @@ function handleFileUpload(req, res) {
     req.on('end', () => {
         try {
             const buffer = Buffer.concat(chunks);
-            const boundary = req.headers['content-type'].split('boundary=')[1];
+            const contentType = req.headers['content-type'];
             
+            if (!contentType || !contentType.includes('multipart/form-data')) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: '无效的请求格式' }));
+                return;
+            }
+            
+            const boundary = contentType.split('boundary=')[1];
             if (!boundary) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: '无效的请求格式' }));
+                res.end(JSON.stringify({ success: false, error: '无效的请求格式' }));
                 return;
             }
             
             // 解析multipart/form-data
             const parts = parseMultipartData(buffer, boundary);
             
+            // 验证密码
+            if (!parts.password || parts.password.data.toString() !== 'fjfjfjfj') {
+                res.writeHead(401, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: '密码错误' }));
+                return;
+            }
+            
+            // 验证文件
             if (!parts.file) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: '没有找到文件' }));
+                res.end(JSON.stringify({ success: false, error: '没有找到文件' }));
+                return;
+            }
+            
+            // 验证目录
+            if (!parts.directory) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: '没有指定目录' }));
                 return;
             }
             
             const file = parts.file;
             const fileName = file.filename;
             const fileContent = file.data;
+            const directory = parts.directory.data.toString();
             
-            // 验证文件类型 - 支持所有文件格式
-            const ext = path.extname(fileName).toLowerCase();
-            const uniqueFileName = `${Date.now()}_${generateUUID()}${ext}`;
+            // 确保knowledgehub目录存在
+            const knowledgeHubPath = path.join(__dirname, 'knowledgehub');
+            if (!fs.existsSync(knowledgeHubPath)) {
+                fs.mkdirSync(knowledgeHubPath, { recursive: true });
+            }
             
-            // 生成唯一文件名
-            const filePath = path.join(knowledgeBaseDir, uniqueFileName);
+            // 创建目标目录
+            const targetDir = path.join(knowledgeHubPath, directory);
+            if (!fs.existsSync(targetDir)) {
+                fs.mkdirSync(targetDir, { recursive: true });
+            }
+            
+            // 生成唯一文件名（避免重名）
+            const ext = path.extname(fileName);
+            const baseName = path.basename(fileName, ext);
+            const timestamp = Date.now();
+            const uniqueFileName = `${baseName}_${timestamp}${ext}`;
             
             // 保存文件
+            const filePath = path.join(targetDir, uniqueFileName);
             fs.writeFileSync(filePath, fileContent);
             
             // 创建文件信息
@@ -165,23 +200,22 @@ function handleFileUpload(req, res) {
                 fileName: uniqueFileName,
                 size: fileContent.length,
                 uploadTime: new Date().toISOString(),
-                type: ext.substring(1)
+                type: path.extname(fileName).toLowerCase(),
+                path: directory,
+                downloadUrl: `../knowledgehub/${directory}/${uniqueFileName}`
             };
-            
-            // 添加到文件列表
-            filesInfo.unshift(fileInfo);
-            saveFilesInfo();
             
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
                 success: true,
-                file: fileInfo
+                file: fileInfo,
+                message: `文件已上传到 ${directory} 目录`
             }));
             
         } catch (error) {
             console.error('文件上传错误:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: '文件上传失败' }));
+            res.end(JSON.stringify({ success: false, error: '文件上传失败' }));
         }
     });
 }
@@ -249,6 +283,12 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // 处理文件上传API
+    if (req.url === '/api/upload' && req.method === 'POST') {
+        handleFileUpload(req, res);
+        return;
+    }
+
     // 处理静态文件请求
     if (req.method === 'GET') {
         let filePath = url.parse(req.url).pathname;
@@ -266,6 +306,7 @@ const server = http.createServer((req, res) => {
             if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
                 const ext = path.extname(fullPath).toLowerCase();
                 const fileName = path.basename(fullPath);
+                const stat = fs.statSync(fullPath);
                 
                 // 设置正确的MIME类型和下载头
                 const mimeTypes = {
@@ -276,21 +317,47 @@ const server = http.createServer((req, res) => {
                     '.xls': 'application/vnd.ms-excel',
                     '.txt': 'text/plain',
                     '.zip': 'application/zip',
-                    '.rar': 'application/x-rar-compressed'
+                    '.rar': 'application/x-rar-compressed',
+                    '.jpg': 'image/jpeg',
+                    '.jpeg': 'image/jpeg',
+                    '.png': 'image/png',
+                    '.gif': 'image/gif',
+                    '.mp4': 'video/mp4',
+                    '.mp3': 'audio/mpeg'
                 };
                 
                 const contentType = mimeTypes[ext] || 'application/octet-stream';
                 
-                res.writeHead(200, {
+                // 设置安全的响应头
+                const headers = {
                     'Content-Type': contentType,
                     'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+                    'Content-Length': stat.size,
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type'
-                });
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    // 安全相关头部
+                    'X-Content-Type-Options': 'nosniff',
+                    'X-Frame-Options': 'DENY',
+                    'X-XSS-Protection': '1; mode=block',
+                    // 允许下载的头部
+                    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+                };
+                
+                res.writeHead(200, headers);
                 
                 const fileStream = fs.createReadStream(fullPath);
                 fileStream.pipe(res);
+                
+                // 错误处理
+                fileStream.on('error', (error) => {
+                    console.error('文件读取错误:', error);
+                    if (!res.headersSent) {
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: '文件读取失败' }));
+                    }
+                });
+                
                 return;
             }
         }
