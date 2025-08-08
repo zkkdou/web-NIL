@@ -406,19 +406,21 @@
 
             // 动态选择 API 地址
             const currentHost = window.location.hostname;
-            let apiHost, apiPort;
+            let apiHost, apiPort, apiPath;
             
             if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
                 // 本地开发环境
                 apiHost = 'localhost';
                 apiPort = 8000;
+                apiPath = '/';
             } else {
-                // 生产环境
+                // 生产环境 - 使用专门的API端点
                 apiHost = '124.220.134.33';
-                apiPort = 80;
+                apiPort = 3000; // 使用3000端口避免与现有服务冲突
+                apiPath = '/';
             }
             
-            const apiUrl = `http://${apiHost}:${apiPort}`;
+            const apiUrl = `http://${apiHost}:${apiPort}${apiPath}`;
 
             console.log('当前域名:', currentHost);
             console.log('提交到:', apiUrl); // 调试信息
