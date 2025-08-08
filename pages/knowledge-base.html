@@ -572,7 +572,13 @@
             formData.append('directory', directory);
             formData.append('password', 'fjfjfjfj');
             
-            const response = await fetch('/api/upload', {
+            // 根据当前页面URL确定API地址
+            const currentHost = window.location.hostname;
+            const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
+                ? 'http://localhost:8000/api/upload'
+                : `http://${currentHost}:8000/api/upload`;
+            
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 body: formData
             });
