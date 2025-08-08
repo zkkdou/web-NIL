@@ -378,7 +378,16 @@ const server = http.createServer((req, res) => {
                 }
                 
                 // 构建文件路径
-                const filePath = path.join(__dirname, 'knowledgehub', fileToDelete.path, fileToDelete.name);
+                let filePath;
+                if (fileToDelete.path === '根目录') {
+                    // 文件在根目录
+                    filePath = path.join(__dirname, 'knowledgehub', fileToDelete.name);
+                } else {
+                    // 文件在子目录
+                    filePath = path.join(__dirname, 'knowledgehub', fileToDelete.path, fileToDelete.name);
+                }
+                
+                console.log('尝试删除文件路径:', filePath);
                 
                 // 检查文件是否存在
                 if (!fs.existsSync(filePath)) {
