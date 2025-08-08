@@ -261,7 +261,16 @@
                 console.log('API请求地址:', '/api/files');
                 console.log('完整API地址:', window.location.origin + '/api/files');
                 
-                const response = await fetch('/api/files');
+                // 根据当前服务器选择API地址
+                let apiUrl = '/api/files';
+                if (window.location.hostname === '124.220.134.33') {
+                    // 生产服务器使用端口3001
+                    apiUrl = 'http://124.220.134.33:3001/api/files';
+                }
+                
+                console.log('最终API地址:', apiUrl);
+                
+                const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error('Failed to load files');
                 }
@@ -337,7 +346,13 @@
             const fileIcon = getFileIcon(file.name);
             const fileSize = formatFileSize(file.size);
             const uploadTime = new Date(file.uploadTime).toLocaleString('zh-CN');
-            const downloadUrl = `/api/files/${file.id}/download`;
+            
+            // 根据当前服务器选择API地址
+            let downloadUrl = `/api/files/${file.id}/download`;
+            if (window.location.hostname === '124.220.134.33') {
+                // 生产服务器使用端口3001
+                downloadUrl = `http://124.220.134.33:3001/api/files/${file.id}/download`;
+            }
             
             return `
                 <div class="col-md-6 col-lg-4 mb-3">
@@ -470,7 +485,14 @@
         // 下载文件
         async function downloadFile(fileId) {
             try {
-                const response = await fetch(`/api/files/${fileId}/download`);
+                // 根据当前服务器选择API地址
+                let apiUrl = `/api/files/${fileId}/download`;
+                if (window.location.hostname === '124.220.134.33') {
+                    // 生产服务器使用端口3001
+                    apiUrl = `http://124.220.134.33:3001/api/files/${fileId}/download`;
+                }
+                
+                const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error('Download failed');
                 }
