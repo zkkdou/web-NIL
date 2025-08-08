@@ -413,7 +413,7 @@ const server = http.createServer((req, res) => {
     }
 
     // 处理知识库API请求
-    if (req.url.startsWith('/api/files')) {
+    if (req.url.startsWith('/api/files') && !req.url.startsWith('/api/delete')) {
         handleFilesAPI(req, res);
         return;
     }
