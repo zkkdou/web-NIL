@@ -352,6 +352,105 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // 处理外部文件下载API
+    if (req.method === 'POST' && req.url === '/api/download-external') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body);
+                const { url, filename } = data;
+                
+                if (!url) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '缺少下载URL'
+                    }));
+                    return;
+                }
+                
+                // 使用Node.js的http/https模块下载文件
+                const http = require('http');
+                const https = require('https');
+                const urlObj = new URL(url);
+                
+                const client = urlObj.protocol === 'https:' ? https : http;
+                
+                const request = client.get(url, (response) => {
+                    if (response.statusCode !== 200) {
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: `下载失败，状态码: ${response.statusCode}`
+                        }));
+                        return;
+                    }
+                    
+                    // 设置响应头
+                    const headers = {
+                        'Content-Type': response.headers['content-type'] || 'application/octet-stream',
+                        'Content-Length': response.headers['content-length'] || '',
+                        'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(filename || 'download')}`,
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type'
+                    };
+                    
+                    res.writeHead(200, headers);
+                    
+                    // 流式传输文件
+                    response.pipe(res);
+                    
+                    response.on('error', (error) => {
+                        console.error('下载流错误:', error);
+                        if (!res.headersSent) {
+                            res.writeHead(500, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({
+                                success: false,
+                                error: '下载过程中出错'
+                            }));
+                        }
+                    });
+                });
+                
+                request.on('error', (error) => {
+                    console.error('下载请求错误:', error);
+                    if (!res.headersSent) {
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '无法连接到下载服务器'
+                        }));
+                    }
+                });
+                
+                // 设置超时
+                request.setTimeout(30000, () => {
+                    request.destroy();
+                    if (!res.headersSent) {
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '下载超时'
+                        }));
+                    }
+                });
+                
+            } catch (error) {
+                console.error('处理外部下载时出错:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    error: '服务器内部错误'
+                }));
+            }
+        });
+        return;
+    }
+
     // 处理知识库API请求
     if (req.url.startsWith('/api/files') && !req.url.startsWith('/api/delete')) {
         handleFilesAPI(req, res);
