@@ -226,28 +226,47 @@ function parseMultipartData(buffer, boundary) {
     const boundaryBuffer = Buffer.from(`--${boundary}`);
     const endBoundaryBuffer = Buffer.from(`--${boundary}--`);
     
-    let start = buffer.indexOf(boundaryBuffer) + boundaryBuffer.length;
-    let end = buffer.indexOf(endBoundaryBuffer);
+    let currentPos = 0;
     
-    if (start === -1 || end === -1) {
-        throw new Error('Invalid multipart data');
-    }
-    
-    const data = buffer.slice(start, end);
-    const headersEnd = data.indexOf('\r\n\r\n');
-    const headers = data.slice(0, headersEnd).toString();
-    const content = data.slice(headersEnd + 4);
-    
-    // 解析Content-Disposition
-    const nameMatch = headers.match(/name="([^"]+)"/);
-    const filenameMatch = headers.match(/filename="([^"]+)"/);
-    
-    if (nameMatch) {
-        const name = nameMatch[1];
-        parts[name] = {
-            filename: filenameMatch ? filenameMatch[1] : null,
-            data: content
-        };
+    while (currentPos < buffer.length) {
+        // 查找下一个边界
+        const boundaryStart = buffer.indexOf(boundaryBuffer, currentPos);
+        if (boundaryStart === -1) break;
+        
+        // 查找边界结束位置
+        const boundaryEnd = buffer.indexOf('\r\n', boundaryStart);
+        if (boundaryEnd === -1) break;
+        
+        // 查找下一个边界开始
+        const nextBoundaryStart = buffer.indexOf(boundaryBuffer, boundaryEnd);
+        if (nextBoundaryStart === -1) break;
+        
+        // 提取当前部分的数据
+        const partData = buffer.slice(boundaryEnd + 2, nextBoundaryStart - 2);
+        
+        // 查找头部和内容的分界线
+        const headersEnd = partData.indexOf('\r\n\r\n');
+        if (headersEnd === -1) {
+            currentPos = nextBoundaryStart;
+            continue;
+        }
+        
+        const headers = partData.slice(0, headersEnd).toString();
+        const content = partData.slice(headersEnd + 4);
+        
+        // 解析Content-Disposition
+        const nameMatch = headers.match(/name="([^"]+)"/);
+        const filenameMatch = headers.match(/filename="([^"]+)"/);
+        
+        if (nameMatch) {
+            const name = nameMatch[1];
+            parts[name] = {
+                filename: filenameMatch ? filenameMatch[1] : null,
+                data: content
+            };
+        }
+        
+        currentPos = nextBoundaryStart;
     }
     
     return parts;
