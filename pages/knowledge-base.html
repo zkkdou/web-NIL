@@ -164,6 +164,21 @@
 
     <!-- 页脚 -->
     <footer class="bg-dark text-light py-4 mt-5">
+        <style>
+            .qr-code-wrapper img {
+                width: 150px;
+                height: 150px;
+                object-fit: contain;
+                transition: transform 0.3s ease;
+            }
+            .qr-code-wrapper img:hover {
+                transform: scale(1.2);
+            }
+            .footer-divider {
+                margin: 1rem 0;
+                opacity: 0.2;
+            }
+        </style>
         <div class="container">
             <div class="row g-4 justify-content-center">
                 <div class="col-lg-3">
@@ -242,6 +257,10 @@
         // 加载文件列表
         async function loadFileList() {
             try {
+                console.log('当前页面URL:', window.location.href);
+                console.log('API请求地址:', '/api/files');
+                console.log('完整API地址:', window.location.origin + '/api/files');
+                
                 const response = await fetch('/api/files');
                 if (!response.ok) {
                     throw new Error('Failed to load files');
