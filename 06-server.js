@@ -584,7 +584,10 @@ httpServer.listen(port, '0.0.0.0', () => {
 
 // 如果有SSL证书，创建HTTPS服务器
 if (httpsOptions.key && httpsOptions.cert) {
-    const httpsServer = https.createServer(httpsOptions, server);
+    const httpsServer = https.createServer(httpsOptions, (req, res) => {
+        // 复用HTTP服务器的请求处理逻辑
+        server.emit('request', req, res);
+    });
     httpsServer.listen(httpsPort, '0.0.0.0', () => {
         console.log(`HTTPS服务器启动成功，监听端口 ${httpsPort}...`);
         console.log(`安全访问地址: https://localhost:${httpsPort}`);
