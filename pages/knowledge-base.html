@@ -976,7 +976,7 @@
         // 加载文件列表 - 从服务器获取
         async function loadFileList() {
             try {
-                console.log('开始扫描文件...');
+                console.log('=== 开始加载文件列表 ===');
                 
                 // 从服务器获取文件列表
                 const currentHost = window.location.hostname;
@@ -984,13 +984,23 @@
                     ? 'http://localhost:8000/api/files'
                     : `http://${currentHost}:8000/api/files`;
                 
+                console.log('当前主机:', currentHost);
+                console.log('API URL:', apiUrl);
+                console.log('开始发送fetch请求...');
+                
                 const response = await fetch(apiUrl);
+                console.log('收到响应:', response);
+                console.log('响应状态:', response.status);
+                console.log('响应头:', response.headers);
+                
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
+                console.log('开始解析JSON响应...');
                 const files = await response.json();
                 console.log('从服务器获取的文件列表:', files);
+                console.log('文件数量:', files.length);
                 
                 // 处理文件数据，添加下载URL
                 allFiles = files.map(file => ({
@@ -998,15 +1008,22 @@
                     downloadUrl: `../knowledgehub/${file.path}/${file.name}`
                 }));
                 
+                console.log('处理后的文件列表:', allFiles);
+                
                 filteredFiles = [...allFiles];
+                console.log('过滤后的文件列表:', filteredFiles);
+                
                 displayFiles();
                 
                 // 更新目录选项
                 updateDirectoryOptions();
                 
-                console.log('文件列表加载完成，共', allFiles.length, '个文件');
+                console.log('=== 文件列表加载完成，共', allFiles.length, '个文件 ===');
             } catch (error) {
-                console.error('Error loading files:', error);
+                console.error('=== 加载文件列表时出错 ===');
+                console.error('错误详情:', error);
+                console.error('错误消息:', error.message);
+                console.error('错误堆栈:', error.stack);
                 document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('noFilesMessage').style.display = 'block';
             }
