@@ -186,8 +186,14 @@ function handleFileUpload(req, res) {
             // 生成唯一文件名（避免重名）
             const ext = path.extname(fileName);
             const baseName = path.basename(fileName, ext);
-            const timestamp = Date.now();
-            const uniqueFileName = `${baseName}_${timestamp}${ext}`;
+            
+            // 检查文件是否已存在，如果存在则添加序号
+            let uniqueFileName = fileName;
+            let counter = 1;
+            while (fs.existsSync(path.join(targetDir, uniqueFileName))) {
+                uniqueFileName = `${baseName} (${counter})${ext}`;
+                counter++;
+            }
             
             // 保存文件
             const filePath = path.join(targetDir, uniqueFileName);

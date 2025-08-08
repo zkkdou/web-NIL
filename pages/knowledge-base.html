@@ -21,16 +21,20 @@
             border: 1px solid #e9ecef;
             border-radius: 8px;
             padding: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .file-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+            border-color: #007bff;
         }
         .file-icon {
             font-size: 2rem;
             color: #007bff;
+            width: 2.5rem;
+            text-align: center;
         }
         .search-box {
             background: white;
@@ -51,6 +55,7 @@
             padding-bottom: 0.5rem;
             margin-bottom: 1rem;
             transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
         }
         .folder-header:hover {
             background-color: #f8f9fa;
@@ -71,6 +76,21 @@
             background-color: #d4edda !important;
             border-color: #c3e6cb !important;
             color: #155724 !important;
+        }
+        
+        /* 文件项优化 */
+        .file-item .btn {
+            white-space: nowrap;
+        }
+        .file-item h6 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .file-item .text-muted {
+            font-size: 0.875rem;
+        }
+        .min-w-0 {
+            min-width: 0;
         }
         
         /* 左侧导航样式 */
@@ -125,6 +145,18 @@
                 position: static;
                 margin-bottom: 2rem;
             }
+        }
+        
+        /* 加载动画优化 */
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+        
+        /* 按钮组优化 */
+        .btn-group-sm > .btn, .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
         }
     </style>
 </head>
@@ -482,7 +514,11 @@
             document.getElementById('loadingIndicator').style.display = 'block';
             document.getElementById('noFilesMessage').style.display = 'none';
             document.getElementById('fileList').innerHTML = '';
-            loadFileList();
+            
+            // 添加短暂延迟确保服务器有足够时间处理文件
+            setTimeout(() => {
+                loadFileList();
+            }, 500);
         }
 
         // 紧急修复模态框卡住的问题
@@ -612,7 +648,7 @@
                 // 清空表单
                 document.getElementById('uploadForm').reset();
                 
-                // 刷新文件列表并关闭模态框
+                // 立即刷新文件列表并关闭模态框
                 setTimeout(() => {
                     // 先刷新文件列表
                     refreshFileList();
@@ -637,7 +673,7 @@
                     
                     // 隐藏进度条
                     progressDiv.style.display = 'none';
-                }, 2000);
+                }, 1000); // 减少等待时间到1秒
                 
             } catch (error) {
                 console.error('上传错误:', error);
@@ -789,7 +825,7 @@
 
             noFilesMessage.style.display = 'none';
 
-            // 按文件夹分组
+            // 按文件夹分组，并按上传时间倒序排列
             const filesByFolder = groupFilesByFolder(filteredFiles);
             
             let html = '';
@@ -806,7 +842,7 @@
                             </div>
                         </div>
                         <div class="folder-content" id="content-${folder}">
-                            <div class="row">
+                            <div class="row g-3">
                                 ${files.map(file => createFileItem(file)).join('')}
                             </div>
                         </div>
@@ -892,6 +928,12 @@
                 }
                 groups[folder].push(file);
             });
+            
+            // 对每个文件夹内的文件按上传时间倒序排列（最新的在前）
+            Object.keys(groups).forEach(folder => {
+                groups[folder].sort((a, b) => new Date(b.uploadTime) - new Date(a.uploadTime));
+            });
+            
             return groups;
         }
 
@@ -902,17 +944,20 @@
             const uploadTime = new Date(file.uploadTime).toLocaleString('zh-CN');
             
             return `
-                <div class="col-12 mb-3">
+                <div class="col-12">
                     <div class="file-item">
-                        <div class="row align-items-center">
+                        <div class="row align-items-center g-0">
                             <div class="col-md-8">
                                 <div class="d-flex align-items-center">
-                                    <div class="file-icon me-3">
+                                    <div class="file-icon me-3 flex-shrink-0">
                                         <i class="bi ${fileIcon}"></i>
                                     </div>
-                                    <div class="flex-grow-1">
+                                    <div class="flex-grow-1 min-w-0">
                                         <h6 class="mb-1 text-truncate" title="${file.name}">${file.name}</h6>
-                                        <p class="text-muted small mb-1">${fileSize} • ${uploadTime}</p>
+                                        <div class="d-flex align-items-center text-muted small">
+                                            <span class="me-3"><i class="bi bi-hdd me-1"></i>${fileSize}</span>
+                                            <span><i class="bi bi-clock me-1"></i>${uploadTime}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
