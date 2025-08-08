@@ -422,6 +422,7 @@
                     console.log('响应文本:', xhr.responseText);
                     
                     if (xhr.status === 200) {
+                        console.log('服务器响应成功');
                         try {
                             const data = JSON.parse(xhr.responseText);
                             if (data.success) {
@@ -432,8 +433,18 @@
                             }
                         } catch (e) {
                             console.error('JSON解析失败:', e);
-                            // 如果响应不是JSON格式，可能是HTML页面，说明提交成功
-                            if (xhr.responseText.includes('成功') || xhr.responseText.includes('success')) {
+                            console.log('原始响应内容:', xhr.responseText);
+                            
+                            // 检查响应内容是否包含成功相关的关键词
+                            const responseText = xhr.responseText.toLowerCase();
+                            const successKeywords = ['成功', 'success', '提交', '收到', '感谢', '谢谢', 'ok', 'done', '提交成功', '感谢您的留言'];
+                            const errorKeywords = ['错误', 'error', '失败', 'fail', '无效', 'invalid'];
+                            
+                            const hasSuccessKeyword = successKeywords.some(keyword => responseText.includes(keyword));
+                            const hasErrorKeyword = errorKeywords.some(keyword => responseText.includes(keyword));
+                            
+                            // 如果响应是HTML页面且包含成功关键词，或者响应不为空且没有错误关键词
+                            if (hasSuccessKeyword || (xhr.responseText.length > 0 && !hasErrorKeyword)) {
                                 alert('提交成功！我们会尽快与您联系。');
                                 document.getElementById('contactForm').reset();
                             } else {
