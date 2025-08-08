@@ -408,6 +408,13 @@
             const currentHost = window.location.hostname;
             let apiHost, apiPort, apiPath;
             
+            // 临时强制使用生产服务器API
+            apiHost = '124.220.134.33';
+            apiPort = 80; // 临时使用80端口
+            apiPath = '/';
+            
+            // 注释掉原来的动态选择逻辑
+            /*
             if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
                 // 本地开发环境
                 apiHost = 'localhost';
@@ -419,11 +426,13 @@
                 apiPort = 3000; // 使用3000端口
                 apiPath = '/';
             }
+            */
             
             const apiUrl = `http://${apiHost}:${apiPort}${apiPath}`;
 
             console.log('当前域名:', currentHost);
             console.log('提交到:', apiUrl); // 调试信息
+            console.log('表单数据:', formData.toString()); // 添加表单数据调试
 
             // 使用 XMLHttpRequest 避免 CORS 问题
             const xhr = new XMLHttpRequest();
