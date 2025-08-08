@@ -239,7 +239,34 @@ function parseMultipartData(buffer, boundary) {
         
         // 查找下一个边界开始
         const nextBoundaryStart = buffer.indexOf(boundaryBuffer, boundaryEnd);
-        if (nextBoundaryStart === -1) break;
+        if (nextBoundaryStart === -1) {
+            // 如果没有下一个边界，检查是否是结束边界
+            const endBoundaryStart = buffer.indexOf(endBoundaryBuffer, boundaryEnd);
+            if (endBoundaryStart === -1) break;
+            
+            // 提取当前部分的数据（到结束边界）
+            const partData = buffer.slice(boundaryEnd + 2, endBoundaryStart - 2);
+            
+            // 查找头部和内容的分界线
+            const headersEnd = partData.indexOf('\r\n\r\n');
+            if (headersEnd !== -1) {
+                const headers = partData.slice(0, headersEnd).toString();
+                const content = partData.slice(headersEnd + 4);
+                
+                // 解析Content-Disposition
+                const nameMatch = headers.match(/name="([^"]+)"/);
+                const filenameMatch = headers.match(/filename="([^"]+)"/);
+                
+                if (nameMatch) {
+                    const name = nameMatch[1];
+                    parts[name] = {
+                        filename: filenameMatch ? filenameMatch[1] : null,
+                        data: content
+                    };
+                }
+            }
+            break;
+        }
         
         // 提取当前部分的数据
         const partData = buffer.slice(boundaryEnd + 2, nextBoundaryStart - 2);
