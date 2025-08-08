@@ -19,21 +19,19 @@ cd $PROJECT_DIR
 echo "📦 创建package.json"
 cat > package.json << 'EOF'
 {
-  "name": "weinan-contact",
+  "name": "weinan-contact-api",
   "version": "1.0.0",
   "type": "module",
-  "main": "server-production.js",
+  "main": "contact-api.js",
   "scripts": {
-    "start": "node server-production.js",
-    "dev": "node server.js"
-  },
-  "dependencies": {}
+    "start": "node contact-api.js"
+  }
 }
 EOF
 
-# 创建生产服务器脚本
-echo "🔧 创建生产服务器脚本"
-cat > server-production.js << 'EOF'
+# 创建表单处理服务
+echo "🔧 创建表单处理服务"
+cat > contact-api.js << 'EOF'
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
@@ -43,13 +41,8 @@ import querystring from 'querystring';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PRODUCTION_CONFIG = {
-    port: process.env.PORT || 3000,
-    recordDir: process.env.RECORD_DIR || '/var/www/record',
-    host: '0.0.0.0'
-};
-
-const recordDir = PRODUCTION_CONFIG.recordDir;
+// 确保数据目录存在
+const recordDir = './record';
 if (!fs.existsSync(recordDir)) {
     fs.mkdirSync(recordDir, { recursive: true });
 }
@@ -57,6 +50,7 @@ if (!fs.existsSync(recordDir)) {
 const server = http.createServer((req, res) => {
     console.log(`${new Date().toLocaleString()} - ${req.method} ${req.url}`);
     
+    // 设置CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -74,6 +68,7 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 const formData = querystring.parse(body);
+                console.log('收到表单数据:', formData);
                 
                 if (!formData.name || !formData.phone) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -115,34 +110,36 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ success: false, error: 'API端点不存在' }));
 });
 
-server.listen(PRODUCTION_CONFIG.port, PRODUCTION_CONFIG.host, () => {
-    console.log(`✅ 生产服务器启动成功！`);
-    console.log(`📡 监听地址: ${PRODUCTION_CONFIG.host}:${PRODUCTION_CONFIG.port}`);
-    console.log(`💾 数据保存路径: ${recordDir}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ 表单处理服务启动成功！`);
+    console.log(`📡 监听端口: ${PORT}`);
+    console.log(`💾 数据保存: ${recordDir}/contact_forms.csv`);
+    console.log(`🌐 访问地址: http://localhost:${PORT}`);
 });
 EOF
 
 # 设置权限
 echo "🔐 设置文件权限"
 sudo chown -R www-data:www-data $PROJECT_DIR
-sudo chmod +x server-production.js
+sudo chmod +x contact-api.js
 
 # 创建数据目录
 echo "📂 创建数据目录"
-sudo mkdir -p /var/www/record
-sudo chown www-data:www-data /var/www/record
+sudo mkdir -p $PROJECT_DIR/record
+sudo chown www-data:www-data $PROJECT_DIR/record
 
 # 启动服务
 echo "🚀 启动服务"
 cd $PROJECT_DIR
-sudo -u www-data node server-production.js &
+sudo -u www-data node contact-api.js &
 
 # 检查服务状态
 sleep 2
 if curl -s http://localhost:3000/ > /dev/null; then
     echo "✅ 服务启动成功！"
     echo "🌐 访问地址: http://124.220.134.33:3000/"
-    echo "📊 数据文件: /var/www/record/contact_forms.csv"
+    echo "📊 数据文件: $PROJECT_DIR/record/contact_forms.csv"
 else
     echo "❌ 服务启动失败，请检查日志"
 fi
@@ -151,4 +148,15 @@ echo ""
 echo "📋 下一步："
 echo "1. 开放防火墙端口: sudo ufw allow 3000"
 echo "2. 测试API: curl -X POST http://124.220.134.33:3000/ -d 'name=test&phone=123'"
-echo "3. 更新表单配置使用3000端口" 
+echo "3. 更新表单配置使用3000端口"
+echo ""
+echo "🧪 测试命令："
+echo "curl -X POST http://124.220.134.33:3000/ -d \"name=测试&phone=123456\" -H \"Content-Type: application/x-www-form-urlencoded\""
+echo ""
+echo "📁 文件位置："
+echo "   - 服务文件: $PROJECT_DIR/contact-api.js"
+echo "   - 配置文件: $PROJECT_DIR/package.json"
+echo "   - 数据文件: $PROJECT_DIR/record/contact_forms.csv"
+echo ""
+echo "🔄 重启服务："
+echo "   cd $PROJECT_DIR && sudo -u www-data node contact-api.js" 
