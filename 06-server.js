@@ -249,23 +249,57 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // 处理 GET 请求 - 提供静态文件
+    // 处理静态文件请求
     if (req.method === 'GET') {
-        let filePath = req.url;
+        let filePath = url.parse(req.url).pathname;
         
-        // 默认页面
-        if (filePath === '/' || filePath === '/index.html') {
+        // 默认首页
+        if (filePath === '/') {
             filePath = '/index.html';
         }
         
-        // 构建完整的文件路径
+        // 处理knowledgehub文件夹的下载
+        if (filePath.startsWith('/knowledgehub/')) {
+            const fullPath = path.join(__dirname, filePath);
+            
+            // 检查文件是否存在
+            if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+                const ext = path.extname(fullPath).toLowerCase();
+                const fileName = path.basename(fullPath);
+                
+                // 设置正确的MIME类型和下载头
+                const mimeTypes = {
+                    '.pdf': 'application/pdf',
+                    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '.doc': 'application/msword',
+                    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    '.xls': 'application/vnd.ms-excel',
+                    '.txt': 'text/plain',
+                    '.zip': 'application/zip',
+                    '.rar': 'application/x-rar-compressed'
+                };
+                
+                const contentType = mimeTypes[ext] || 'application/octet-stream';
+                
+                res.writeHead(200, {
+                    'Content-Type': contentType,
+                    'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type'
+                });
+                
+                const fileStream = fs.createReadStream(fullPath);
+                fileStream.pipe(res);
+                return;
+            }
+        }
+        
+        // 其他静态文件处理
         const fullPath = path.join(__dirname, filePath);
         
-        // 检查文件是否存在
         if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-            const ext = path.extname(fullPath).toLowerCase();
-            
-            // 设置正确的 Content-Type
+            const ext = path.extname(fullPath);
             const mimeTypes = {
                 '.html': 'text/html',
                 '.css': 'text/css',
@@ -277,41 +311,34 @@ const server = http.createServer((req, res) => {
                 '.gif': 'image/gif',
                 '.svg': 'image/svg+xml',
                 '.ico': 'image/x-icon',
-                '.woff': 'font/woff',
-                '.woff2': 'font/woff2',
-                '.ttf': 'font/ttf',
-                '.eot': 'application/vnd.ms-fontobject'
+                '.pdf': 'application/pdf',
+                '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                '.doc': 'application/msword',
+                '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                '.xls': 'application/vnd.ms-excel',
+                '.txt': 'text/plain',
+                '.zip': 'application/zip',
+                '.rar': 'application/x-rar-compressed'
             };
             
             const contentType = mimeTypes[ext] || 'application/octet-stream';
-            res.setHeader('Content-Type', contentType);
             
-            // 读取并发送文件
+            res.writeHead(200, {
+                'Content-Type': contentType,
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            });
+            
             const fileStream = fs.createReadStream(fullPath);
             fileStream.pipe(res);
-            
-            fileStream.on('error', (error) => {
-                console.error('文件读取错误:', error);
-                res.writeHead(500);
-                res.end('服务器内部错误');
-            });
         } else {
-            // 文件不存在，返回404
-            res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-            res.end(`
-                <html>
-                <head><title>404 - 页面未找到</title></head>
-                <body>
-                    <h1>404 - 页面未找到</h1>
-                    <p>请求的文件 ${filePath} 不存在</p>
-                    <a href="/">返回首页</a>
-                </body>
-                </html>
-            `);
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('File not found');
         }
         return;
     }
-    
+
     // 处理 POST 请求 - 联系表单
     if (req.method === 'POST') {
         console.log('收到 POST 请求');
