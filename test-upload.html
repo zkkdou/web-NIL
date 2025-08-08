@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>上传测试</title>
+</head>
+<body>
+    <h1>文件上传测试</h1>
+    <form id="uploadForm">
+        <input type="password" id="password" placeholder="密码" value="fjfjfjfj"><br>
+        <input type="text" id="directory" placeholder="目录" value="2025-01"><br>
+        <input type="file" id="file" multiple><br>
+        <button type="submit">上传</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('password', document.getElementById('password').value);
+            formData.append('directory', document.getElementById('directory').value);
+            
+            const files = document.getElementById('file').files;
+            for (let file of files) {
+                formData.append('file', file);
+            }
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.text();
+                document.getElementById('result').innerHTML = `
+                    <h3>响应状态: ${response.status}</h3>
+                    <pre>${result}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h3>错误</h3>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        });
+    </script>
+</body>
+</html> 

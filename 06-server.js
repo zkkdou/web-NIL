@@ -323,15 +323,85 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // 处理文件上传API - 必须在静态文件处理之前
+    if (req.url === '/api/upload' && req.method === 'POST') {
+        console.log('处理文件上传请求');
+        handleFileUpload(req, res);
+        return;
+    }
+
     // 处理知识库API请求
     if (req.url.startsWith('/api/files')) {
         handleFilesAPI(req, res);
         return;
     }
 
-    // 处理文件上传API
-    if (req.url === '/api/upload' && req.method === 'POST') {
-        handleFileUpload(req, res);
+    // 处理 POST 请求 - 联系表单
+    if (req.method === 'POST' && req.url === '/') {
+        console.log('收到联系表单 POST 请求');
+        
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        
+        req.on('end', () => {
+            console.log('POST 请求体:', body);
+            
+            try {
+                // 解析表单数据
+                const formData = querystring.parse(body);
+                console.log('解析的表单数据:', formData);
+                
+                // 验证必填字段
+                if (!formData.name || !formData.phone) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: '姓名和电话是必填项'
+                    }));
+                    return;
+                }
+                
+                // 准备CSV数据
+                const timestamp = new Date().toISOString();
+                const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
+                
+                // 确保数据目录存在
+                const dataDir = path.join(recordDir, 'data');
+                if (!fs.existsSync(dataDir)) {
+                    fs.mkdirSync(dataDir, { recursive: true });
+                }
+                
+                // 写入CSV文件
+                const csvPath = path.join(dataDir, 'contact_forms.csv');
+                
+                // 如果文件不存在，创建文件并写入表头
+                if (!fs.existsSync(csvPath)) {
+                    const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
+                    fs.writeFileSync(csvPath, header);
+                }
+                
+                // 追加数据
+                fs.appendFileSync(csvPath, csvLine);
+                console.log('数据已保存到:', csvPath);
+                
+                // 发送成功响应
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    message: '数据已保存'
+                }));
+                
+            } catch (error) {
+                console.error('处理POST请求时出错:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    error: '服务器内部错误'
+                }));
+            }
+        });
         return;
     }
 
@@ -449,75 +519,6 @@ const server = http.createServer((req, res) => {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('File not found');
         }
-        return;
-    }
-
-    // 处理 POST 请求 - 联系表单
-    if (req.method === 'POST' && req.url === '/') {
-        console.log('收到联系表单 POST 请求');
-        
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
-        });
-        
-        req.on('end', () => {
-            console.log('POST 请求体:', body);
-            
-            try {
-                // 解析表单数据
-                const formData = querystring.parse(body);
-                console.log('解析的表单数据:', formData);
-                
-                // 验证必填字段
-                if (!formData.name || !formData.phone) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({
-                        success: false,
-                        error: '姓名和电话是必填项'
-                    }));
-                    return;
-                }
-                
-                // 准备CSV数据
-                const timestamp = new Date().toISOString();
-                const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
-                
-                // 确保数据目录存在
-                const dataDir = path.join(recordDir, 'data');
-                if (!fs.existsSync(dataDir)) {
-                    fs.mkdirSync(dataDir, { recursive: true });
-                }
-                
-                // 写入CSV文件
-                const csvPath = path.join(dataDir, 'contact_forms.csv');
-                
-                // 如果文件不存在，创建文件并写入表头
-                if (!fs.existsSync(csvPath)) {
-                    const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
-                    fs.writeFileSync(csvPath, header);
-                }
-                
-                // 追加数据
-                fs.appendFileSync(csvPath, csvLine);
-                console.log('数据已保存到:', csvPath);
-                
-                // 发送成功响应
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    success: true,
-                    message: '数据已保存'
-                }));
-                
-            } catch (error) {
-                console.error('处理POST请求时出错:', error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    success: false,
-                    error: '服务器内部错误'
-                }));
-            }
-        });
         return;
     }
     
