@@ -1152,6 +1152,9 @@
                                     <button class="btn btn-sm btn-primary btn-icon" onclick="downloadFile('${file.id}')" title="下载">
                                         <i class="bi bi-download"></i>
                                     </button>
+                                    <button class="btn btn-sm btn-outline-secondary btn-icon" onclick="copyDownloadLink('${file.downloadUrl}', this)" title="复制下载链接">
+                                        <i class="bi bi-link-45deg"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1285,6 +1288,52 @@
             } catch (error) {
                 console.error('Download error:', error);
                 alert('下载失败，请稍后重试或联系管理员');
+            }
+        }
+
+        // 复制下载链接
+        async function copyDownloadLink(url, button) {
+            try {
+                // 构建完整的下载URL，添加download参数确保直接下载
+                const fullUrl = window.location.origin + '/' + url.replace('../', '') + '?download=true';
+                
+                // 尝试使用现代API
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(fullUrl);
+                } else {
+                    // 降级方案：使用传统方法
+                    const textArea = document.createElement('textarea');
+                    textArea.value = fullUrl;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '-999999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                
+                // 显示成功状态
+                const originalClass = button.className;
+                const originalHTML = button.innerHTML;
+                
+                button.className = 'btn btn-sm btn-success btn-icon';
+                button.innerHTML = '<i class="bi bi-check"></i>';
+                button.title = '已复制';
+                
+                setTimeout(() => {
+                    button.className = originalClass;
+                    button.innerHTML = originalHTML;
+                    button.title = '复制下载链接';
+                }, 2000);
+                
+                console.log('已复制下载链接:', fullUrl);
+            } catch (error) {
+                console.error('Copy error:', error);
+                // 如果复制失败，显示链接让用户手动复制
+                const fullUrl = window.location.origin + '/' + url.replace('../', '') + '?download=true';
+                alert(`复制失败，请手动复制以下链接：\n\n${fullUrl}`);
             }
         }
     </script>
