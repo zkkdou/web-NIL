@@ -807,9 +807,11 @@
             // 根据当前页面URL确定API地址
             const currentHost = window.location.hostname;
             const currentProtocol = window.location.protocol;
+            const isHttps = currentProtocol === 'https:';
+            const port = isHttps ? '8443' : '8000';
             const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
-                ? `${currentProtocol}//localhost:8000/api/upload`
-                : `${currentProtocol}//${currentHost}:8000/api/upload`;
+                ? `${currentProtocol}//localhost:${port}/api/upload`
+                : `${currentProtocol}//${currentHost}:${port}/api/upload`;
             
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -878,9 +880,11 @@
                 // 根据当前页面URL确定API地址
                 const currentHost = window.location.hostname;
                 const currentProtocol = window.location.protocol;
+                const isHttps = currentProtocol === 'https:';
+                const port = isHttps ? '8443' : '8000';
                 const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
-                    ? `${currentProtocol}//localhost:8000/api/delete`
-                    : `${currentProtocol}//${currentHost}:8000/api/delete`;
+                    ? `${currentProtocol}//localhost:${port}/api/delete`
+                    : `${currentProtocol}//${currentHost}:${port}/api/delete`;
                 
                 console.log('发送删除请求到:', apiUrl);
                 console.log('请求数据:', { fileId, password: '***' });
@@ -955,9 +959,11 @@
                 // 从服务器获取文件列表
                 const currentHost = window.location.hostname;
                 const currentProtocol = window.location.protocol;
+                const isHttps = currentProtocol === 'https:';
+                const port = isHttps ? '8443' : '8000';
                 const apiUrl = currentHost === 'localhost' || currentHost === '127.0.0.1' 
-                    ? `${currentProtocol}//localhost:8000/api/files`
-                    : `${currentProtocol}//${currentHost}:8000/api/files`;
+                    ? `${currentProtocol}//localhost:${port}/api/files`
+                    : `${currentProtocol}//${currentHost}:${port}/api/files`;
                 
                 console.log('API URL:', apiUrl);
                 const response = await fetch(apiUrl);

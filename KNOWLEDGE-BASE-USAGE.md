@@ -17,22 +17,23 @@
 **解决不安全下载警告**：
 服务器支持HTTPS协议，可以解决浏览器的不安全下载警告。
 
-### Linux服务器部署步骤：
+### 完整部署流程：
 
-1. **快速部署**（推荐）：
+1. **在Linux服务器上执行**：
    ```bash
-   chmod +x deploy-https.sh
+   # 给脚本添加执行权限
+   chmod +x generate-ssl.sh deploy-https.sh start-server.sh
+   
+   # 快速部署（推荐）
    ./deploy-https.sh
    ```
 
 2. **手动部署**：
    ```bash
    # 生成SSL证书
-   chmod +x generate-ssl.sh
    ./generate-ssl.sh
    
    # 启动服务器
-   chmod +x start-server.sh
    ./start-server.sh
    ```
 
@@ -41,26 +42,13 @@
    nohup node 06-server.js > server.log 2>&1 &
    ```
 
-### 启用HTTPS步骤：
-1. 生成SSL证书：
-   ```bash
-   chmod +x generate-ssl.sh
-   ./generate-ssl.sh
-   ```
-   或者手动生成：
-   ```bash
-   mkdir ssl
-   openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes -subj "/C=CN/ST=Shanghai/L=Shanghai/O=WeiNaTech/OU=IT/CN=124.220.134.33"
-   ```
+### 访问地址：
+- **HTTP**: `http://124.220.134.33:8000`
+- **HTTPS**: `https://124.220.134.33:8443`
 
-2. 重启服务器：
-   ```bash
-   node 06-server.js
-   ```
-
-3. 访问HTTPS地址：
-   - 本地开发：`https://localhost:8443`
-   - 生产服务器：`https://124.220.134.33:8443`
+### 知识库页面：
+- **HTTP**: `http://124.220.134.33:8000/pages/knowledge-base.html`
+- **HTTPS**: `https://124.220.134.33:8443/pages/knowledge-base.html`
 
 ### 端口配置：
 - HTTP端口：8000（默认）
@@ -81,6 +69,12 @@ sudo firewall-cmd --permanent --add-port=8000/tcp
 sudo firewall-cmd --permanent --add-port=8443/tcp
 sudo firewall-cmd --reload
 ```
+
+### 故障排除：
+1. **混合内容错误**：确保通过HTTPS访问页面时，所有API调用也使用HTTPS
+2. **证书警告**：自签名证书会显示安全警告，点击"高级"→"继续访问"
+3. **端口不通**：检查防火墙是否开放了8443端口
+4. **SSL错误**：确保SSL证书文件存在且权限正确
 
 ## 功能概述
 
