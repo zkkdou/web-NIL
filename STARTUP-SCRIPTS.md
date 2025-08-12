@@ -8,9 +8,10 @@ const startupScripts = [
     "01-deploy-api-FIRST-ONLY.sh",          // 1. 部署API服务到record目录（仅首次运行）
     "02-download-deps-FIRST-ONLY.cjs",      // 2. 下载依赖文件（仅首次运行）
     "03-replace-cdn-FIRST-ONLY.cjs",        // 3. 替换CDN链接（仅首次运行）
-    "04-start-services.sh",                 // 4. 启动所有服务（日常重启）
+    "04-start-services.sh",                 // 4. 启动所有服务（包含HTTPS支持）
     "05-stop-services.sh",                  // 5. 停止所有服务
-    "06-server.js"                          // 6. 主服务器文件
+    "06-server.js",                         // 6. 主服务器文件
+    "generate-ssl.sh"                       // 7. SSL证书生成脚本
 ];
 ```
 
@@ -57,10 +58,11 @@ const startupScripts = [
 - **重复运行**: ❌ 不需要，已替换完成
 
 ### 4. `04-start-services.sh` ✅ 日常重启使用
-- **作用**: 一键启动所有服务
+- **作用**: 一键启动所有服务（包含HTTPS支持）
 - **执行位置**: 项目根目录
 - **执行命令**: `./04-start-services.sh`
-- **功能**: 自动启动API服务（3000端口）和主服务器（8000端口）
+- **功能**: 自动启动API服务（3000端口）和主服务器（HTTP:8000端口，HTTPS:8443端口）
+- **HTTPS支持**: ✅ 自动检查并生成SSL证书，启动HTTPS服务
 - **重复运行**: ✅ 每次重启服务器都需要
 
 ### 5. `05-stop-services.sh` ✅ 停止服务使用
@@ -71,11 +73,19 @@ const startupScripts = [
 - **重复运行**: ✅ 需要停止服务时使用
 
 ### 6. `06-server.js` ✅ 主服务器文件
-- **作用**: 主Web服务器
+- **作用**: 主Web服务器（支持HTTP和HTTPS）
 - **执行位置**: 项目根目录
 - **执行命令**: `node 06-server.js`
-- **监听端口**: 8000
-- **功能**: 提供静态文件服务，处理表单提交
+- **监听端口**: HTTP:8000, HTTPS:8443
+- **功能**: 提供静态文件服务，处理表单提交，支持HTTPS下载
+
+### 7. `generate-ssl.sh` ✅ SSL证书生成脚本
+- **作用**: 生成自签名SSL证书
+- **执行位置**: 项目根目录
+- **执行命令**: `./generate-ssl.sh`
+- **功能**: 自动生成SSL证书文件（ssl/cert.pem, ssl/key.pem）
+- **自动执行**: ✅ 由04-start-services.sh自动调用
+- **重复运行**: ✅ 证书过期时可重新生成
 
 ## 完整启动流程
 
@@ -103,6 +113,7 @@ const startupScripts = [
    ```bash
    sudo ufw allow 3000
    sudo ufw allow 8000
+   sudo ufw allow 8443
    ```
 
 2. **腾讯云安全组**: 在腾讯云控制台开放相应端口（仅首次配置）
@@ -111,11 +122,17 @@ const startupScripts = [
    ```bash
    netstat -tlnp | grep :3000
    netstat -tlnp | grep :8000
+   netstat -tlnp | grep :8443
    ```
 
 4. **测试API**: 
    ```bash
    curl -X POST http://localhost:3000/ -d "name=测试&phone=123456"
+   ```
+
+5. **HTTPS测试**: 
+   ```bash
+   curl -k https://localhost:8443/
    ```
 
 ## 🎉 现在您只需要记住2个命令：
@@ -132,8 +149,9 @@ const startupScripts = [
 ├── 02-download-deps-FIRST-ONLY.js (仅首次)
 ├── 03-replace-cdn-FIRST-ONLY.cjs (仅首次)
 └── 04-start-services.sh
+    ├── 检查并生成SSL证书
     ├── 启动API服务 (3000端口)
-    └── 启动主服务器 (8000端口)
+    └── 启动主服务器 (HTTP:8000, HTTPS:8443端口)
 ```
 
 ## 文件结构
@@ -144,9 +162,13 @@ web-NIL/
 ├── 01-deploy-api-FIRST-ONLY.sh          # 部署API服务（仅首次）
 ├── 02-download-deps-FIRST-ONLY.cjs      # 下载依赖（仅首次）
 ├── 03-replace-cdn-FIRST-ONLY.cjs        # 替换CDN链接（仅首次）
-├── 04-start-services.sh                 # 启动服务
+├── 04-start-services.sh                 # 启动服务（包含HTTPS）
 ├── 05-stop-services.sh                  # 停止服务
-├── 06-server.js                         # 主服务器
+├── 06-server.js                         # 主服务器（HTTP+HTTPS）
+├── generate-ssl.sh                      # SSL证书生成脚本
+├── ssl/                                 # SSL证书目录
+│   ├── cert.pem                         # SSL证书
+│   └── key.pem                          # SSL私钥
 ├── record/                              # API服务目录
 │   ├── contact-api.js                   # API服务
 │   ├── package.json                     # API配置
@@ -163,6 +185,11 @@ web-NIL/
 
 ### 🟢 日常使用
 - `00-startup-all.sh` - 一键启动
-- `04-start-services.sh` - 启动服务
+- `04-start-services.sh` - 启动服务（包含HTTPS）
 - `05-stop-services.sh` - 停止服务
-- `06-server.js` - 主服务器 
+- `06-server.js` - 主服务器（HTTP+HTTPS）
+
+### 🔒 HTTPS支持
+- `generate-ssl.sh` - SSL证书生成
+- 自动HTTPS服务启动
+- 混合内容问题解决

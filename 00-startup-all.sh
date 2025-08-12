@@ -14,7 +14,7 @@ echo "📋 执行顺序："
 echo "1. 01-deploy-api-FIRST-ONLY.sh - 部署API服务（仅首次）"
 echo "2. 02-download-deps-FIRST-ONLY.cjs - 下载依赖文件（仅首次）"
 echo "3. 03-replace-cdn-FIRST-ONLY.cjs - 替换CDN链接（仅首次）"
-echo "4. 04-start-services.sh - 启动所有服务"
+echo "4. 04-start-services.sh - 启动所有服务（包含HTTPS）"
 echo ""
 
 # 检查是否需要首次部署
@@ -98,7 +98,8 @@ fi
 echo ""
 echo "🎉 微纳科技网站启动完成！"
 echo "📡 API服务: http://localhost:3000"
-echo "🌐 主网站: http://localhost:8000"
+echo "🌐 HTTP网站: http://localhost:8000"
+echo "🔒 HTTPS网站: https://localhost:8443"
 echo "📊 数据文件: record/data/contact_forms.csv"
 echo ""
 echo "💡 停止服务: ./05-stop-services.sh"

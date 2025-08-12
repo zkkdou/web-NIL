@@ -21,6 +21,21 @@ if [ ! -f "record/contact-api.js" ]; then
     exit 1
 fi
 
+# 检查SSL证书
+echo "🔒 检查SSL证书..."
+if [ ! -f "ssl/cert.pem" ] || [ ! -f "ssl/key.pem" ]; then
+    echo "⚠️  SSL证书不存在，正在生成..."
+    chmod +x generate-ssl.sh
+    ./generate-ssl.sh
+    if [ $? -ne 0 ]; then
+        echo "❌ SSL证书生成失败，将仅启动HTTP服务"
+    else
+        echo "✅ SSL证书生成成功"
+    fi
+else
+    echo "✅ SSL证书已存在"
+fi
+
 echo "✅ 检查完成，开始启动服务..."
 
 # 检查并清理端口占用
@@ -36,6 +51,13 @@ fi
 # 检查8000端口
 if netstat -tlnp 2>/dev/null | grep -q ":8000 "; then
     echo "⚠️  端口8000已被占用，正在清理..."
+    pkill -f "06-server.js" 2>/dev/null || true
+    sleep 2
+fi
+
+# 检查8443端口
+if netstat -tlnp 2>/dev/null | grep -q ":8443 "; then
+    echo "⚠️  端口8443已被占用，正在清理..."
     pkill -f "06-server.js" 2>/dev/null || true
     sleep 2
 fi
@@ -63,7 +85,7 @@ else
 fi
 
 # 启动主服务器
-echo "🌐 启动主服务器（端口8000）..."
+echo "🌐 启动主服务器（HTTP:8000, HTTPS:8443）..."
 node 06-server.js &
 SERVER_PID=$!
 
@@ -72,20 +94,33 @@ sleep 3
 
 # 检查主服务器是否启动成功
 if curl -s http://localhost:8000/ > /dev/null 2>&1; then
-    echo "✅ 主服务器启动成功！"
+    echo "✅ HTTP服务器启动成功！"
 else
-    echo "⚠️  主服务器可能未完全启动，请稍等..."
-    # 检查进程是否还在运行
-    if ! ps -p $SERVER_PID > /dev/null 2>&1; then
-        echo "❌ 主服务器启动失败，请检查错误信息"
-        exit 1
+    echo "⚠️  HTTP服务器可能未完全启动，请稍等..."
+fi
+
+# 检查HTTPS服务器是否启动成功
+if [ -f "ssl/cert.pem" ] && [ -f "ssl/key.pem" ]; then
+    if curl -k -s https://localhost:8443/ > /dev/null 2>&1; then
+        echo "✅ HTTPS服务器启动成功！"
+    else
+        echo "⚠️  HTTPS服务器可能未完全启动，请稍等..."
     fi
+fi
+
+# 检查进程是否还在运行
+if ! ps -p $SERVER_PID > /dev/null 2>&1; then
+    echo "❌ 主服务器启动失败，请检查错误信息"
+    exit 1
 fi
 
 echo ""
 echo "🎉 所有服务启动完成！"
 echo "📡 API服务: http://localhost:3000"
-echo "🌐 主网站: http://localhost:8000"
+echo "🌐 HTTP网站: http://localhost:8000"
+if [ -f "ssl/cert.pem" ] && [ -f "ssl/key.pem" ]; then
+    echo "🔒 HTTPS网站: https://localhost:8443"
+fi
 echo "📊 数据文件: record/data/contact_forms.csv"
 echo ""
 echo "💡 停止服务:"
@@ -94,6 +129,9 @@ echo ""
 echo "🔍 检查服务状态:"
 echo "   netstat -tlnp | grep :3000"
 echo "   netstat -tlnp | grep :8000"
+if [ -f "ssl/cert.pem" ] && [ -f "ssl/key.pem" ]; then
+    echo "   netstat -tlnp | grep :8443"
+fi
 echo ""
 echo "🧪 测试API:"
 echo "   curl -X POST http://localhost:3000/ -d \"name=测试&phone=123456\""
