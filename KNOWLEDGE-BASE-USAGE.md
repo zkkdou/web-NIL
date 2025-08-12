@@ -7,7 +7,7 @@
 - 服务器端：`06-server.js` 中的 `KNOWLEDGE_HUB_URL_PATH` 变量（URL路径）
 - 前端页面：`pages/knowledge-base.html` 中的 `KNOWLEDGE_HUB_PATH` 变量
 - 当前配置：
-  - 文件系统路径：`knowledgehub/` 文件夹（相对于项目根目录）
+  - 文件系统路径：`knowledgehub/` 文件夹（项目内部，相对于项目根目录）
   - URL路径：`/knowledgehub/`（用于Web访问）
 
 如需修改路径，请同时更新以上两个文件中的配置。
