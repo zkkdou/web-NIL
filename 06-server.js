@@ -6,8 +6,8 @@ const querystring = require('querystring');
 const crypto = require('crypto');
 
 // 知识库文件夹路径配置
-const KNOWLEDGE_HUB_PATH = path.join(__dirname, 'knowledgehub');
-const KNOWLEDGE_HUB_URL_PATH = '/knowledgehub';
+const KNOWLEDGE_HUB_PATH = path.join(__dirname, '../knowledgehub');
+const KNOWLEDGE_HUB_URL_PATH = '../knowledgehub';
 
 // 生成UUID
 function generateUUID() {
