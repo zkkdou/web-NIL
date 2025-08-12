@@ -12,6 +12,76 @@
 
 如需修改路径，请同时更新以上两个文件中的配置。
 
+## HTTPS配置
+
+**解决不安全下载警告**：
+服务器支持HTTPS协议，可以解决浏览器的不安全下载警告。
+
+### Linux服务器部署步骤：
+
+1. **快速部署**（推荐）：
+   ```bash
+   chmod +x deploy-https.sh
+   ./deploy-https.sh
+   ```
+
+2. **手动部署**：
+   ```bash
+   # 生成SSL证书
+   chmod +x generate-ssl.sh
+   ./generate-ssl.sh
+   
+   # 启动服务器
+   chmod +x start-server.sh
+   ./start-server.sh
+   ```
+
+3. **后台运行**：
+   ```bash
+   nohup node 06-server.js > server.log 2>&1 &
+   ```
+
+### 启用HTTPS步骤：
+1. 生成SSL证书：
+   ```bash
+   chmod +x generate-ssl.sh
+   ./generate-ssl.sh
+   ```
+   或者手动生成：
+   ```bash
+   mkdir ssl
+   openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes -subj "/C=CN/ST=Shanghai/L=Shanghai/O=WeiNaTech/OU=IT/CN=124.220.134.33"
+   ```
+
+2. 重启服务器：
+   ```bash
+   node 06-server.js
+   ```
+
+3. 访问HTTPS地址：
+   - 本地开发：`https://localhost:8443`
+   - 生产服务器：`https://124.220.134.33:8443`
+
+### 端口配置：
+- HTTP端口：8000（默认）
+- HTTPS端口：8443（默认）
+- 可通过环境变量修改：
+  ```bash
+  PORT=8000 HTTPS_PORT=8443 node 06-server.js
+  ```
+
+### 防火墙配置：
+```bash
+# Ubuntu/Debian (UFW)
+sudo ufw allow 8000/tcp
+sudo ufw allow 8443/tcp
+
+# CentOS/RHEL (firewalld)
+sudo firewall-cmd --permanent --add-port=8000/tcp
+sudo firewall-cmd --permanent --add-port=8443/tcp
+sudo firewall-cmd --reload
+```
+
 ## 功能概述
 
 知识库系统提供以下功能：

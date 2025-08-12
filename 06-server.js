@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -659,8 +660,371 @@ server.on('error', (error) => {
 
 // 启动服务器
 const port = process.env.PORT || 8000;
+const httpsPort = process.env.HTTPS_PORT || 8443;
+
+// 检查SSL证书是否存在
+const sslDir = path.join(__dirname, 'ssl');
+const certPath = path.join(sslDir, 'cert.pem');
+const keyPath = path.join(sslDir, 'key.pem');
+
+let httpsServer = null;
+
+// 如果SSL证书存在，启动HTTPS服务器
+if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+    try {
+        const httpsOptions = {
+            cert: fs.readFileSync(certPath),
+            key: fs.readFileSync(keyPath)
+        };
+        
+        httpsServer = https.createServer(httpsOptions, (req, res) => {
+            // 添加请求日志
+            console.log(`${new Date().toLocaleString()} - HTTPS ${req.method} ${req.url}`);
+            
+            // 设置 CORS 头
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+            res.setHeader('Access-Control-Max-Age', '86400'); // 24小时
+
+            // 处理 OPTIONS 请求
+            if (req.method === 'OPTIONS') {
+                console.log('处理 HTTPS OPTIONS 请求');
+                res.writeHead(200);
+                res.end();
+                return;
+            }
+
+            // 处理文件上传API - 必须在静态文件处理之前
+            if (req.url === '/api/upload' && req.method === 'POST') {
+                console.log('处理 HTTPS 文件上传请求');
+                handleFileUpload(req, res);
+                return;
+            }
+
+            // 处理文件删除API
+            if (req.method === 'POST' && req.url === '/api/delete') {
+                console.log('收到 HTTPS 删除文件请求:', req.url);
+                let body = '';
+                req.on('data', chunk => {
+                    body += chunk.toString();
+                });
+                req.on('end', () => {
+                    console.log('HTTPS 删除请求体:', body);
+                    try {
+                        const data = JSON.parse(body);
+                        const { fileId, password } = data;
+                        console.log('解析的 HTTPS 删除数据:', { fileId, password: password ? '***' : 'undefined' });
+                        
+                        // 验证密码
+                        if (password !== 'fjfjfjfj') {
+                            console.log('HTTPS 密码验证失败');
+                            res.writeHead(401, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({
+                                success: false,
+                                error: '密码错误'
+                            }));
+                            return;
+                        }
+                        
+                        // 扫描文件列表找到要删除的文件
+                        console.log('开始扫描文件列表...');
+                        const files = scanKnowledgeHub();
+                        console.log('扫描到的文件列表:', files.map(f => ({ id: f.id, name: f.name, path: f.path })));
+                        
+                        const fileToDelete = files.find(f => f.id === fileId);
+                        console.log('要删除的文件:', fileToDelete);
+                        
+                        if (!fileToDelete) {
+                            console.log('未找到要删除的文件，fileId:', fileId);
+                            res.writeHead(404, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({
+                                success: false,
+                                error: '文件不存在'
+                            }));
+                            return;
+                        }
+                        
+                        // 构建文件路径
+                        let filePath;
+                        if (fileToDelete.path === '根目录') {
+                            // 文件在根目录
+                            filePath = path.join(KNOWLEDGE_HUB_PATH, fileToDelete.name);
+                        } else {
+                            // 文件在子目录
+                            filePath = path.join(KNOWLEDGE_HUB_PATH, fileToDelete.path, fileToDelete.name);
+                        }
+                        
+                        console.log('构建的文件路径:', filePath);
+                        console.log('文件是否存在:', fs.existsSync(filePath));
+                        
+                        // 检查文件是否存在
+                        if (!fs.existsSync(filePath)) {
+                            console.log('文件不存在于路径:', filePath);
+                            res.writeHead(404, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({
+                                success: false,
+                                error: '文件不存在'
+                            }));
+                            return;
+                        }
+                        
+                        // 删除文件
+                        fs.unlinkSync(filePath);
+                        console.log('文件已删除:', filePath);
+                        
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: true,
+                            message: '文件删除成功'
+                        }));
+                        
+                    } catch (error) {
+                        console.error('HTTPS 删除文件时出错:', error);
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '服务器内部错误'
+                        }));
+                    }
+                });
+                return;
+            }
+
+            // 处理知识库API请求
+            if (req.url.startsWith('/api/files') && !req.url.startsWith('/api/delete')) {
+                handleFilesAPI(req, res);
+                return;
+            }
+
+            // 处理 POST 请求 - 联系表单
+            if (req.method === 'POST' && req.url === '/') {
+                console.log('收到 HTTPS 联系表单 POST 请求');
+                
+                let body = '';
+                req.on('data', chunk => {
+                    body += chunk.toString();
+                });
+                
+                req.on('end', () => {
+                    console.log('HTTPS POST 请求体:', body);
+                    
+                    try {
+                        // 解析表单数据
+                        const formData = querystring.parse(body);
+                        console.log('解析的 HTTPS 表单数据:', formData);
+                        
+                        // 验证必填字段
+                        if (!formData.name || !formData.phone) {
+                            res.writeHead(400, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({
+                                success: false,
+                                error: '姓名和电话是必填项'
+                            }));
+                            return;
+                        }
+                        
+                        // 准备CSV数据
+                        const timestamp = new Date().toISOString();
+                        const csvLine = `"${timestamp}","${formData.name || ''}","${formData.email || ''}","${formData.phone || ''}","${formData.subject || ''}","${formData.message || ''}"\n`;
+                        
+                        // 确保数据目录存在
+                        const dataDir = path.join(recordDir, 'data');
+                        if (!fs.existsSync(dataDir)) {
+                            fs.mkdirSync(dataDir, { recursive: true });
+                        }
+                        
+                        // 写入CSV文件
+                        const csvPath = path.join(dataDir, 'contact_forms.csv');
+                        
+                        // 如果文件不存在，创建文件并写入表头
+                        if (!fs.existsSync(csvPath)) {
+                            const header = '"时间戳","姓名","邮箱","电话","主题","留言"\n';
+                            fs.writeFileSync(csvPath, header);
+                        }
+                        
+                        // 追加数据
+                        fs.appendFileSync(csvPath, csvLine);
+                        console.log('HTTPS 数据已保存到:', csvPath);
+                        
+                        // 发送成功响应
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: true,
+                            message: '数据已保存'
+                        }));
+                        
+                    } catch (error) {
+                        console.error('处理 HTTPS POST 请求时出错:', error);
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: false,
+                            error: '服务器内部错误'
+                        }));
+                    }
+                });
+                return;
+            }
+
+            // 处理静态文件请求
+            if (req.method === 'GET') {
+                let filePath = url.parse(req.url).pathname;
+                
+                // 默认首页
+                if (filePath === '/') {
+                    filePath = '/index.html';
+                }
+                
+                // 处理knowledgehub文件夹的下载
+                if (filePath.startsWith(KNOWLEDGE_HUB_URL_PATH + '/')) {
+                    const fullPath = path.join(KNOWLEDGE_HUB_PATH, filePath.substring(KNOWLEDGE_HUB_URL_PATH.length + 1)); // 去掉URL路径前缀
+                    
+                    // 检查文件是否存在
+                    if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+                        const ext = path.extname(fullPath).toLowerCase();
+                        const fileName = path.basename(fullPath);
+                        const stat = fs.statSync(fullPath);
+                        
+                        // 解析URL参数
+                        const urlObj = url.parse(req.url, true);
+                        const isDownload = urlObj.query.download === 'true';
+                        
+                        // 设置正确的MIME类型和下载头
+                        const mimeTypes = {
+                            '.pdf': 'application/pdf',
+                            '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            '.doc': 'application/msword',
+                            '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            '.xls': 'application/vnd.ms-excel',
+                            '.txt': 'text/plain',
+                            '.zip': 'application/zip',
+                            '.rar': 'application/x-rar-compressed',
+                            '.jpg': 'image/jpeg',
+                            '.jpeg': 'image/jpeg',
+                            '.png': 'image/png',
+                            '.gif': 'image/gif',
+                            '.mp4': 'video/mp4',
+                            '.mp3': 'audio/mpeg'
+                        };
+                        
+                        const contentType = mimeTypes[ext] || 'application/octet-stream';
+                        
+                        // 设置响应头
+                        const headers = {
+                            'Content-Type': contentType,
+                            'Content-Length': stat.size,
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                            'Access-Control-Allow-Headers': 'Content-Type',
+                            // 安全相关头部
+                            'X-Content-Type-Options': 'nosniff',
+                            'X-Frame-Options': 'DENY',
+                            'X-XSS-Protection': '1; mode=block',
+                            // 允许下载的头部
+                            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+                        };
+                        
+                        // 如果指定了download参数或者是特定文件类型，强制下载
+                        if (isDownload || ['.pdf', '.docx', '.doc', '.xlsx', '.xls', '.zip', '.rar'].includes(ext)) {
+                            headers['Content-Disposition'] = `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+                        } else {
+                            // 对于图片等文件，允许在浏览器中显示
+                            headers['Content-Disposition'] = `inline; filename*=UTF-8''${encodeURIComponent(fileName)}`;
+                        }
+                        
+                        res.writeHead(200, headers);
+                        
+                        const fileStream = fs.createReadStream(fullPath);
+                        fileStream.pipe(res);
+                        
+                        // 错误处理
+                        fileStream.on('error', (error) => {
+                            console.error('HTTPS 文件读取错误:', error);
+                            if (!res.headersSent) {
+                                res.writeHead(500, { 'Content-Type': 'application/json' });
+                                res.end(JSON.stringify({ error: '文件读取失败' }));
+                            }
+                        });
+                        
+                        return;
+                    }
+                }
+                
+                // 其他静态文件处理
+                const fullPath = path.join(__dirname, filePath);
+                
+                if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+                    const ext = path.extname(fullPath);
+                    const mimeTypes = {
+                        '.html': 'text/html',
+                        '.css': 'text/css',
+                        '.js': 'application/javascript',
+                        '.json': 'application/json',
+                        '.png': 'image/png',
+                        '.jpg': 'image/jpeg',
+                        '.jpeg': 'image/jpeg',
+                        '.gif': 'image/gif',
+                        '.svg': 'image/svg+xml',
+                        '.ico': 'image/x-icon',
+                        '.pdf': 'application/pdf',
+                        '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        '.doc': 'application/msword',
+                        '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        '.xls': 'application/vnd.ms-excel',
+                        '.txt': 'text/plain',
+                        '.zip': 'application/zip',
+                        '.rar': 'application/x-rar-compressed'
+                    };
+                    
+                    const contentType = mimeTypes[ext] || 'application/octet-stream';
+                    
+                    res.writeHead(200, {
+                        'Content-Type': contentType,
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type'
+                    });
+                    
+                    const fileStream = fs.createReadStream(fullPath);
+                    fileStream.pipe(res);
+                } else {
+                    res.writeHead(404, { 'Content-Type': 'text/plain' });
+                    res.end('File not found');
+                }
+                return;
+            }
+            
+            // 不支持的请求方法或路径
+            res.writeHead(405, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                success: false,
+                error: '不支持的请求方法或路径'
+            }));
+        });
+        
+        httpsServer.listen(httpsPort, '0.0.0.0', () => {
+            console.log(`HTTPS服务器启动成功，监听端口 ${httpsPort}...`);
+            console.log(`安全访问地址: https://localhost:${httpsPort}`);
+        });
+        
+        console.log('SSL证书加载成功');
+    } catch (error) {
+        console.error('SSL证书加载失败:', error);
+        console.log('HTTPS服务器启动失败，仅启动HTTP服务器');
+    }
+} else {
+    console.log('SSL证书不存在，仅启动HTTP服务器');
+    console.log('如需启用HTTPS，请生成SSL证书：');
+    console.log('  mkdir ssl');
+    console.log('  openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes');
+}
+
+// 启动HTTP服务器
 server.listen(port, '0.0.0.0', () => {
-    console.log(`服务器启动成功，监听端口 ${port}...`);
+    console.log(`HTTP服务器启动成功，监听端口 ${port}...`);
     console.log('按 Ctrl+C 停止服务器');
     console.log(`访问地址: http://localhost:${port}`);
+    if (httpsServer) {
+        console.log(`安全访问地址: https://localhost:${httpsPort}`);
+    }
 }); 
