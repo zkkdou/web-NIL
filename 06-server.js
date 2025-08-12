@@ -7,6 +7,7 @@ const crypto = require('crypto');
 
 // 知识库文件夹路径配置
 const KNOWLEDGE_HUB_PATH = path.join(__dirname, 'knowledgehub');
+const KNOWLEDGE_HUB_URL_PATH = '/knowledgehub';
 
 // 生成UUID
 function generateUUID() {
@@ -216,7 +217,7 @@ function handleFileUpload(req, res) {
                 uploadTime: new Date().toISOString(),
                 type: path.extname(fileName).toLowerCase(),
                 path: directory,
-                downloadUrl: `../knowledgehub/${directory}/${uniqueFileName}`
+                downloadUrl: `${KNOWLEDGE_HUB_URL_PATH}/${directory}/${uniqueFileName}`
             };
             
             res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -518,8 +519,8 @@ const server = http.createServer((req, res) => {
         }
         
         // 处理knowledgehub文件夹的下载
-        if (filePath.startsWith('/knowledgehub/')) {
-            const fullPath = path.join(KNOWLEDGE_HUB_PATH, filePath.substring(12)); // 去掉 '/knowledgehub/' 前缀
+        if (filePath.startsWith(KNOWLEDGE_HUB_URL_PATH + '/')) {
+            const fullPath = path.join(KNOWLEDGE_HUB_PATH, filePath.substring(KNOWLEDGE_HUB_URL_PATH.length + 1)); // 去掉URL路径前缀
             
             // 检查文件是否存在
             if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
