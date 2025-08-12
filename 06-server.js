@@ -5,6 +5,9 @@ const url = require('url');
 const querystring = require('querystring');
 const crypto = require('crypto');
 
+// 知识库文件夹路径配置
+const KNOWLEDGE_HUB_PATH = path.join(__dirname, 'knowledgehub');
+
 // 生成UUID
 function generateUUID() {
     return crypto.randomUUID();
@@ -12,10 +15,9 @@ function generateUUID() {
 
 // 扫描knowledgehub文件夹
 function scanKnowledgeHub() {
-    const knowledgeHubPath = path.join(__dirname, 'knowledgehub');
     const files = [];
     
-    if (!fs.existsSync(knowledgeHubPath)) {
+    if (!fs.existsSync(KNOWLEDGE_HUB_PATH)) {
         console.log('knowledgehub文件夹不存在');
         return files;
     }
@@ -52,8 +54,8 @@ function scanKnowledgeHub() {
         }
     }
     
-    console.log('开始扫描knowledgehub文件夹:', knowledgeHubPath);
-    scanDirectory(knowledgeHubPath);
+    console.log('开始扫描knowledgehub文件夹:', KNOWLEDGE_HUB_PATH);
+    scanDirectory(KNOWLEDGE_HUB_PATH);
     console.log('扫描完成，共发现', files.length, '个文件');
     return files;
 }
@@ -92,7 +94,7 @@ function handleFilesAPI(req, res) {
             }
             
             try {
-                const filePath = path.join(__dirname, 'knowledgehub', file.path);
+                const filePath = path.join(KNOWLEDGE_HUB_PATH, file.path);
                 if (!fs.existsSync(filePath)) {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: 'File not found' }));
@@ -179,13 +181,12 @@ function handleFileUpload(req, res) {
             const directory = parts.directory.data.toString();
             
             // 确保knowledgehub目录存在
-            const knowledgeHubPath = path.join(__dirname, 'knowledgehub');
-            if (!fs.existsSync(knowledgeHubPath)) {
-                fs.mkdirSync(knowledgeHubPath, { recursive: true });
+            if (!fs.existsSync(KNOWLEDGE_HUB_PATH)) {
+                fs.mkdirSync(KNOWLEDGE_HUB_PATH, { recursive: true });
             }
             
             // 创建目标目录
-            const targetDir = path.join(knowledgeHubPath, directory);
+            const targetDir = path.join(KNOWLEDGE_HUB_PATH, directory);
             if (!fs.existsSync(targetDir)) {
                 fs.mkdirSync(targetDir, { recursive: true });
             }
@@ -390,10 +391,10 @@ const server = http.createServer((req, res) => {
                 let filePath;
                 if (fileToDelete.path === '根目录') {
                     // 文件在根目录
-                    filePath = path.join(__dirname, 'knowledgehub', fileToDelete.name);
+                    filePath = path.join(KNOWLEDGE_HUB_PATH, fileToDelete.name);
                 } else {
                     // 文件在子目录
-                    filePath = path.join(__dirname, 'knowledgehub', fileToDelete.path, fileToDelete.name);
+                    filePath = path.join(KNOWLEDGE_HUB_PATH, fileToDelete.path, fileToDelete.name);
                 }
                 
                 console.log('构建的文件路径:', filePath);
@@ -518,7 +519,7 @@ const server = http.createServer((req, res) => {
         
         // 处理knowledgehub文件夹的下载
         if (filePath.startsWith('/knowledgehub/')) {
-            const fullPath = path.join(__dirname, filePath);
+            const fullPath = path.join(KNOWLEDGE_HUB_PATH, filePath.substring(12)); // 去掉 '/knowledgehub/' 前缀
             
             // 检查文件是否存在
             if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
